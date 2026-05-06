@@ -586,7 +586,7 @@ body{
 }
 
 
-/* ----------- BOTON OJO ----------- */
+/* ----------- BOTON OJO (OCULTO AHORA MISMO) ----------- */
 
 .btn-ojo {
   position: absolute;
@@ -614,6 +614,52 @@ body{
 .btn-ojo:hover {
   background: rgba(255,255,255,0.3);
   transform: translateY(-50%) scale(1.1);
+}
+
+/* ----------- BLOQUE UGR ----------- */
+
+.header-ugr {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: rgba(255,255,255,0.12);
+  padding: 8px 12px;
+  border-radius: 14px;
+
+  backdrop-filter: blur(6px);
+
+  transition: 0.25s ease;
+}
+
+.header-ugr:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-50%) scale(1.02);
+}
+
+.header-ugr span {
+  color: rgba(255,255,255,0.92);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.logo-ugr {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.95;
+
+  transition: 0.25s ease;
+}
+
+.header-ugr:hover .logo-ugr {
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 /* ----------- MODO SIN PANEL ----------- */

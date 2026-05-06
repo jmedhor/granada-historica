@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import './App.css'
+import logoUGR from './assets/logo-ugr.png'
 import Mapa from './components/Map.jsx'
 import MenuRutas from './components/MenuRutas.jsx'
 import MenuPuntos from './components/MenuPuntos.jsx'
@@ -77,13 +78,17 @@ function App() {
           </div>
         </div>
 
-      {/* BOTÓN OJO */}
-      <button
-        className="btn-ojo"
-        onClick={() => setMostrarPanel(!mostrarPanel)}
-      >
-        {mostrarPanel ? "👁️" : "🙈"}
-      </button>
+      <div className="header-ugr">
+        <span>Bibliografía y datos aportados por la</span>
+
+        <a href="https://www.ugr.es">
+          <img
+            src={logoUGR}
+            alt="Universidad de Granada"
+            className="logo-ugr"
+          />
+        </a>
+      </div>
 
       </header>
 
