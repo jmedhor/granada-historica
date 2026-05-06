@@ -16,19 +16,32 @@ function MenuPuntos({ ruta, setRutaSeleccionada, mapRef, evitarPago }) {
     : puntos
 
 
+  let puntosOrdenados = [...puntosFiltrados]
+
+  if (mapRef.current?.ordenPuntos) {
+    const orden = mapRef.current.ordenPuntos
+
+    puntosOrdenados = orden
+      .slice(1)
+      .map(index => puntosFiltrados[index - 1])
+      .filter(Boolean)
+  }
+
+
   return (
     <div className="menu-puntos">
       <h3>{ruta.nombre}</h3>
-      <ul>
-        {puntosFiltrados.map(punto => (
-          <li
-            key={punto.id}
-            onClick={() => mapRef.current.centrarYAbrir(punto)}
-          >
-            {punto.nombre}
-          </li>
-        ))}
-      </ul>
+        <ul>
+          {puntosOrdenados.map((punto, index) => (
+            <li
+              key={punto.id}
+              onClick={() => mapRef.current.centrarYAbrir(punto)}
+            >
+              <span className="paso-num">{index + 1}</span>
+              {punto.nombre}
+            </li>
+          ))}
+        </ul>
     </div>
   )
 }

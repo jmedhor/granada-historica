@@ -81,6 +81,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
   const [rutasSegmentosLocal, setRutasSegmentosLocal] = useState([])
   const [cargandoRuta, setCargandoRuta] = useState(false)
   const markersRef = useRef({})
+  const [ordenPuntos, setOrdenPuntos] = useState([])
 
 
 
@@ -131,6 +132,18 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
     ? todosPuntos.filter(p => p.ruta_id === rutaSeleccionada.id)
     : todosPuntos
 
+  let puntosOrdenados = [...puntos]
+
+  // Solo si hay orden de OSRM
+  if (mapRef.current?.ordenPuntos) {
+    const orden = mapRef.current.ordenPuntos
+
+    puntosOrdenados = orden
+      .slice(1) // quitar usuario
+      .map(i => puntos[i - 1])
+      .filter(Boolean)
+  }
+
   useEffect(() => {
     const cargarRuta = async () => {
       if (!rutaSeleccionada || puntos.length === 0) return
@@ -138,16 +151,18 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
       setCargandoRuta(true)
 
       try {
-        let legs
+        let resultado
 
         if (modoRuta === "historica") {
-          legs = await obtenerRutaHistorica(puntos, userLocation, evitarPago)
+          resultado = await obtenerRutaHistorica(puntos, userLocation, evitarPago)
         } else {
-          legs = await obtenerRutaOptima(puntos, userLocation, evitarPago)
+          resultado = await obtenerRutaOptima(puntos, userLocation, evitarPago)
         }
 
-        setRutasSegmentos(legs)
-        setRutasSegmentosLocal(legs)
+        setRutasSegmentos(resultado.legs)
+        setRutasSegmentosLocal(resultado.legs)
+        setOrdenPuntos(resultado.orden)
+        mapRef.current.ordenPuntos = resultado.orden
 
       } catch (err) {
         console.error("Error cargando ruta:", err)
@@ -214,7 +229,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
           showCoverageOnHover={false}
           iconCreateFunction={createClusterCustomIcon}
         >
-          {puntos
+          {puntosOrdenados
             .filter(punto => !evitarPago || !punto.pago)
             .map(punto => (
               <Marker
@@ -240,7 +255,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
 
       {/* CUANDO HAY RUTA → SIN CLUSTER */}
       {rutaSeleccionada && (
-        puntos
+        puntosOrdenados
           .filter(punto => !evitarPago || !punto.pago)
           .map(punto => (
             <Marker
@@ -264,18 +279,13 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
       )}
 
 
-      {rutasSegmentosLocal.map((leg, index) => {
-        const lastStep = leg.steps[leg.steps.length - 1]
-        const lastCoord = lastStep.geometry.coordinates.slice(-1)[0]
-
-        return (
-          <Marker
-            key={`orden-${index}`}
-            position={[lastCoord[1], lastCoord[0]]}
-            icon={crearIconoNumero(index + 1)}
-          />
-        )
-      })}
+      {rutaSeleccionada && puntosOrdenados.map((punto, index) => (
+        <Marker
+          key={`orden-${punto.id}`}
+          position={[punto.latitud, punto.longitud]}
+          icon={crearIconoNumero(index + 1)}
+        />
+      ))}
 
 
     </MapContainer>

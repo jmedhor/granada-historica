@@ -187,16 +187,20 @@ body{
 }
 
 .menu-puntos li{
-  padding:10px;
-  margin-bottom:6px;
+  display: flex;
   cursor:pointer;
   border-radius:6px;
   transition:all 0.2s ease;
+  align-items: center;
   font-size:14px;
   background:#FFA291;
   color:#2c2c2c;
   font-weight:500;
   border-left:4px solid transparent;
+  gap: 5px;
+  padding: 8px;
+  margin-bottom: 6px;
+  border-radius: 6px;
 }
 
 .menu-puntos li:hover{
