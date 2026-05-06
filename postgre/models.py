@@ -21,6 +21,7 @@ class Punto(Base):
     pago = Column(Boolean, default=False)
     url = Column(String, nullable=True)
 
+
     rutas = relationship("Ruta", secondary=ruta_punto, back_populates="puntos")
 
 
@@ -30,5 +31,10 @@ class Ruta(Base):
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String, nullable=False)
     descripcion = Column(String, default="")
+
+    bibliografia = Column(
+        String,
+        default="Información procedente de la facultad de historia por la Universidad de Granada"
+    )
 
     puntos = relationship("Punto", secondary=ruta_punto, back_populates="rutas")

@@ -4,6 +4,7 @@ import Mapa from './components/Map.jsx'
 import MenuRutas from './components/MenuRutas.jsx'
 import MenuPuntos from './components/MenuPuntos.jsx'
 import PanelRuta from './components/PanelRuta.jsx'
+import PanelBibliografia from './components/PanelBibliografia.jsx'
 
 function App() {
   const [rutaSeleccionada, setRutaSeleccionada] = useState(null)
@@ -15,7 +16,7 @@ function App() {
   const [modoNavegacion, setModoNavegacion] = useState(false)
   const [evitarPago, setEvitarPago] = useState(false)
   const [mostrarPanel, setMostrarPanel] = useState(true)
-
+  const [modoBibliografia, setModoBibliografia] = useState(false)
   // función para centrar en un punto desde MenuPuntos
   const centrarEnPunto = (punto) => {
     if (!mapRef.current) return
@@ -123,36 +124,50 @@ function App() {
                   onClick={() => {
                     setRutaSeleccionada(null)
                     setModoNavegacion(false)
+                    setModoBibliografia(false)
                   }}
                 >
                   ← Volver
                 </button>
 
-                {!modoNavegacion && (
-                  <button
-                    className="btn-start"
-                    onClick={() => setModoNavegacion(true)}
-                  >
-                    🚀 Comenzar Ruta
-                  </button>
-                )}
+              {!modoNavegacion && !modoBibliografia && (
+                <button
+                  className="btn-start"
+                  onClick={() => setModoBibliografia(true)}
+                >
+                  📚 Visualizar bibliografía
+                </button>
+              )}
 
-              {modoNavegacion && (
-                <>
+              {modoBibliografia && (
 
-                  <button
-                    className="btn-puntos"
-                    onClick={() => setModoNavegacion(false)}
-                  >
-                    📍 Volver a lista de puntos
-                  </button>
-                </>
+                <button
+                  className="btn-volver"
+                  onClick={() => {
+                    if (modoBibliografia) {
+                      setModoBibliografia(false)
+                    } else {
+                      setRutaSeleccionada(null)
+                      setModoNavegacion(false)
+                    }
+                  }}
+                >
+                  ← Volver a ruta
+                </button>
+
               )}
 
               </div>
 
+              {/* MODO BIBLIOGRAFÍA */}
+              {modoBibliografia && (
+                <PanelBibliografia ruta={rutaSeleccionada} />
+              )}
+
+
+
               {/* MODO PUNTOS */}
-              {!modoNavegacion && (
+              {!modoNavegacion && !modoBibliografia && (
                 <MenuPuntos
                   ruta={rutaSeleccionada}
                   centrarEnPunto={centrarEnPunto}
@@ -162,12 +177,10 @@ function App() {
               )}
 
               {/* MODO NAVEGACIÓN */}
-              {modoNavegacion && (
-                <>
-                  <PanelRuta rutasSegmentos={rutasSegmentos} />
-
-                </>
+              {modoNavegacion && !modoBibliografia && (
+                <PanelRuta rutasSegmentos={rutasSegmentos} />
               )}
+
             </>
           )}
 

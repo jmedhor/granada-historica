@@ -19,6 +19,7 @@ class PuntoOut(PuntoBase):
 class RutaBase(BaseModel):
     nombre: str
     descripcion: str = ""
+    bibliografia: Optional[str] = "Información procedente de la facultad de historia por la Universidad de Granada"
 
 class RutaOut(RutaBase):
     id: int

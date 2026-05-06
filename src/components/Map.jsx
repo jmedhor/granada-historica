@@ -55,10 +55,16 @@ function MapController({ setMapRef }) {
 }
 
 const createClusterCustomIcon = function (cluster) {
+  const count = cluster.getChildCount()
+
   return L.divIcon({
-    html: `<div class="cluster-icon">${cluster.getChildCount()}</div>`,
+    html: `
+      <div class="cluster-wrapper">
+        <div class="cluster-core">${count}</div>
+      </div>
+    `,
     className: 'custom-marker-cluster',
-    iconSize: L.point(40, 40, true),
+    iconSize: L.point(50, 50, true),
   })
 }
 
@@ -257,7 +263,6 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
           ))
       )}
 
-      )}
 
       {rutasSegmentosLocal.map((leg, index) => {
         const lastStep = leg.steps[leg.steps.length - 1]
