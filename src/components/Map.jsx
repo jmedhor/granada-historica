@@ -26,14 +26,15 @@ const iconosRutas = {
   7: new L.Icon({ iconUrl: gpsPurple, iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] }),
 }
 
-const colores = [
-  "#e63946",
-  "#f77f00",
-  "#fcbf49",
-  "#90be6d",
-  "#43aa8b",
-  "#577590"
-]
+const coloresRuta = {
+  1: "#e63946", // rojo
+  2: "#3a86ff", // azul
+  3: "#f77f00", // naranja
+  4: "#2a9d8f", // verde
+  5: "#ff4d8d", // rosa
+  6: "#222222", // negro
+  7: "#8338ec", // morado
+}
 
 function crearIconoNumero(numero) {
   return new L.DivIcon({
@@ -209,7 +210,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
           <Polyline
             key={index}
             positions={coords.map(([lon, lat]) => [lat, lon])}
-            color={colores[index % colores.length]}
+            color={coloresRuta[rutaSeleccionada?.id] || "#e63946"}
             weight={6}
             opacity={0.8}
           />

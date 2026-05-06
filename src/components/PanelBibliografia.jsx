@@ -24,7 +24,7 @@ function PanelBibliografia({ ruta }) {
         <ul>
           {lineas.map((linea, index) => (
             <li key={index}>
-              <span className="paso-num">{index + 1}</span>
+              <span className="paso-bib">{index + 1}</span>
               <span className="paso-texto">{linea}</span>
             </li>
           ))}
