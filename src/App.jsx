@@ -18,6 +18,8 @@ function App() {
   const [evitarPago, setEvitarPago] = useState(false)
   const [mostrarPanel, setMostrarPanel] = useState(true)
   const [modoBibliografia, setModoBibliografia] = useState(false)
+  const [ordenPuntos, setOrdenPuntos] = useState([])
+
   // función para centrar en un punto desde MenuPuntos
   const centrarEnPunto = (punto) => {
     if (!mapRef.current) return

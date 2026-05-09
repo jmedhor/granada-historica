@@ -20,6 +20,7 @@ class Punto(Base):
 
     pago = Column(Boolean, default=False)
     url = Column(String, nullable=True)
+    importancia = Column(Integer, default=5)
 
 
     rutas = relationship("Ruta", secondary=ruta_punto, back_populates="puntos")

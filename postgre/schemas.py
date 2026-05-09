@@ -6,9 +6,9 @@ class PuntoBase(BaseModel):
     descripcion: str = ""
     latitud: float
     longitud: float
-
     pago: bool = False
     url: Optional[str] = None
+    importancia: int = 5
 
 class PuntoOut(PuntoBase):
     id: int

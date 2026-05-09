@@ -104,7 +104,6 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
   function MapaClickHandler() {
     useMapEvents({
       click(e) {
-        console.log("testing")
         setUserLocation({
           lat: e.latlng.lat,
           lon: e.latlng.lng
@@ -133,17 +132,14 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
     ? todosPuntos.filter(p => p.ruta_id === rutaSeleccionada.id)
     : todosPuntos
 
-  let puntosOrdenados = [...puntos]
+  let puntosOrdenados =
+    ordenPuntos.length > 0
+      ? ordenPuntos
+      : puntos
 
-  // Solo si hay orden de OSRM
-  if (mapRef.current?.ordenPuntos) {
-    const orden = mapRef.current.ordenPuntos
-
-    puntosOrdenados = orden
-      .slice(1) // quitar usuario
-      .map(i => puntos[i - 1])
-      .filter(Boolean)
-  }
+  const puntosVisibles = puntosOrdenados.filter(
+    punto => !evitarPago || !punto.pago
+  )
 
   useEffect(() => {
     const cargarRuta = async () => {
@@ -162,7 +158,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
 
         setRutasSegmentos(resultado.legs)
         setRutasSegmentosLocal(resultado.legs)
-        setOrdenPuntos(resultado.orden)
+        setOrdenPuntos(resultado.puntosOrdenados)
         mapRef.current.ordenPuntos = resultado.orden
 
       } catch (err) {
@@ -280,7 +276,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
       )}
 
 
-      {rutaSeleccionada && puntosOrdenados.map((punto, index) => (
+      {rutaSeleccionada && puntosVisibles.map((punto, index) => (
         <Marker
           key={`orden-${punto.id}`}
           position={[punto.latitud, punto.longitud]}

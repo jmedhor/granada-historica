@@ -1,10 +1,14 @@
+import { calcularRutaAStar } from "./astar"
+
 const OSRM_BASE = "https://router.project-osrm.org"
 
-// La ruta historica por ahora solo sigue los puntos en orden
-// La intencion es que el usuario sigue el orden "definido por la UGR"
+// ---------------------------------------------------
+// RUTA HISTORICA
+// ---------------------------------------------------
 
 export async function obtenerRutaHistorica(puntos, userLocation, evitarPago) {
 
+  console.log("================ RUTA HISTORICA ============")
   const puntosFiltrados = evitarPago
     ? puntos.filter(p => !p.pago)
     : puntos
@@ -14,19 +18,29 @@ export async function obtenerRutaHistorica(puntos, userLocation, evitarPago) {
     return { legs: [], orden: [] }
   }
 
+  console.log("PUNTOS FILTRADOS:")
+  console.table(
+    puntosFiltrados.map(p => ({
+      nombre: p.nombre,
+      importancia: p.importancia,
+      pago: p.pago
+    }))
+  )
+
+
   const coords = [
     `${userLocation.lon},${userLocation.lat}`,
     ...puntosFiltrados.map(p => `${p.longitud},${p.latitud}`)
   ].join(";")
 
-  const url = `${OSRM_BASE}/route/v1/foot/${coords}?overview=false&geometries=geojson&steps=true`
+  const url =
+    `${OSRM_BASE}/route/v1/foot/${coords}?overview=false&geometries=geojson&steps=true`
 
   const res = await fetch(url)
   const data = await res.json()
 
   const route = data.routes[0]
 
-  // orden fijo: usuario + puntos en orden base de datos
   const orden = [
     0,
     ...puntosFiltrados.map((_, i) => i + 1)
@@ -34,44 +48,73 @@ export async function obtenerRutaHistorica(puntos, userLocation, evitarPago) {
 
   return {
     legs: route.legs,
-    orden
+    puntosOrdenados: puntosFiltrados
   }
 }
 
-// La ruta optima parte de la localizacion inicial y calcula la
-// ruta mas eficiente para pasar por todos los puntos
+// ---------------------------------------------------
+// RUTA OPTIMA
+// ---------------------------------------------------
 
 export async function obtenerRutaOptima(puntos, userLocation, evitarPago) {
 
+  console.log("========== RUTA OPTIMA ==========")
 
-    // Filtrado
   const puntosFiltrados = evitarPago
     ? puntos.filter(p => !p.pago)
     : puntos
 
-  if (puntosFiltrados.length === 0) {
+  console.log("PUNTOS FILTRADOS:")
+  console.table(
+    puntosFiltrados.map(p => ({
+      nombre: p.nombre,
+      importancia: p.importancia,
+      pago: p.pago
+    }))
+  )
+
+  const puntosOrdenados = calcularRutaAStar(
+    puntosFiltrados,
+    userLocation
+  )
+
+  console.log("PUNTOS ORDENADOS (A*):")
+  console.table(
+    puntosOrdenados.map((p, index) => ({
+      posicion: index + 1,
+      nombre: p.nombre,
+      importancia: p.importancia
+    }))
+  )
+
+  if (puntosOrdenados.length === 0) {
     console.warn("No hay puntos disponibles sin pago")
     return []
   }
 
   const coords = [
     `${userLocation.lon},${userLocation.lat}`,
-    ...puntosFiltrados.map(p => `${p.longitud},${p.latitud}`)
+    ...puntosOrdenados.map(p => `${p.longitud},${p.latitud}`)
   ].join(";")
 
-  const url = `${OSRM_BASE}/trip/v1/foot/${coords}?overview=false&geometries=geojson&steps=true&source=first&destination=last&roundtrip=false`
+  const url =
+    `${OSRM_BASE}/trip/v1/foot/${coords}?overview=false&geometries=geojson&steps=true&source=first&destination=last&roundtrip=false`
 
   const res = await fetch(url)
   const data = await res.json()
 
   const trip = data.trips[0]
 
-  // orden de visita
   const orden = trip.waypoint_order
+
+  console.log("TRIP COMPLETO:")
+  console.log(trip)
+
+  // OSRM ya devuelve los legs en orden correcto
+  // así que mantenemos el orden del A*
 
   return {
     legs: trip.legs,
-    orden
+    puntosOrdenados
   }
-
 }
