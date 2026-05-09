@@ -106,6 +106,8 @@ function App() {
             modoRuta={modoRuta}
             setRutasSegmentos={setRutasSegmentos}
             evitarPago={evitarPago}
+            ordenPuntos={ordenPuntos}
+            setOrdenPuntos={setOrdenPuntos}
           />
         </div>
 
@@ -180,6 +182,7 @@ function App() {
                   centrarEnPunto={centrarEnPunto}
                   mapRef={mapRef}
                   evitarPago={evitarPago}
+                  ordenPuntos={ordenPuntos}
                 />
               )}
 

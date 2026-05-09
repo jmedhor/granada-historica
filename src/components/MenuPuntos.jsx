@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-function MenuPuntos({ ruta, setRutaSeleccionada, mapRef, evitarPago }) {
+function MenuPuntos({ ruta, setRutaSeleccionada, mapRef, evitarPago, ordenPuntos }) {
   const [puntos, setPuntos] = useState([])
 
   useEffect(() => {
@@ -18,15 +18,9 @@ function MenuPuntos({ ruta, setRutaSeleccionada, mapRef, evitarPago }) {
 
   let puntosOrdenados = [...puntosFiltrados]
 
-  if (mapRef.current?.ordenPuntos) {
-    const orden = mapRef.current.ordenPuntos
-
-    puntosOrdenados = orden
-      .slice(1)
-      .map(index => puntosFiltrados[index - 1])
-      .filter(Boolean)
+  if (ordenPuntos.length > 0) {
+    puntosOrdenados = ordenPuntos
   }
-
 
   return (
     <div className="menu-puntos">

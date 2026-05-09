@@ -72,7 +72,7 @@ const createClusterCustomIcon = function (cluster) {
 
 
 
-function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta, setRutasSegmentos, evitarPago }) {
+function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta, setRutasSegmentos, evitarPago, ordenPuntos, setOrdenPuntos }) {
   const [todosPuntos, setTodosPuntos] = useState([])
   const [rutaLinea, setRutaLinea] = useState(null)
   const [userLocation, setUserLocation] = useState({
@@ -82,7 +82,6 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
   const [rutasSegmentosLocal, setRutasSegmentosLocal] = useState([])
   const [cargandoRuta, setCargandoRuta] = useState(false)
   const markersRef = useRef({})
-  const [ordenPuntos, setOrdenPuntos] = useState([])
 
 
 
@@ -127,9 +126,6 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
       setRutasSegmentosLocal([])
       setOrdenPuntos([])
 
-      if (mapRef.current) {
-        mapRef.current.ordenPuntos = []
-      }
     }
   }, [rutaSeleccionada])
 
@@ -164,7 +160,6 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
         setRutasSegmentos(resultado.legs)
         setRutasSegmentosLocal(resultado.legs)
         setOrdenPuntos(resultado.puntosOrdenados)
-        mapRef.current.ordenPuntos = resultado.orden
 
       } catch (err) {
         console.error("Error cargando ruta:", err)
