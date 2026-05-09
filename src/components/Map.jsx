@@ -125,6 +125,11 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
     if (!rutaSeleccionada) {
       setRutasSegmentos([])
       setRutasSegmentosLocal([])
+      setOrdenPuntos([])
+
+      if (mapRef.current) {
+        mapRef.current.ordenPuntos = []
+      }
     }
   }, [rutaSeleccionada])
 
