@@ -2,7 +2,9 @@ function PopupRuta({
   punto,
   ruta,
   modoHistoriador,
-  setModoHistoriador
+  setModoHistoriador,
+  rutaSeleccionada,
+  setRutaSeleccionada
 }) {
 
   // -----------------------------------------
@@ -64,6 +66,8 @@ function PopupRuta({
 
       )}
 
+
+
       {/* Activar o desactivar modo historiador */}
       <label className="popup-toggle">
 
@@ -79,6 +83,23 @@ function PopupRuta({
         />
 
       </label>
+
+      {/* BOTON PARA INICIAR RUTA */}
+      {!rutaSeleccionada && (
+        <button
+          className="btn-popup-ruta"
+          onClick={() => {
+
+            setRutaSeleccionada({
+              id: punto.ruta_id,
+              nombre: punto.ruta_nombre
+            })
+
+          }}
+        >
+          🧭 Comenzar ruta
+        </button>
+      )}
 
     </div>
   )

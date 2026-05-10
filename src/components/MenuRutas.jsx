@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 
 function MenuRutas({
   rutaSeleccionada,
-  setRutaSeleccionada
+  setRutaSeleccionada,
+  setModoCercanos
 }) {
 
   // -----------------------------------------
@@ -45,7 +46,15 @@ function MenuRutas({
             key={ruta.id}
 
             // Seleccionar ruta al hacer click
-            onClick={() => setRutaSeleccionada(ruta)}
+            onClick={() => {
+
+              // Oculta panel de cercanos
+              setModoCercanos(false)
+
+              // Selecciona ruta
+              setRutaSeleccionada(ruta)
+
+            }}
 
             // Aplicar clase activa si la ruta
             // esta seleccionada actualmente

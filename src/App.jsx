@@ -9,6 +9,7 @@ import MenuRutas from './components/MenuRutas.jsx'
 import MenuPuntos from './components/MenuPuntos.jsx'
 import PanelRuta from './components/PanelRuta.jsx'
 import PanelBibliografia from './components/PanelBibliografia.jsx'
+import PanelCercanos from './components/PanelCercanos.jsx'
 
 function App() {
 
@@ -57,6 +58,12 @@ function App() {
 
   // Estado para controlar cuando OSRM esta cargando
   const [cargandoRuta, setCargandoRuta] = useState(false)
+
+  // Lista de puntos cercanos al usuario
+  const [puntosCercanos, setPuntosCercanos] = useState([])
+
+  // Activa el panel de cercanos
+  const [modoCercanos, setModoCercanos] = useState(false)
 
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
@@ -211,17 +218,31 @@ function App() {
 
           <Mapa
             rutaSeleccionada={rutaSeleccionada}
+            setRutaSeleccionada={setRutaSeleccionada}
+
             mapRef={mapRef}
+
             modoHistoriador={modoHistoriador}
             setModoHistoriador={setModoHistoriador}
+
             modoRuta={modoRuta}
             setRutasSegmentos={setRutasSegmentos}
+
             evitarPago={evitarPago}
+
             ordenPuntos={ordenPuntos}
             setOrdenPuntos={setOrdenPuntos}
+
             setDuracionRuta={setDuracionRuta}
+
             cargandoRuta={cargandoRuta}
             setCargandoRuta={setCargandoRuta}
+
+            setPuntosCercanos={setPuntosCercanos}
+
+            modoCercanos={modoCercanos}
+            setModoCercanos={setModoCercanos}
+
           />
 
         </div>
@@ -235,14 +256,30 @@ function App() {
           <div className="panel-derecha">
 
             {/* -------------------------------- */}
+            {/* PANEL DE PUNTOS CERCANOS */}
+            {/* -------------------------------- */}
+
+            {modoCercanos && !rutaSeleccionada && (
+
+              <PanelCercanos
+                puntosCercanos={puntosCercanos}
+                mapRef={mapRef}
+                setModoCercanos={setModoCercanos}
+                setPuntosCercanos={setPuntosCercanos}
+              />
+
+            )}
+
+            {/* -------------------------------- */}
             {/* MENU PRINCIPAL DE RUTAS */}
             {/* -------------------------------- */}
 
-            {!rutaSeleccionada && (
+            {!modoCercanos && !rutaSeleccionada && (
 
               <MenuRutas
                 rutaSeleccionada={rutaSeleccionada}
                 setRutaSeleccionada={setRutaSeleccionada}
+                setModoCercanos={setModoCercanos}
               />
 
             )}
@@ -271,6 +308,8 @@ function App() {
                       setModoNavegacion(false)
 
                       setModoBibliografia(false)
+
+                      setModoCercanos(false)
 
                     }}
                   >
@@ -312,6 +351,8 @@ function App() {
                 {modoBibliografia && (
                   <PanelBibliografia ruta={rutaSeleccionada} />
                 )}
+
+
 
                 {/* -------------------------------- */}
                 {/* MENU DE PUNTOS */}

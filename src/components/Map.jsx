@@ -22,6 +22,10 @@ import {
   obtenerRutaOptima
 } from '../../services/osrm.js'
 
+import {
+  calcularDistanciaMetros
+} from '../utils/distancia.js'
+
 import PopupRuta from './Popup'
 
 import gpsRed from '../assets/gps_red.png'
@@ -209,6 +213,7 @@ function calcularDuracionRuta(legs, puntosOrdenados) {
 function Mapa({
 
   rutaSeleccionada,
+  setRutaSeleccionada,
   mapRef,
 
   modoHistoriador,
@@ -226,7 +231,13 @@ function Mapa({
   setDuracionRuta,
 
   cargandoRuta,
-  setCargandoRuta
+  setCargandoRuta,
+
+  setPuntosCercanos,
+
+  modoCercanos,
+  setModoCercanos
+
 
 }) {
 
@@ -272,6 +283,83 @@ function Mapa({
       marker.openPopup()
     }
   }
+
+  // ---------------------------------------------------
+  // BUSCA PUNTOS CERCANOS AL USUARIO
+  // ---------------------------------------------------
+
+  const buscarPuntosCercanos = () => {
+
+    // Radio maximo
+    const RADIO_METROS = 200
+
+    // Filtra puntos cercanos
+    const cercanos = todosPuntos.filter(
+
+      (punto) => {
+
+        const distancia =
+          calcularDistanciaMetros(
+
+            userLocation.lat,
+            userLocation.lon,
+
+            punto.latitud,
+            punto.longitud
+          )
+
+        return distancia <= RADIO_METROS
+      }
+
+    )
+
+    // Guarda resultado
+    setPuntosCercanos(cercanos)
+
+    // Activa panel
+    setModoCercanos(true)
+
+    // Centra mapa
+    if (mapRef.current) {
+
+      mapRef.current.flyTo(
+        [
+          userLocation.lat,
+          userLocation.lon
+        ],
+        14
+      )
+
+    }
+  }
+
+  // ---------------------------------------------------
+  // RECALCULA PUNTOS CERCANOS AL MOVER userLocation
+  // ---------------------------------------------------
+
+
+  useEffect(() => {
+
+    if (!modoCercanos) return
+    if (todosPuntos.length === 0) return
+
+    const RADIO_METROS = 200
+
+    const cercanos = todosPuntos.filter((punto) => {
+
+      const distancia = calcularDistanciaMetros(
+        userLocation.lat,
+        userLocation.lon,
+        punto.latitud,
+        punto.longitud
+      )
+
+      return distancia <= RADIO_METROS
+    })
+
+    setPuntosCercanos(cercanos)
+
+  }, [userLocation, todosPuntos, modoCercanos])
 
   // ---------------------------------------------------
   // DETECTA CLICK EN EL MAPA
@@ -504,6 +592,21 @@ function Mapa({
       )}
 
       {/* ------------------------------------------------ */}
+      {/* BOTON PUNTOS CERCANOS */}
+      {/* ------------------------------------------------ */}
+
+      {!modoCercanos && !rutaSeleccionada && (
+
+        <button
+          className="btn-cercanos"
+          onClick={buscarPuntosCercanos}
+        >
+          📍 Ver puntos cercanos a mi
+        </button>
+
+      )}
+
+      {/* ------------------------------------------------ */}
       {/* POLYLINES DE LA RUTA */}
       {/* ------------------------------------------------ */}
 
@@ -597,10 +700,13 @@ function Mapa({
                   <PopupRuta
                     punto={punto}
                     ruta={{
+                      id: punto.ruta_id,
                       nombre: punto.ruta_nombre
                     }}
                     modoHistoriador={modoHistoriador}
                     setModoHistoriador={setModoHistoriador}
+                    rutaSeleccionada={rutaSeleccionada}
+                    setRutaSeleccionada={setRutaSeleccionada}
                   />
 
                 </Popup>
@@ -651,10 +757,13 @@ function Mapa({
                 <PopupRuta
                   punto={punto}
                   ruta={{
+                    id: punto.ruta_id,
                     nombre: punto.ruta_nombre
                   }}
                   modoHistoriador={modoHistoriador}
                   setModoHistoriador={setModoHistoriador}
+                  rutaSeleccionada={rutaSeleccionada}
+                  setRutaSeleccionada={setRutaSeleccionada}
                 />
 
               </Popup>
