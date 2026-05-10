@@ -1,120 +1,181 @@
 import { calcularRutaAStar } from "./astar"
 
+// ---------------------------------------------------
+// URL BASE DE OSRM
+// API usada para calcular rutas reales
+// ---------------------------------------------------
+
 const OSRM_BASE = "https://router.project-osrm.org"
 
 // ---------------------------------------------------
 // RUTA HISTORICA
+//
+// Mantiene el orden original de los puntos
+// definido por la ruta historica
 // ---------------------------------------------------
 
-export async function obtenerRutaHistorica(puntos, userLocation, evitarPago) {
+export async function obtenerRutaHistorica(
+  puntos,
+  userLocation,
+  evitarPago
+) {
 
-  console.log("================ RUTA HISTORICA ============")
-  const puntosFiltrados = evitarPago
-    ? puntos.filter(p => !p.pago)
-    : puntos
+  console.log("========== RUTA HISTORICA ==========")
 
-  if (puntosFiltrados.length === 0) {
-    console.warn("No hay puntos disponibles sin pago")
-    return { legs: [], orden: [] }
-  }
-
-  console.log("PUNTOS FILTRADOS:")
-  console.table(
-    puntosFiltrados.map(p => ({
-      nombre: p.nombre,
-      importancia: p.importancia,
-      pago: p.pago
-    }))
+  // filtramos puntos de pago si el usuario lo pide
+  const puntosFiltrados = filtrarPuntosPago(
+    puntos,
+    evitarPago
   )
 
+  // si no hay puntos disponibles devolvemos vacio
+  if (puntosFiltrados.length === 0) {
+    console.warn("No hay puntos disponibles")
+    return {
+      legs: [],
+      puntosOrdenados: [],
+      duracion: 0
+    }
+  }
 
-  const coords = [
-    `${userLocation.lon},${userLocation.lat}`,
-    ...puntosFiltrados.map(p => `${p.longitud},${p.latitud}`)
-  ].join(";")
+  mostrarPuntosConsola(puntosFiltrados)
 
+  // generamos coordenadas para OSRM
+  const coords = construirCoordenadas(
+    puntosFiltrados,
+    userLocation
+  )
+
+  // endpoint route mantiene el orden original
   const url =
-    `${OSRM_BASE}/route/v1/foot/${coords}?overview=false&geometries=geojson&steps=true`
+    `${OSRM_BASE}/route/v1/foot/${coords}` +
+    `?overview=false&geometries=geojson&steps=true`
 
-  const res = await fetch(url)
-  const data = await res.json()
+  const response = await fetch(url)
+  const data = await response.json()
 
-  const route = data.routes[0]
-
-  const orden = [
-    0,
-    ...puntosFiltrados.map((_, i) => i + 1)
-  ]
+  const ruta = data.routes[0]
 
   return {
-    legs: route.legs,
-    puntosOrdenados: puntosFiltrados
+    legs: ruta.legs,
+    puntosOrdenados: puntosFiltrados,
+    duracion: ruta.duration
   }
 }
 
 // ---------------------------------------------------
 // RUTA OPTIMA
+//
+// Reordena los puntos usando A*
+// priorizando cercania + importancia
 // ---------------------------------------------------
 
-export async function obtenerRutaOptima(puntos, userLocation, evitarPago) {
+export async function obtenerRutaOptima(
+  puntos,
+  userLocation,
+  evitarPago
+) {
 
   console.log("========== RUTA OPTIMA ==========")
 
-  const puntosFiltrados = evitarPago
-    ? puntos.filter(p => !p.pago)
-    : puntos
-
-  console.log("PUNTOS FILTRADOS:")
-  console.table(
-    puntosFiltrados.map(p => ({
-      nombre: p.nombre,
-      importancia: p.importancia,
-      pago: p.pago
-    }))
+  // filtramos puntos de pago si hace falta
+  const puntosFiltrados = filtrarPuntosPago(
+    puntos,
+    evitarPago
   )
 
+  // calculamos orden optimo
   const puntosOrdenados = calcularRutaAStar(
     puntosFiltrados,
     userLocation
   )
 
-  console.log("PUNTOS ORDENADOS (A*):")
-  console.table(
-    puntosOrdenados.map((p, index) => ({
-      posicion: index + 1,
-      nombre: p.nombre,
-      importancia: p.importancia
-    }))
-  )
-
+  // si no quedan puntos devolvemos vacio
   if (puntosOrdenados.length === 0) {
-    console.warn("No hay puntos disponibles sin pago")
-    return []
+    console.warn("No hay puntos disponibles")
+
+    return {
+      legs: [],
+      puntosOrdenados: [],
+      duracion: 0
+    }
   }
 
-  const coords = [
-    `${userLocation.lon},${userLocation.lat}`,
-    ...puntosOrdenados.map(p => `${p.longitud},${p.latitud}`)
-  ].join(";")
+  mostrarPuntosConsola(puntosOrdenados)
 
+  // construimos coordenadas para OSRM
+  const coords = construirCoordenadas(
+    puntosOrdenados,
+    userLocation
+  )
+
+  // endpoint trip optimiza el recorrido
   const url =
-    `${OSRM_BASE}/trip/v1/foot/${coords}?overview=false&geometries=geojson&steps=true&source=first&destination=last&roundtrip=false`
+    `${OSRM_BASE}/trip/v1/foot/${coords}` +
+    `?overview=false` +
+    `&geometries=geojson` +
+    `&steps=true` +
+    `&source=first` +
+    `&destination=last` +
+    `&roundtrip=false`
 
-  const res = await fetch(url)
-  const data = await res.json()
+  const response = await fetch(url)
+  const data = await response.json()
 
   const trip = data.trips[0]
-
-  const orden = trip.waypoint_order
 
   console.log("TRIP COMPLETO:")
   console.log(trip)
 
-  // OSRM ya devuelve los legs en orden correcto
-  // así que mantenemos el orden del A*
-
   return {
     legs: trip.legs,
-    puntosOrdenados
+    puntosOrdenados,
+    duracion: trip.duration
   }
+}
+
+// ---------------------------------------------------
+// FUNCION AUXILIAR
+// Filtra puntos de pago si el usuario lo activa
+// ---------------------------------------------------
+
+function filtrarPuntosPago(puntos, evitarPago) {
+
+  return evitarPago
+    ? puntos.filter(punto => !punto.pago)
+    : puntos
+}
+
+// ---------------------------------------------------
+// FUNCION AUXILIAR
+// Construye string de coordenadas para OSRM
+// ---------------------------------------------------
+
+function construirCoordenadas(puntos, userLocation) {
+
+  return [
+    `${userLocation.lon},${userLocation.lat}`,
+
+    ...puntos.map(
+      punto => `${punto.longitud},${punto.latitud}`
+    )
+
+  ].join(";")
+}
+
+// ---------------------------------------------------
+// FUNCION AUXILIAR
+// Muestra informacion de puntos por consola
+// ---------------------------------------------------
+
+function mostrarPuntosConsola(puntos) {
+
+  console.table(
+    puntos.map((punto, index) => ({
+      posicion: index + 1,
+      nombre: punto.nombre,
+      importancia: punto.importancia,
+      pago: punto.pago
+    }))
+  )
 }

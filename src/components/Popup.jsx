@@ -1,44 +1,87 @@
-function PopupRuta({ punto, ruta, modoHistoriador, setModoHistoriador }) {
+function PopupRuta({
+  punto,
+  ruta,
+  modoHistoriador,
+  setModoHistoriador
+}) {
+
+  // -----------------------------------------
+  // Popup que aparece al pulsar sobre un
+  // marcador del mapa
+  // -----------------------------------------
+
   return (
     <div className="popup-contenido">
+
+      {/* Nombre del punto turistico */}
       <h3>{punto.nombre}</h3>
+
+      {/* Descripcion historica */}
       {modoHistoriador && punto.descripcion && (
         <p>{punto.descripcion}</p>
       )}
-      <p><b>Ruta:</b> {ruta.nombre}</p>
 
-      {/*  Estado de pago */}
+      {/* Nombre de la ruta */}
       <p>
-        <strong>Acceso:</strong>{" "}
-        <span style={{ color: punto.pago ? "red" : "green" }}>
-          {punto.pago ? "De pago " : "Gratis "}
-        </span>
+        <b>Ruta:</b> {ruta.nombre}
       </p>
 
-      {/*  URL */}
+      {/* Estado de acceso del lugar */}
+      <p>
+
+        <strong>Acceso:</strong>{" "}
+
+        <span
+          style={{
+            color: punto.pago ? "red" : "green"
+          }}
+        >
+          {punto.pago
+            ? "De pago"
+            : "Gratis"}
+        </span>
+
+      </p>
+
+      {/* Enlace externo con mas informacion */}
       {punto.url && (
+
         <p>
+
           <a
             href={punto.url}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: "#0077cc", textDecoration: "underline" }}
+            style={{
+              color: "#0077cc",
+              textDecoration: "underline"
+            }}
           >
-            Más información 🔗
+            Mas informacion 🔗
           </a>
+
         </p>
+
       )}
 
+      {/* Activar o desactivar modo historiador */}
       <label className="popup-toggle">
+
         🎓 Modo Historiador
+
         <input
           type="checkbox"
           checked={modoHistoriador}
-          onChange={() => setModoHistoriador(!modoHistoriador)}
+
+          onChange={() =>
+            setModoHistoriador(!modoHistoriador)
+          }
         />
+
       </label>
+
     </div>
   )
 }
 
-export default PopupRuta;
+export default PopupRuta

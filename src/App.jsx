@@ -1,6 +1,9 @@
 import { useState, useRef } from 'react'
+
 import './App.css'
+
 import logoUGR from './assets/logo-ugr.png'
+
 import Mapa from './components/Map.jsx'
 import MenuRutas from './components/MenuRutas.jsx'
 import MenuPuntos from './components/MenuPuntos.jsx'
@@ -8,65 +11,111 @@ import PanelRuta from './components/PanelRuta.jsx'
 import PanelBibliografia from './components/PanelBibliografia.jsx'
 
 function App() {
-  // Informacion sobre si tenemos una ruta seleccionada
+
+  // ---------------------------------------------------
+  // ESTADOS PRINCIPALES DE LA APLICACION
+  // ---------------------------------------------------
+
+  // Ruta seleccionada actualmente
   const [rutaSeleccionada, setRutaSeleccionada] = useState(null)
-  // Referencia al mapa donde almacenamos informacion
+
+  // Referencia al mapa de Leaflet
   const mapRef = useRef()
-  // Informacion sobre si esta activo el modo historiador
+
+  // Estado para activar informacion historica extra
   const [modoHistoriador, setModoHistoriador] = useState(false)
-  // Informacion sobre si tenemos activa la ruta optima o la historica
+
+  // Tipo de ruta seleccionada
+  // "optima" -> ruta mas corta
+  // "historica" -> orden historico
   const [modoRuta, setModoRuta] = useState("optima")
-  // Informacion donde almacenamos los segmentos de la ruta (pasos)
+
+  // Lista de segmentos devueltos por OSRM
+  // Se usa para mostrar pasos de navegacion
   const [rutasSegmentos, setRutasSegmentos] = useState([])
-  // DEPRECATED
-  const [mostrarPuntos, setMostrarPuntos] = useState(false)
-  // Informacion sobre el modo navegacion, lista de pasos para hacer la ruta ( OMITIDO POR EL MOMENTO )
+
+  // Estado para mostrar instrucciones paso a paso
+  // Actualmente oculto
   const [modoNavegacion, setModoNavegacion] = useState(false)
-  // Informacion sobre si esta activo el check de evitar sitios de pago
+
+  // Estado para evitar lugares de pago
   const [evitarPago, setEvitarPago] = useState(false)
-  // Informacion sobre si se muestra el panel derecho o esta oculto ( OMITIDO POR EL MOMENTO)
+
+  // Estado para ocultar o mostrar el panel derecho
+  // Actualmente siempre esta activo
   const [mostrarPanel, setMostrarPanel] = useState(true)
-  // Informacion sobre si se esta visualizando la bibliografia o no
+
+  // Estado para visualizar bibliografia
   const [modoBibliografia, setModoBibliografia] = useState(false)
-  // Informacion sobre el orden de visita de puntos proporcionado por OSRM y A*
+
+  // Lista de puntos ordenados
+  // Se genera desde OSRM + algoritmo A*
   const [ordenPuntos, setOrdenPuntos] = useState([])
-  // Informacion sobre la duracion aproximada de la ruta
+
+  // Texto con la duracion aproximada de la ruta
   const [duracionRuta, setDuracionRuta] = useState(null)
-  // Informacion sobre si aun se esta cargando la ruta de OSRM
+
+  // Estado para controlar cuando OSRM esta cargando
   const [cargandoRuta, setCargandoRuta] = useState(false)
 
-  // función para centrar en un punto desde MenuPuntos
+  // ---------------------------------------------------
+  // FUNCIONES AUXILIARES
+  // ---------------------------------------------------
+
+  // Centra el mapa en un punto concreto
+  // Se usa desde MenuPuntos
   const centrarEnPunto = (punto) => {
+
+    // Seguridad por si el mapa aun no existe
     if (!mapRef.current) return
 
     mapRef.current.flyTo(
       [punto.latitud, punto.longitud],
       16,
-      { duration: 1.2 }
+      {
+        duration: 1.2
+      }
     )
   }
 
-  return (
+  // ---------------------------------------------------
+  // RENDER PRINCIPAL
+  // ---------------------------------------------------
 
-//--------
+  return (
 
     <div className="App">
 
-      {/* HEADER */}
+      {/* --------------------------------------------------- */}
+      {/* HEADER SUPERIOR */}
+      {/* --------------------------------------------------- */}
+
       <header className="app-header">
+
+        {/* TITULO PRINCIPAL */}
         <div className="header-left">
-          <h1 className="titulo-app">NazaRoute</h1>
+
+          <h1 className="titulo-app">
+            NazaRoute
+          </h1>
+
           <span className="subtitulo-app">
-            Rutas históricas por la ciudad de Granada
+            Rutas historicas por la ciudad de Granada
           </span>
+
         </div>
 
+        {/* CONTROLES CENTRALES */}
         <div className="header-right">
 
           <div className="selector-ruta">
 
-            {/* MODO RUTA */}
+            {/* -------------------------------- */}
+            {/* BOTONES DE TIPO DE RUTA */}
+            {/* -------------------------------- */}
+
             <div className="toggle-group">
+
               <button
                 className={modoRuta === "optima" ? "toggle active" : "toggle"}
                 onClick={() => setModoRuta("optima")}
@@ -78,51 +127,87 @@ function App() {
                 className={modoRuta === "historica" ? "toggle active" : "toggle"}
                 onClick={() => setModoRuta("historica")}
               >
-                Ruta histórica (UGR)
+                Ruta historica (UGR)
               </button>
+
             </div>
 
-            {/* EVITAR PAGO */}
+            {/* -------------------------------- */}
+            {/* BOTON EVITAR PAGO */}
+            {/* -------------------------------- */}
+
             <div className="toggle-group">
+
               <button
                 className={evitarPago ? "toggle danger active" : "toggle danger"}
                 onClick={() => setEvitarPago(!evitarPago)}
               >
                 Evitar lugares de pago
               </button>
+
             </div>
 
           </div>
+
         </div>
 
-      <div className="header-ugr">
-        <span>Bibliografía y datos aportados por la</span>
+        {/* --------------------------------------------------- */}
+        {/* BLOQUE UGR */}
+        {/* --------------------------------------------------- */}
 
-        <a href="https://www.ugr.es">
-          <img
-            src={logoUGR}
-            alt="Universidad de Granada"
-            className="logo-ugr"
-          />
-        </a>
-      </div>
+        <div className="header-ugr">
+
+          <span>
+            Bibliografia y datos aportados por la
+          </span>
+
+          <a href="https://www.ugr.es">
+
+            <img
+              src={logoUGR}
+              alt="Universidad de Granada"
+              className="logo-ugr"
+            />
+
+          </a>
+
+        </div>
 
       </header>
 
-      {/* MAIN */}
+      {/* --------------------------------------------------- */}
+      {/* CONTENIDO PRINCIPAL */}
+      {/* --------------------------------------------------- */}
+
       <div className={mostrarPanel ? "main-layout" : "main-layout-full"}>
-        {/* MAPA */}
+
+        {/* --------------------------------------------------- */}
+        {/* CONTENEDOR DEL MAPA */}
+        {/* --------------------------------------------------- */}
+
         <div className="map-container">
 
-          {/* Informacion de duracion de ruta */}
+          {/* -------------------------------- */}
+          {/* DURACION APROXIMADA */}
+          {/* -------------------------------- */}
 
           {!cargandoRuta && duracionRuta && rutaSeleccionada && (
+
             <div className="duracion-ruta-box">
-              ⏱️ Duración aproximada de la ruta:
-              <strong> {duracionRuta}</strong>
+
+              ⏱️ Duracion aproximada de la ruta:
+
+              <strong>
+                {duracionRuta}
+              </strong>
+
             </div>
+
           )}
 
+          {/* -------------------------------- */}
+          {/* COMPONENTE MAPA */}
+          {/* -------------------------------- */}
 
           <Mapa
             rutaSeleccionada={rutaSeleccionada}
@@ -141,93 +226,129 @@ function App() {
 
         </div>
 
-        {/* PANEL DERECHO ÚNICO */}
-      {mostrarPanel && (
-        <div className="panel-derecha">
-          {/* SIN RUTA */}
-          {!rutaSeleccionada && (
-            <MenuRutas
-              rutaSeleccionada={rutaSeleccionada}
-              setRutaSeleccionada={setRutaSeleccionada}
-            />
-          )}
+        {/* --------------------------------------------------- */}
+        {/* PANEL DERECHO */}
+        {/* --------------------------------------------------- */}
 
-          {/* CON RUTA */}
-          {rutaSeleccionada && (
-            <>
-              {/* FILA SUPERIOR DE BOTONES */}
-              <div className="fila-botones">
+        {mostrarPanel && (
 
-                <button
-                  className="btn-volver"
-                  onClick={() => {
-                    setRutaSeleccionada(null)
-                    setModoNavegacion(false)
-                    setModoBibliografia(false)
-                  }}
-                >
-                  ← Volver
-                </button>
+          <div className="panel-derecha">
 
-              {!modoNavegacion && !modoBibliografia && (
-                <button
-                  className="btn-start"
-                  onClick={() => setModoBibliografia(true)}
-                >
-                  📚 Visualizar bibliografía
-                </button>
-              )}
+            {/* -------------------------------- */}
+            {/* MENU PRINCIPAL DE RUTAS */}
+            {/* -------------------------------- */}
 
-              {modoBibliografia && (
+            {!rutaSeleccionada && (
 
-                <button
-                  className="btn-volver"
-                  onClick={() => {
-                    if (modoBibliografia) {
-                      setModoBibliografia(false)
-                    } else {
+              <MenuRutas
+                rutaSeleccionada={rutaSeleccionada}
+                setRutaSeleccionada={setRutaSeleccionada}
+              />
+
+            )}
+
+            {/* -------------------------------- */}
+            {/* CONTENIDO CUANDO HAY RUTA */}
+            {/* -------------------------------- */}
+
+            {rutaSeleccionada && (
+
+              <>
+
+                {/* -------------------------------- */}
+                {/* FILA SUPERIOR DE BOTONES */}
+                {/* -------------------------------- */}
+
+                <div className="fila-botones">
+
+                  {/* BOTON VOLVER */}
+                  <button
+                    className="btn-volver"
+                    onClick={() => {
+
                       setRutaSeleccionada(null)
+
                       setModoNavegacion(false)
-                    }
-                  }}
-                >
-                  ← Volver a ruta
-                </button>
 
-              )}
+                      setModoBibliografia(false)
 
-              </div>
+                    }}
+                  >
+                    ← Volver
+                  </button>
 
-              {/* MODO BIBLIOGRAFÍA */}
-              {modoBibliografia && (
-                <PanelBibliografia ruta={rutaSeleccionada} />
-              )}
+                  {/* BOTON BIBLIOGRAFIA */}
+                  {!modoNavegacion && !modoBibliografia && (
 
+                    <button
+                      className="btn-start"
+                      onClick={() => setModoBibliografia(true)}
+                    >
+                      📚 Visualizar bibliografia
+                    </button>
 
+                  )}
 
-              {/* MODO PUNTOS */}
-              {!modoNavegacion && !modoBibliografia && (
-                <MenuPuntos
-                  ruta={rutaSeleccionada}
-                  centrarEnPunto={centrarEnPunto}
-                  mapRef={mapRef}
-                  evitarPago={evitarPago}
-                  ordenPuntos={ordenPuntos}
-                />
-              )}
+                  {/* BOTON VOLVER DESDE BIBLIOGRAFIA */}
+                  {modoBibliografia && (
 
-              {/* MODO NAVEGACIÓN */}
-              {modoNavegacion && !modoBibliografia && (
-                <PanelRuta rutasSegmentos={rutasSegmentos} />
-              )}
+                    <button
+                      className="btn-volver"
+                      onClick={() => {
+                        setModoBibliografia(false)
+                      }}
+                    >
+                      ← Volver a ruta
+                    </button>
 
-            </>
-          )}
+                  )}
 
-        </div>
+                </div>
+
+                {/* -------------------------------- */}
+                {/* PANEL BIBLIOGRAFIA */}
+                {/* -------------------------------- */}
+
+                {modoBibliografia && (
+                  <PanelBibliografia ruta={rutaSeleccionada} />
+                )}
+
+                {/* -------------------------------- */}
+                {/* MENU DE PUNTOS */}
+                {/* -------------------------------- */}
+
+                {!modoNavegacion && !modoBibliografia && (
+
+                  <MenuPuntos
+                    ruta={rutaSeleccionada}
+                    centrarEnPunto={centrarEnPunto}
+                    mapRef={mapRef}
+                    evitarPago={evitarPago}
+                    ordenPuntos={ordenPuntos}
+                  />
+
+                )}
+
+                {/* -------------------------------- */}
+                {/* PANEL DE NAVEGACION */}
+                {/* -------------------------------- */}
+
+                {modoNavegacion && !modoBibliografia && (
+
+                  <PanelRuta rutasSegmentos={rutasSegmentos} />
+
+                )}
+
+              </>
+
+            )}
+
+          </div>
+
         )}
 
       </div>
+
     </div>
 
   )
