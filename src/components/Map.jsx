@@ -72,7 +72,7 @@ const createClusterCustomIcon = function (cluster) {
 
 
 
-function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta, setRutasSegmentos, evitarPago, ordenPuntos, setOrdenPuntos, duracionRuta, setDuracionRuta }) {
+function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta, setRutasSegmentos, evitarPago, ordenPuntos, setOrdenPuntos, duracionRuta, setDuracionRuta, cargandoRuta, setCargandoRuta }) {
 
   const [todosPuntos, setTodosPuntos] = useState([])
   const [rutaLinea, setRutaLinea] = useState(null)
@@ -81,7 +81,6 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
     lon: -3.5986
   })
   const [rutasSegmentosLocal, setRutasSegmentosLocal] = useState([])
-  const [cargandoRuta, setCargandoRuta] = useState(false)
   const markersRef = useRef({})
 
 

@@ -32,6 +32,8 @@ function App() {
   const [ordenPuntos, setOrdenPuntos] = useState([])
   // Informacion sobre la duracion aproximada de la ruta
   const [duracionRuta, setDuracionRuta] = useState(null)
+  // Informacion sobre si aun se esta cargando la ruta de OSRM
+  const [cargandoRuta, setCargandoRuta] = useState(false)
 
   // función para centrar en un punto desde MenuPuntos
   const centrarEnPunto = (punto) => {
@@ -114,7 +116,7 @@ function App() {
 
           {/* Informacion de duracion de ruta */}
 
-          {duracionRuta && rutaSeleccionada && (
+          {!cargandoRuta && duracionRuta && rutaSeleccionada && (
             <div className="duracion-ruta-box">
               ⏱️ Duración aproximada de la ruta:
               <strong> {duracionRuta}</strong>
@@ -133,6 +135,8 @@ function App() {
             ordenPuntos={ordenPuntos}
             setOrdenPuntos={setOrdenPuntos}
             setDuracionRuta={setDuracionRuta}
+            cargandoRuta={cargandoRuta}
+            setCargandoRuta={setCargandoRuta}
           />
 
         </div>
