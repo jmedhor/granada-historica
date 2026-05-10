@@ -12,22 +12,6 @@ body{
   text-align:center;
 }
 
-/* ---------- HEADER ---------- */
-
-.App-header{
-  background:linear-gradient(90deg,#7b1e1e,#a83232);
-  color:white;
-  padding:9px;
-  font-size:15px;
-  font-weight:bold;
-  letter-spacing:1px;
-  box-shadow:0px 3px 10px rgba(0,0,0,0.2);
-}
-
-.App-header h1{
-  margin:0;
-}
-
 /* ----------- TITULO + SUBTITULO ----------- */
 
 .header-left {
@@ -36,7 +20,7 @@ body{
   align-items: flex-start;
 }
 
-/* Título principal */
+/* Titulo principal */
 .titulo-app {
   margin: 0;
   font-size: 20px;
@@ -44,7 +28,7 @@ body{
   letter-spacing: 1px;
 }
 
-/* Subtítulo */
+/* Subtitulo */
 .subtitulo-app {
   font-size: 12px;
   font-style: italic;
@@ -53,25 +37,13 @@ body{
   letter-spacing: 0.5px;
   margin-top: 2px;
 
-  /* efecto elegante */
   opacity: 0.9;
   transition: opacity 0.3s ease;
 }
 
-/* pequeño efecto hover */
+/* Hover subtitulo */
 .header-left:hover .subtitulo-app {
   opacity: 1;
-}
-
-/* ---------- CONTENEDOR PRINCIPAL ---------- */
-
-.contenedor-principal{
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding:15px;
-  gap:15px;
-  height:calc(100vh - 70px);
 }
 
 /* ---------- MAPA ---------- */
@@ -166,23 +138,6 @@ body{
   padding-bottom:6px;
 }
 
-.menu-puntos button{
-  width:100%;
-  padding:8px;
-  margin-bottom:10px;
-  border:none;
-  border-radius:6px;
-  background:#7b1e1e;
-  color:white;
-  font-size:14px;
-  cursor:pointer;
-  transition:all 0.2s ease;
-}
-
-.menu-puntos button:hover{
-  background:#a83232;
-}
-
 .menu-puntos ul{
   list-style:none;
   padding:0;
@@ -210,9 +165,7 @@ body{
 
   border-left:4px solid transparent;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-
 }
-
 
 .menu-puntos li:hover{
   background: linear-gradient(135deg, #ff9a9e, #e63946);
@@ -250,10 +203,13 @@ body{
   accent-color: #7b1e1e;
 }
 
-/* --------------- SELECTOR RUTA --------- */
+/* ----------- SELECTOR RUTA ----------- */
 
 .selector-ruta{
   font-size:15px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
 /* --------- LOADER ---------------- */
@@ -337,7 +293,6 @@ body{
   font-size: 11px;
   font-weight: bold;
   border: 1px solid white;
-
 }
 
 .paso-texto {
@@ -345,8 +300,7 @@ body{
   color: black;
 }
 
-
-/* ----------- PANEL BIBLIOGRAFIA (MISMO QUE PASOS) ------------- */
+/* ----------- PANEL BIBLIOGRAFIA ----------- */
 
 .panel-bibliografia {
   width: 210px;
@@ -393,10 +347,7 @@ body{
   font-size: 11px;
   font-weight: bold;
   border: 1px solid white;
-
 }
-
-
 
 /* ----------- CAMBIO LAYOUT ------------- */
 
@@ -475,67 +426,14 @@ body{
   background: #21867a;
 }
 
-.btn-puntos {
-  margin-top: auto;
-  padding: 10px;
-  background: #457b9d;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* LISTA PUNTOS NUEVA */
-
-.lista-puntos {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.lista-puntos h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #1d3557;
-}
-
-.lista-puntos ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.lista-puntos li {
-  padding: 10px;
-  margin-bottom: 6px;
-  cursor: pointer;
-  border-radius: 6px;
-  background: #f1faee;
-  color: #1d3557;
-  font-weight: 500;
-  transition: 0.2s;
-}
-
-.lista-puntos li:hover {
-  background: #e9f5f2;
-  transform: translateX(3px);
-}
-
 /* ----------- TOGGLES MODERNOS ----------- */
 
-.selector-ruta {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* Grupo de botones */
 .toggle-group {
   display: flex;
   gap: 10px;
   justify-content: center;
 }
 
-/* Botón base */
 .toggle {
   padding: 8px 9px;
   border-radius: 20px;
@@ -549,13 +447,11 @@ body{
   backdrop-filter: blur(6px);
 }
 
-/* Hover */
 .toggle:hover {
   background: rgba(255,255,255,0.25);
   transform: translateY(-1px);
 }
 
-/* Activo (modo seleccionado) */
 .toggle.active {
   background: #ffffff;
   color: #7b1e1e;
@@ -563,7 +459,6 @@ body{
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
-/* Variante "peligro" (pago) */
 .toggle.danger {
   border-color: rgba(255,255,255,0.4);
 }
@@ -574,11 +469,9 @@ body{
   border-color: #e63946;
 }
 
-/* Pequeño efecto al click */
 .toggle:active {
   transform: scale(0.95);
 }
-
 
 /* ----------- FILA BOTONES SUPERIOR ----------- */
 
@@ -588,37 +481,6 @@ body{
   align-items: stretch;
   margin-bottom: 10px;
   gap: 10px;
-}
-
-
-/* ----------- BOTON OJO (OCULTO AHORA MISMO) ----------- */
-
-.btn-ojo {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-
-  background: rgba(255,255,255,0.15);
-  border: none;
-  border-radius: 50%;
-  width: 42px;
-  height: 42px;
-
-  font-size: 20px;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  backdrop-filter: blur(6px);
-  transition: all 0.25s ease;
-}
-
-.btn-ojo:hover {
-  background: rgba(255,255,255,0.3);
-  transform: translateY(-50%) scale(1.1);
 }
 
 /* ----------- BLOQUE UGR ----------- */
@@ -681,17 +543,15 @@ body{
 
 /* ----------- MARKERCLUSTER ---------- */
 
-/* CONTENEDOR GENERAL */
 .custom-marker-cluster {
   background: transparent;
 }
 
-/* BURBUJA EXTERIOR (halo) */
 .cluster-wrapper {
   width: 50px;
   height: 50px;
   border-radius: 150px;
-  background: rgba(69, 123, 157, 0.25); /* AZUL SUAVE */
+  background: rgba(69, 123, 157, 0.25);
 
   display: flex;
   align-items: center;
@@ -702,7 +562,11 @@ body{
   transition: 0.2s;
 }
 
-/* CENTRO */
+.cluster-wrapper:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(69, 123, 157, 0.8);
+}
+
 .cluster-core {
   width: 34px;
   height: 34px;
@@ -715,21 +579,10 @@ body{
   align-items: center;
   justify-content: center;
 
-  font-weight: bold;
-  font-size: 14px;
-
-  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
-}
-
-/* HOVER */
-.cluster-wrapper:hover {
-  transform: scale(1.15);
-  box-shadow: 0 0 20px rgba(69, 123, 157, 0.8);
-}
-
-.cluster-core {
   font-size: 15px;
   font-weight: 800;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
 }
 
 /* -------------- DURACION DE RUTA ----------- */
