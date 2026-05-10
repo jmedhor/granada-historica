@@ -171,9 +171,9 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
           0
         )
 
-        // 20 minutos por punto turistico aprox
+        // 15 minutos por punto turistico aprox
         const segundosVisita =
-          resultado.puntosOrdenados.length * 20 * 60
+          resultado.puntosOrdenados.length * 15 * 60
 
         const segundosTotales =
           segundosRuta + segundosVisita
@@ -253,7 +253,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
       {!rutaSeleccionada && (
         <MarkerClusterGroup
           chunkedLoading
-          maxClusterRadius={50}
+          maxClusterRadius={35}
           showCoverageOnHover={false}
           iconCreateFunction={createClusterCustomIcon}
         >
