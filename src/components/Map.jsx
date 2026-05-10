@@ -659,7 +659,7 @@ function Mapa({
       {/* CLUSTERS CUANDO NO HAY RUTA */}
       {/* ------------------------------------------------ */}
 
-      {!rutaSeleccionada && (
+      {!rutaSeleccionada && !modoCercanos && (
 
         <MarkerClusterGroup
           chunkedLoading
@@ -716,6 +716,61 @@ function Mapa({
             ))}
 
         </MarkerClusterGroup>
+
+      )}
+
+      {/* ------------------------------------------------ */}
+      {/* MARKERS NORMALES EN MODO CERCANOS */}
+      {/* ------------------------------------------------ */}
+
+      {!rutaSeleccionada && modoCercanos && (
+
+        puntosOrdenados
+
+          .filter(
+            punto => !evitarPago || !punto.pago
+          )
+
+          .map(punto => (
+
+            <Marker
+              key={`${punto.id}-${punto.ruta_id}`}
+              position={[
+                punto.latitud,
+                punto.longitud
+              ]}
+              icon={
+                iconosRutas[punto.ruta_id]
+                || iconosRutas[1]
+              }
+              ref={(el) => {
+
+                if (el) {
+                  markersRef.current[punto.id] = el
+                }
+
+              }}
+            >
+
+              <Popup>
+
+                <PopupRuta
+                  punto={punto}
+                  ruta={{
+                    id: punto.ruta_id,
+                    nombre: punto.ruta_nombre
+                  }}
+                  modoHistoriador={modoHistoriador}
+                  setModoHistoriador={setModoHistoriador}
+                  rutaSeleccionada={rutaSeleccionada}
+                  setRutaSeleccionada={setRutaSeleccionada}
+                />
+
+              </Popup>
+
+            </Marker>
+
+          ))
 
       )}
 
