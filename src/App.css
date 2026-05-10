@@ -731,3 +731,45 @@ body{
   font-size: 15px;
   font-weight: 800;
 }
+
+/* -------------- DURACION DE RUTA ----------- */
+
+.duracion-ruta-box {
+  position: absolute;
+  top: 103px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+
+  background: rgba(123, 30, 30, 0.92);
+  color: white;
+
+  padding: 12px 20px;
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+
+  backdrop-filter: blur(8px);
+
+  box-shadow:
+    0 4px 14px rgba(0,0,0,0.18),
+    0 0 0 1px rgba(255,255,255,0.08);
+
+  transition: all 0.25s ease;
+}
+
+.duracion-ruta-box:hover {
+  transform: translateX(-50%) scale(1.02);
+  background: rgba(168, 50, 50, 0.97);
+}
+
+.duracion-ruta-box strong {
+  color: #ffe0e0;
+  font-weight: 800;
+}

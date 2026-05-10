@@ -8,17 +8,30 @@ import PanelRuta from './components/PanelRuta.jsx'
 import PanelBibliografia from './components/PanelBibliografia.jsx'
 
 function App() {
+  // Informacion sobre si tenemos una ruta seleccionada
   const [rutaSeleccionada, setRutaSeleccionada] = useState(null)
+  // Referencia al mapa donde almacenamos informacion
   const mapRef = useRef()
+  // Informacion sobre si esta activo el modo historiador
   const [modoHistoriador, setModoHistoriador] = useState(false)
+  // Informacion sobre si tenemos activa la ruta optima o la historica
   const [modoRuta, setModoRuta] = useState("optima")
+  // Informacion donde almacenamos los segmentos de la ruta (pasos)
   const [rutasSegmentos, setRutasSegmentos] = useState([])
+  // DEPRECATED
   const [mostrarPuntos, setMostrarPuntos] = useState(false)
+  // Informacion sobre el modo navegacion, lista de pasos para hacer la ruta ( OMITIDO POR EL MOMENTO )
   const [modoNavegacion, setModoNavegacion] = useState(false)
+  // Informacion sobre si esta activo el check de evitar sitios de pago
   const [evitarPago, setEvitarPago] = useState(false)
+  // Informacion sobre si se muestra el panel derecho o esta oculto ( OMITIDO POR EL MOMENTO)
   const [mostrarPanel, setMostrarPanel] = useState(true)
+  // Informacion sobre si se esta visualizando la bibliografia o no
   const [modoBibliografia, setModoBibliografia] = useState(false)
+  // Informacion sobre el orden de visita de puntos proporcionado por OSRM y A*
   const [ordenPuntos, setOrdenPuntos] = useState([])
+  // Informacion sobre la duracion aproximada de la ruta
+  const [duracionRuta, setDuracionRuta] = useState(null)
 
   // función para centrar en un punto desde MenuPuntos
   const centrarEnPunto = (punto) => {
@@ -98,6 +111,17 @@ function App() {
       <div className={mostrarPanel ? "main-layout" : "main-layout-full"}>
         {/* MAPA */}
         <div className="map-container">
+
+          {/* Informacion de duracion de ruta */}
+
+          {duracionRuta && rutaSeleccionada && (
+            <div className="duracion-ruta-box">
+              ⏱️ Duración aproximada de la ruta:
+              <strong> {duracionRuta}</strong>
+            </div>
+          )}
+
+
           <Mapa
             rutaSeleccionada={rutaSeleccionada}
             mapRef={mapRef}
@@ -108,7 +132,9 @@ function App() {
             evitarPago={evitarPago}
             ordenPuntos={ordenPuntos}
             setOrdenPuntos={setOrdenPuntos}
+            setDuracionRuta={setDuracionRuta}
           />
+
         </div>
 
         {/* PANEL DERECHO ÚNICO */}
@@ -199,7 +225,6 @@ function App() {
 
       </div>
     </div>
-//------------------
 
   )
 }

@@ -72,7 +72,8 @@ const createClusterCustomIcon = function (cluster) {
 
 
 
-function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta, setRutasSegmentos, evitarPago, ordenPuntos, setOrdenPuntos }) {
+function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta, setRutasSegmentos, evitarPago, ordenPuntos, setOrdenPuntos, duracionRuta, setDuracionRuta }) {
+
   const [todosPuntos, setTodosPuntos] = useState([])
   const [rutaLinea, setRutaLinea] = useState(null)
   const [userLocation, setUserLocation] = useState({
@@ -125,6 +126,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
       setRutasSegmentos([])
       setRutasSegmentosLocal([])
       setOrdenPuntos([])
+      setDuracionRuta(null)
 
     }
   }, [rutaSeleccionada])
@@ -160,6 +162,36 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
         setRutasSegmentos(resultado.legs)
         setRutasSegmentosLocal(resultado.legs)
         setOrdenPuntos(resultado.puntosOrdenados)
+
+        // ------------------------------------
+        // Duracion de ruta
+        // ------------------------------------
+
+        const segundosRuta = resultado.legs.reduce(
+          (acc, leg) => acc + leg.duration,
+          0
+        )
+
+        // 20 minutos por punto turistico aprox
+        const segundosVisita =
+          resultado.puntosOrdenados.length * 20 * 60
+
+        const segundosTotales =
+          segundosRuta + segundosVisita
+
+        const horas = Math.floor(segundosTotales / 3600)
+        const minutos = Math.floor((segundosTotales % 3600) / 60)
+
+        let tiempoTexto = ""
+
+        if (horas > 0) {
+          tiempoTexto = `${horas} h ${minutos} min`
+        } else {
+          tiempoTexto = `${minutos} min`
+        }
+
+        setDuracionRuta(tiempoTexto)
+
 
       } catch (err) {
         console.error("Error cargando ruta:", err)
