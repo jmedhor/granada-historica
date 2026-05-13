@@ -1,64 +1,79 @@
 function PanelBibliografia({ ruta }) {
 
   // -----------------------------------------
-  // Si no hay ruta seleccionada mostramos
-  // un mensaje informativo
+  // SI NO HAY RUTA
   // -----------------------------------------
 
   if (!ruta) {
 
     return (
+
       <div className="panel-bibliografia">
 
-        <h3>📚 Bibliografia</h3>
+        <h3>📚 Bibliografía</h3>
 
-        <p>Selecciona una ruta</p>
+        <div className="no-cercanos">
+          Selecciona una ruta para visualizar
+          sus referencias bibliográficas
+        </div>
 
       </div>
+
     )
   }
 
   // -----------------------------------------
-  // Convertir el texto de bibliografia en
-  // un array separado por saltos de linea
+  // CONVERTIR TEXTO EN ARRAY
   // -----------------------------------------
 
   const lineas = ruta.bibliografia
+
     ? ruta.bibliografia
         .split("\n")
-        .filter(linea => linea.trim() !== "")
+        .filter(
+          linea => linea.trim() !== ""
+        )
+
     : []
 
   // -----------------------------------------
-  // Render del panel de bibliografia
+  // RENDER
   // -----------------------------------------
 
   return (
+
     <div className="panel-bibliografia">
 
-      {/* Titulo */}
-      <h3>📚 Bibliografia</h3>
+      {/* TITULO */}
+      <h3>📚 Bibliografía</h3>
 
-      {/* Si no hay bibliografia */}
+      {/* CONTADOR */}
+      <div className="info-punto">
+        {lineas.length} referencias
+      </div>
+
+      {/* SI NO HAY DATOS */}
       {lineas.length === 0 ? (
 
-        <p>No hay informacion disponible</p>
+        <div className="no-cercanos">
+          No hay información bibliográfica
+          disponible para esta ruta
+        </div>
 
       ) : (
 
-        // Lista de referencias bibliograficas
         <ul>
 
           {lineas.map((linea, index) => (
 
             <li key={index}>
 
-              {/* Numero de referencia */}
+              {/* NUMERO */}
               <span className="paso-bib">
                 {index + 1}
               </span>
 
-              {/* Texto bibliografico */}
+              {/* TEXTO */}
               <span className="paso-texto">
                 {linea}
               </span>
@@ -72,6 +87,7 @@ function PanelBibliografia({ ruta }) {
       )}
 
     </div>
+
   )
 }
 

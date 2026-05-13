@@ -49,7 +49,7 @@ export async function obtenerRutaHistorica(
   // endpoint route mantiene el orden original
   const url =
     `${OSRM_BASE}/route/v1/foot/${coords}` +
-    `?overview=false&geometries=geojson&steps=true`
+    `?overview=full&geometries=geojson&steps=true`
 
   const response = await fetch(url)
   const data = await response.json()
@@ -57,9 +57,13 @@ export async function obtenerRutaHistorica(
   const ruta = data.routes[0]
 
   return {
+
     legs: ruta.legs,
+
     puntosOrdenados: puntosFiltrados,
+
     duracion: ruta.duration
+
   }
 }
 
@@ -109,28 +113,29 @@ export async function obtenerRutaOptima(
     userLocation
   )
 
-  // endpoint trip optimiza el recorrido
+  // route
   const url =
-    `${OSRM_BASE}/trip/v1/foot/${coords}` +
-    `?overview=false` +
+    `${OSRM_BASE}/route/v1/foot/${coords}` +
+    `?overview=full` +
     `&geometries=geojson` +
-    `&steps=true` +
-    `&source=first` +
-    `&destination=last` +
-    `&roundtrip=false`
+    `&steps=true`
 
   const response = await fetch(url)
   const data = await response.json()
 
-  const trip = data.trips[0]
+  const ruta = data.routes[0]
 
-  console.log("TRIP COMPLETO:")
-  console.log(trip)
+  console.log("RUTA COMPLETO:")
+  console.log(ruta)
 
   return {
-    legs: trip.legs,
+
+    legs: ruta.legs,
+
     puntosOrdenados,
-    duracion: trip.duration
+
+    duracion: ruta.duration
+
   }
 }
 

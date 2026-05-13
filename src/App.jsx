@@ -65,6 +65,9 @@ function App() {
   // Activa el panel de cercanos
   const [modoCercanos, setModoCercanos] = useState(false)
 
+  // Segmento actual mostrado durante navegacion
+  const [segmentoActual, setSegmentoActual] = useState(0)
+
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
   // ---------------------------------------------------
@@ -243,6 +246,9 @@ function App() {
             modoCercanos={modoCercanos}
             setModoCercanos={setModoCercanos}
 
+            modoNavegacion={modoNavegacion}
+            segmentoActual={segmentoActual}
+
           />
 
         </div>
@@ -292,57 +298,75 @@ function App() {
 
               <>
 
-                {/* -------------------------------- */}
-                {/* FILA SUPERIOR DE BOTONES */}
-                {/* -------------------------------- */}
+            {/* -------------------------------- */}
+            {/* BOTONES PRINCIPALES */}
+            {/* -------------------------------- */}
 
-                <div className="fila-botones">
+            <div className="columna-botones">
 
-                  {/* BOTON VOLVER */}
-                  <button
-                    className="btn-volver"
-                    onClick={() => {
+              {/* BOTON VOLVER */}
+              <button
+                className="btn-volver"
+                onClick={() => {
 
-                      setRutaSeleccionada(null)
+                  setRutaSeleccionada(null)
 
-                      setModoNavegacion(false)
+                  setModoNavegacion(false)
 
-                      setModoBibliografia(false)
+                  setModoBibliografia(false)
 
-                      setModoCercanos(false)
+                  setModoCercanos(false)
 
-                    }}
-                  >
-                    ← Volver
-                  </button>
+                }}
+              >
+                ← Volver
+              </button>
 
-                  {/* BOTON BIBLIOGRAFIA */}
-                  {!modoNavegacion && !modoBibliografia && (
+              {/* BOTON COMENZAR RUTA */}
+              {!modoNavegacion && !modoBibliografia && (
 
-                    <button
-                      className="btn-start"
-                      onClick={() => setModoBibliografia(true)}
-                    >
-                      📚 Visualizar bibliografia
-                    </button>
+                <button
+                  className="btn-start"
+                  onClick={() => {
 
-                  )}
+                    setModoNavegacion(true)
 
-                  {/* BOTON VOLVER DESDE BIBLIOGRAFIA */}
-                  {modoBibliografia && (
+                    setSegmentoActual(0)
 
-                    <button
-                      className="btn-volver"
-                      onClick={() => {
-                        setModoBibliografia(false)
-                      }}
-                    >
-                      ← Volver a ruta
-                    </button>
+                  }}
+                >
+                  🧭 Comenzar ruta
+                </button>
 
-                  )}
+              )}
 
-                </div>
+              {/* BOTON BIBLIOGRAFIA */}
+              {!modoNavegacion && !modoBibliografia && (
+
+                <button
+                  className="btn-start-bib"
+                  onClick={() => setModoBibliografia(true)}
+                >
+                  📚 Visualizar bibliografia
+                </button>
+
+              )}
+
+              {/* VOLVER DESDE BIBLIOGRAFIA */}
+              {modoBibliografia && (
+
+                <button
+                  className="btn-volver"
+                  onClick={() => {
+                    setModoBibliografia(false)
+                  }}
+                >
+                  ← Volver a ruta
+                </button>
+
+              )}
+
+            </div>
 
                 {/* -------------------------------- */}
                 {/* PANEL BIBLIOGRAFIA */}
@@ -376,7 +400,14 @@ function App() {
 
                 {modoNavegacion && !modoBibliografia && (
 
-                  <PanelRuta rutasSegmentos={rutasSegmentos} />
+                <PanelRuta
+                  rutasSegmentos={rutasSegmentos}
+
+                  segmentoActual={segmentoActual}
+                  setSegmentoActual={setSegmentoActual}
+
+                  setModoNavegacion={setModoNavegacion}
+                />
 
                 )}
 

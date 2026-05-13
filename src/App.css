@@ -393,25 +393,99 @@ body{
   box-shadow: -6px 0 20px rgba(0,0,0,0.1);
 }
 
-/* BOTONES */
+/* ------------------------------------------------ */
+/* BOTON VOLVER */
+/* ------------------------------------------------ */
 
 .btn-volver {
-  background: #e63946;
+
+  background:
+    linear-gradient(
+      135deg,
+      #9b2226,
+      #6a040f
+    );
+
   color: white;
+
   border: none;
+
   padding: 10px;
-  border-radius: 8px;
+
+  border-radius: 10px;
+
   margin-bottom: 10px;
+
   cursor: pointer;
-  font-weight: bold;
-  transition: 0.2s;
+
+  font-weight: 700;
+
+  transition: all 0.25s ease;
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.15);
 }
 
 .btn-volver:hover {
-  background: #c1121f;
+
+  transform: translateY(-1px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #bb3e03,
+      #9b2226
+    );
 }
 
+/* ------------------------------------------------ */
+/* BOTON COMENZAR RUTA */
+/* ------------------------------------------------ */
+
 .btn-start {
+
+  padding: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2a9d8f,
+      #1d6f66
+    );
+
+  color: white;
+
+  border: none;
+
+  border-radius: 12px;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+
+  box-shadow:
+    0 6px 14px rgba(0,0,0,0.18);
+}
+
+.btn-start:hover {
+
+  transform:
+    translateY(-2px)
+    scale(1.02);
+
+  background:
+    linear-gradient(
+      135deg,
+      #34b3a0,
+      #23867d
+    );
+}
+
+.btn-start-bib {
   padding: 12px;
   background: linear-gradient(135deg, #457b9d, #1d3557);
   color: white;
@@ -421,10 +495,203 @@ body{
   font-weight: bold;
   cursor: pointer;
   transition: 0.2s;
+
 }
 
-.btn-start:hover {
-  background: #21867a;
+.btn-start-bib:hover {
+
+  transform:
+    translateY(-2px)
+    scale(1.02);
+
+  background:
+  linear-gradient(135deg, #457b9d, #1d3557)
+}
+
+/* ------------------------------------------------ */
+/* BOTON VISUALIZAR BIBLIOGRAFIA */
+/* ------------------------------------------------ */
+
+.btn-bibliografia {
+
+  padding: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #457b9d,
+      #1d3557
+    );
+
+  color: white;
+
+  border: none;
+
+  border-radius: 12px;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+
+  box-shadow:
+    0 6px 14px rgba(0,0,0,0.18);
+}
+
+.btn-bibliografia:hover {
+
+  transform:
+    translateY(-2px)
+    scale(1.02);
+
+  background:
+    linear-gradient(
+      135deg,
+      #5c8db1,
+      #27496d
+    );
+}
+
+/* ------------------------------------------------ */
+/* BOTON PASO ANTERIOR */
+/* ------------------------------------------------ */
+
+.btn-anterior {
+
+  flex: 1;
+
+  padding: 10px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  transition: all 0.2s ease;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f77f00,
+      #d62828
+    );
+}
+
+.btn-anterior:hover {
+
+  transform: translateY(-1px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff9500,
+      #e63946
+    );
+}
+
+/* ------------------------------------------------ */
+/* BOTON PASO SIGUIENTE */
+/* ------------------------------------------------ */
+
+.btn-siguiente {
+
+  flex: 1;
+
+  padding: 10px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  transition: all 0.2s ease;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3a86ff,
+      #8338ec
+    );
+}
+
+.btn-siguiente:hover {
+
+  transform: translateY(-1px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #5390ff,
+      #9d4edd
+    );
+}
+
+/* ------------------------------------------------ */
+/* BOTON FINALIZAR RUTA */
+/* ------------------------------------------------ */
+
+.btn-finalizar-ruta {
+
+  width: 100%;
+
+  margin-bottom: 10px;
+
+  padding: 11px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  transition: all 0.25s ease;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6a040f,
+      #9d0208
+    );
+
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.18);
+}
+
+.btn-finalizar-ruta:hover {
+
+  transform:
+    translateY(-1px)
+    scale(1.01);
+
+  background:
+    linear-gradient(
+      135deg,
+      #9d0208,
+      #d00000
+    );
 }
 
 /* ----------- TOGGLES MODERNOS ----------- */
@@ -474,14 +741,20 @@ body{
   transform: scale(0.95);
 }
 
-/* ----------- FILA BOTONES SUPERIOR ----------- */
+/* ------------------------------------------------ */
+/* COLUMNA DE BOTONES DEL PANEL DERECHO */
+/* ------------------------------------------------ */
 
-.fila-botones {
+.columna-botones {
+
   display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  margin-bottom: 10px;
+
+  flex-direction: column;
+
   gap: 10px;
+
+  margin-bottom: 15px;
+
 }
 
 /* ----------- BLOQUE UGR ----------- */
@@ -876,4 +1149,72 @@ body{
       #5c8db1,
       #27496d
     );
+}
+
+
+.info-punto {
+  margin: 10px 0 5px 0;
+  padding: 10px 12px;
+
+  background: linear-gradient(135deg, #3a86ff, #8338ec);
+  color: white;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+
+  letter-spacing: 0.3px;
+}
+
+/* pequeño efecto de “badge” */
+.info-punto::before {
+  content: "📍";
+}
+
+/* ------------------------------------------------ */
+/* CONTROLES HORIZONTALES */
+/* ------------------------------------------------ */
+
+.controles-ruta {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.controles-ruta button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition: all 0.2s ease;
+}
+
+.controles-ruta button:last-child {
+  background: #222;
+  color: white;
+}
+
+.controles-ruta button:last-child:hover {
+  background: #000;
+}
+
+/* deshabilitado */
+.controles-ruta button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

@@ -45,11 +45,24 @@ function traducirManiobra(tipo, modifier) {
   return "Continua"
 }
 
-function PanelRuta({ rutasSegmentos }) {
+
+// -----------------------------------------
+// PANEL DE NAVEGACION PASO A PASO
+// -----------------------------------------
+
+function PanelRuta({
+
+  rutasSegmentos,
+
+  segmentoActual,
+  setSegmentoActual,
+
+  setModoNavegacion
+
+}) {
 
   // -----------------------------------------
-  // Si no hay segmentos de ruta cargados
-  // mostramos mensaje informativo
+  // Si no hay segmentos
   // -----------------------------------------
 
   if (!rutasSegmentos || rutasSegmentos.length === 0) {
@@ -57,86 +70,136 @@ function PanelRuta({ rutasSegmentos }) {
     return (
       <div className="panel-ruta">
 
-        <h3>🧭 Ruta</h3>
+        <h3>🧭 Navegación</h3>
 
-        <p>Selecciona una ruta</p>
+        <p>Selecciona una ruta para comenzar</p>
 
       </div>
     )
   }
 
   // -----------------------------------------
-  // Contador global de pasos para numerar
-  // todas las instrucciones
+  // Segmento actual
   // -----------------------------------------
 
-  let pasoGlobal = 1
+  const segmento = rutasSegmentos[segmentoActual]
+
+  if (!segmento) {
+    return null
+  }
 
   // -----------------------------------------
-  // Render del panel de navegacion
+  // UI
   // -----------------------------------------
 
   return (
+
     <div className="panel-ruta">
 
-      {/* Titulo */}
-      <h3>🧭 Pasos de la ruta</h3>
+      {/* ------------------------------------------------- */}
+      {/* CONTROLES SUPERIORES */}
+      {/* ------------------------------------------------- */}
+
+      <div className="controles-ruta">
+
+        {/* ANTERIOR SEGMENTO */}
+        <button
+          className="btn-anterior"
+          disabled={segmentoActual === 0}
+          onClick={() => {
+
+            setSegmentoActual(prev => Math.max(prev - 1, 0))
+
+          }}
+        >
+          ← Paso anterior
+        </button>
+
+        {/* SIGUIENTE SEGMENTO */}
+        <button
+          className="btn-siguiente"
+          disabled={segmentoActual === rutasSegmentos.length - 1}
+          onClick={() => {
+
+            setSegmentoActual(prev =>
+              Math.min(prev + 1, rutasSegmentos.length - 1)
+            )
+
+          }}
+        >
+          Paso siguiente →
+        </button>
+
+      </div>
+
+
+      {/* FINALIZAR */}
+      <button
+        className="btn-finalizar-ruta"
+        onClick={() => {
+          setModoNavegacion(false)
+        }}
+      >
+        ✖ Finalizar ruta
+      </button>
+
+      {/* ------------------------------------------------- */}
+      {/* INDICADOR DE PROGRESO ENTRE PUNTOS */}
+      {/* ------------------------------------------------- */}
+
+      <div className="info-punto">
+        Punto {segmentoActual} → {segmentoActual + 1} de {rutasSegmentos.length}
+      </div>
+
+      {/* ------------------------------------------------- */}
+      {/* INDICADOR DE PROGRESO */}
+      {/* ------------------------------------------------- */}
+
+      <div className="progreso-ruta">
+        Tramo {segmentoActual + 1} de {rutasSegmentos.length}
+      </div>
+
+      {/* ------------------------------------------------- */}
+      {/* PASOS DEL SEGMENTO ACTUAL */}
+      {/* ------------------------------------------------- */}
 
       <ul>
 
-        {/* Recorrer todos los segmentos */}
-        {rutasSegmentos.map((leg, i) =>
+        {segmento.steps.map((step, index) => {
 
-          // Recorrer todos los pasos del segmento
-          leg.steps.map((step, j) => {
+          const texto = `
+            ${traducirManiobra(
+              step.maneuver.type,
+              step.maneuver.modifier
+            )}
+            ${step.name || ""}
+          `
 
-            // -----------------------------------------
-            // Texto principal de la instruccion
-            // -----------------------------------------
+          const distancia = step.distance
+            ? `(${Math.round(step.distance)} m)`
+            : ""
 
-            const texto = `
-              ${traducirManiobra(
-                step.maneuver.type,
-                step.maneuver.modifier
-              )}
-              ${step.name || ""}
-            `
+          return (
 
-            // -----------------------------------------
-            // Distancia aproximada del paso
-            // -----------------------------------------
+            <li key={index}>
 
-            const distancia = step.distance
-              ? `(${Math.round(step.distance)} m)`
-              : ""
+              <span className="paso-num">
+                {index + 1}
+              </span>
 
-            // -----------------------------------------
-            // Render de cada paso
-            // -----------------------------------------
+              <span className="paso-texto">
+                {texto} {distancia}
+              </span>
 
-            return (
-              <li key={`${i}-${j}`}>
+            </li>
 
-                {/* Numero del paso */}
-                <span className="paso-num">
-                  {pasoGlobal++}
-                </span>
-
-                {/* Texto de la instruccion */}
-                <span className="paso-texto">
-
-                  {texto} {distancia}
-
-                </span>
-
-              </li>
-            )
-          })
-        )}
+          )
+        })}
 
       </ul>
 
     </div>
+
   )
 }
 

@@ -240,7 +240,10 @@ function Mapa({
   setPuntosCercanos,
 
   modoCercanos,
-  setModoCercanos
+  setModoCercanos,
+
+  modoNavegacion,
+  segmentoActual
 
 
 }) {
@@ -549,6 +552,46 @@ function Mapa({
   ])
 
   // ---------------------------------------------------
+  // CENTRA EL MAPA EN EL SIGUIENTE PUNTO
+  // DURANTE LA NAVEGACION
+  // ---------------------------------------------------
+
+  useEffect(() => {
+
+    // Seguridad
+    if (!modoNavegacion) return
+
+    // Punto destino del tramo actual
+    const siguientePunto =
+      puntosVisibles[segmentoActual]
+
+    if (!siguientePunto) return
+
+    // Centra mapa
+    mapRef.current.flyTo(
+
+      [
+        siguientePunto.latitud,
+        siguientePunto.longitud
+      ],
+
+      17,
+
+      {
+        duration: 1.2
+      }
+
+    )
+
+  }, [
+
+    modoNavegacion,
+    segmentoActual,
+    puntosVisibles
+
+  ])
+
+  // ---------------------------------------------------
   // RENDER DEL MAPA
   // ---------------------------------------------------
 
@@ -614,9 +657,29 @@ function Mapa({
       {/* POLYLINES DE LA RUTA */}
       {/* ------------------------------------------------ */}
 
-      {rutasSegmentosLocal.map((leg, index) => {
+      {rutasSegmentosLocal
 
-        const coords = leg.steps.flatMap(
+        .filter((_, index) => {
+
+          // --------------------------------
+          // MODO NORMAL
+          // --------------------------------
+
+          if (!modoNavegacion) {
+            return true
+          }
+
+          // --------------------------------
+          // MODO NAVEGACION
+          // SOLO MUESTRA EL TRAMO ACTUAL
+          // --------------------------------
+
+          return index === segmentoActual
+
+        })
+
+        .map((leg, index) => {
+          const coords = leg.steps.flatMap(
           step => step.geometry.coordinates
         )
 
