@@ -60,7 +60,7 @@ function PanelCercanos({
         {puntosCercanos.map((punto) => (
 
           <li
-            key={punto.id}
+            key={`${punto.id}-${punto.ruta_id}`}
             onClick={() => irAPunto(punto)}
           >
 
