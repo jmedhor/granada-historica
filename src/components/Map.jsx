@@ -17,6 +17,8 @@ import 'leaflet/dist/leaflet.css'
 
 import MarkerClusterGroup from 'react-leaflet-cluster'
 
+import 'leaflet-polylinedecorator'
+
 import {
   obtenerRutaHistorica,
   obtenerRutaOptima
@@ -25,6 +27,8 @@ import {
 import {
   calcularDistanciaMetros
 } from '../utils/distancia.js'
+
+import FlechasRuta from './FlechasRuta.jsx'
 
 import PopupRuta from './Popup'
 
@@ -618,18 +622,32 @@ function Mapa({
 
         return (
 
-          <Polyline
-            key={index}
-            positions={coords.map(
-              ([lon, lat]) => [lat, lon]
-            )}
-            color={
-              coloresRuta[rutaSeleccionada?.id]
-              || "#e63946"
-            }
-            weight={6}
-            opacity={0.8}
-          />
+          <>
+
+            <Polyline
+              key={index}
+              positions={coords.map(
+                ([lon, lat]) => [lat, lon]
+              )}
+              color={
+                coloresRuta[rutaSeleccionada?.id]
+                || "#e63946"
+              }
+              weight={6}
+              opacity={0.8}
+            />
+
+            <FlechasRuta
+              positions={coords.map(
+                ([lon, lat]) => [lat, lon]
+              )}
+              color={
+                coloresRuta[rutaSeleccionada?.id]
+                || "#e63946"
+              }
+            />
+
+          </>
 
         )
       })}
