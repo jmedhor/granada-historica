@@ -307,6 +307,13 @@ function Mapa({
 
       (punto) => {
 
+      // Filtro de puntos de pago
+
+      if (evitarPago && punto.pago) {
+        return false
+      }
+
+
         const distancia =
           calcularDistanciaMetros(
 
@@ -356,6 +363,11 @@ function Mapa({
 
     const cercanos = todosPuntos.filter((punto) => {
 
+      // Filtra puntos de pago
+      if (evitarPago && punto.pago) {
+        return false
+      }
+
       const distancia = calcularDistanciaMetros(
         userLocation.lat,
         userLocation.lon,
@@ -368,7 +380,7 @@ function Mapa({
 
     setPuntosCercanos(cercanos)
 
-  }, [userLocation, todosPuntos, modoCercanos])
+  }, [userLocation, todosPuntos, modoCercanos, evitarPago])
 
 
   // ---------------------------------------------------
