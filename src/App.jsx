@@ -233,6 +233,7 @@ function App() {
             cargandoRuta={cargandoRuta}
             setCargandoRuta={setCargandoRuta}
 
+            puntosCercanos={puntosCercanos}
             setPuntosCercanos={setPuntosCercanos}
 
             modoCercanos={modoCercanos}

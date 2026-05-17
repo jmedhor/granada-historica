@@ -237,6 +237,7 @@ function Mapa({
   cargandoRuta,
   setCargandoRuta,
 
+  puntosCercanos,
   setPuntosCercanos,
 
   modoCercanos,
@@ -834,7 +835,7 @@ function Mapa({
 
       {!rutaSeleccionada && modoCercanos && (
 
-        puntosOrdenados
+        puntosCercanos
 
           .filter(
             punto => !evitarPago || !punto.pago
