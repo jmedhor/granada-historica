@@ -46,7 +46,7 @@ function PanelCercanos({
         ← Volver
         </button>
       <h3>
-        📍 Puntos cercanos
+        📍 Puntos cercanos (Aprox. 350m)
       </h3>
 
       {puntosCercanos.length === 0 && (

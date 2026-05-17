@@ -301,7 +301,7 @@ function Mapa({
   const buscarPuntosCercanos = () => {
 
     // Radio maximo
-    const RADIO_METROS = 200
+    const RADIO_METROS = 350
 
     // Filtra puntos cercanos
     const cercanos = todosPuntos.filter(
@@ -360,7 +360,7 @@ function Mapa({
     if (!modoCercanos) return
     if (todosPuntos.length === 0) return
 
-    const RADIO_METROS = 200
+    const RADIO_METROS = 350
 
     const cercanos = todosPuntos.filter((punto) => {
 
