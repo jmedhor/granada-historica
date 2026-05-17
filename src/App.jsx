@@ -195,7 +195,7 @@ function App() {
         {/* CONTENEDOR DEL MAPA */}
         {/* --------------------------------------------------- */}
 
-        <div className="map-container">
+        <div className="map-container" style={{ width: mostrarPanel ? "calc(100vw - 250px)" : "100vw" }}>
 
           {/* -------------------------------- */}
           {/* DURACION APROXIMADA */}
@@ -249,9 +249,26 @@ function App() {
             modoNavegacion={modoNavegacion}
             segmentoActual={segmentoActual}
 
+            mostrarPanel={mostrarPanel}
+
           />
 
         </div>
+
+        {/* --------------------------------------------------- */}
+        {/* BOTON MOSTRAR / OCULTAR PANEL */}
+        {/* --------------------------------------------------- */}
+
+        <button
+          className={`btn-toggle-panel${!mostrarPanel ? " oculto" : ""}`}
+          onClick={() => setMostrarPanel(prev => !prev)}
+        >
+
+          {mostrarPanel
+            ? "Ocultar"
+            : "Mostrar"}
+
+        </button>
 
         {/* --------------------------------------------------- */}
         {/* PANEL DERECHO */}

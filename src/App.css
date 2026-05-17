@@ -12,6 +12,56 @@ body{
   text-align:center;
 }
 
+/* ------------------------------------------------ */
+/* LAYOUT PRINCIPAL */
+/* ------------------------------------------------ */
+
+.main-layout {
+
+  display: flex;
+
+  height: calc(100vh - 100px);
+
+  width: 100%;
+}
+
+/* ------------------------------------------------ */
+/* LAYOUT EXPANDIDO SIN PANEL */
+/* ------------------------------------------------ */
+
+.main-layout-full {
+
+  display: flex;
+
+  height: calc(100vh - 100px);
+
+  width: 100%;
+}
+
+/* ------------------------------------------------ */
+/* CONTENEDOR DEL MAPA */
+/* ------------------------------------------------ */
+
+.map-container {
+
+  position: relative;
+
+  flex: 1;
+
+  height: 100%;
+}
+
+/* ------------------------------------------------ */
+/* MAPA LEAFLET */
+/* ------------------------------------------------ */
+
+.map-container .leaflet-container {
+
+  width: 100%;
+
+  height: 100%;
+}
+
 /* ----------- TITULO + SUBTITULO ----------- */
 
 .header-left {
@@ -46,12 +96,6 @@ body{
   opacity: 1;
 }
 
-/* ---------- MAPA ---------- */
-
-.map-container{
-  flex:1;
-  height:100%;
-}
 
 /* ---------- MENU RUTAS ---------- */
 
@@ -376,11 +420,6 @@ body{
   gap: 15px;
 }
 
-.main-layout {
-  display: flex;
-  height: calc(100vh - 100px);
-}
-
 /* PANEL DERECHO */
 
 .panel-derecha {
@@ -446,12 +485,7 @@ body{
 
   padding: 12px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #2a9d8f,
-      #1d6f66
-    );
+  background: linear-gradient(135deg, #6a4c93, #3a0ca3);
 
   color: white;
 
@@ -477,12 +511,7 @@ body{
     translateY(-2px)
     scale(1.02);
 
-  background:
-    linear-gradient(
-      135deg,
-      #34b3a0,
-      #23867d
-    );
+  background: linear-gradient(135deg, #6a4c93, #3a0ca3)
 }
 
 .btn-start-bib {
@@ -803,18 +832,6 @@ body{
   transform: scale(1.05);
 }
 
-/* ----------- MODO SIN PANEL ----------- */
-
-.main-layout-full {
-  display: flex;
-  height: calc(100vh - 100px);
-}
-
-.main-layout-full .map-container {
-  flex: 1;
-  width: 100%;
-}
-
 /* ----------- MARKERCLUSTER ---------- */
 
 .custom-marker-cluster {
@@ -863,7 +880,7 @@ body{
 
 .duracion-ruta-box {
   position: absolute;
-  top: 103px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2000;
@@ -911,7 +928,7 @@ body{
   position: absolute;
 
   top: 15px;
-  right: 15px;
+  left: 50px;
 
   z-index: 2000;
 
@@ -1217,4 +1234,67 @@ body{
 .controles-ruta button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* ------------------------------------------------ */
+/* BOTON MOSTRAR / OCULTAR PANEL */
+/* ------------------------------------------------ */
+
+.btn-toggle-panel {
+
+  position: absolute;
+
+  top: 115px;
+  right: 265px;
+
+  z-index: 2500;
+
+  padding: 12px 16px;
+
+  border: none;
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6a4c93,
+      #8338ec
+    );
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.22);
+
+  transition: all 0.25s ease;
+
+  backdrop-filter: blur(6px);
+}
+
+.btn-toggle-panel.oculto {
+  right: 20px;
+}
+
+.btn-toggle-panel:hover {
+
+  transform:
+    translateY(-2px)
+    scale(1.02);
+
+  background:
+    linear-gradient(
+      135deg,
+      #7b5bb0,
+      #9d4edd
+    );
+}
+
+.btn-toggle-panel.full {
+
+  right: 20px;
 }

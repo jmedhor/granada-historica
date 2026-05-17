@@ -243,7 +243,9 @@ function Mapa({
   setModoCercanos,
 
   modoNavegacion,
-  segmentoActual
+  segmentoActual,
+
+  mostrarPanel
 
 
 }) {
@@ -367,6 +369,20 @@ function Mapa({
     setPuntosCercanos(cercanos)
 
   }, [userLocation, todosPuntos, modoCercanos])
+
+
+  // ---------------------------------------------------
+  // REDIMENSIONA EL MAPA AL OCULTAR/MOSTRAR PANEL
+  // ---------------------------------------------------
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (mapRef.current) {
+        mapRef.current.invalidateSize()
+      }
+    }, 50)
+    console.log("cambiaa")
+  }, [mostrarPanel])
 
   // ---------------------------------------------------
   // DETECTA CLICK EN EL MAPA
@@ -601,8 +617,8 @@ function Mapa({
       center={[37.1773, -3.5986]}
       zoom={15}
       style={{
-        height: "80vh",
-        width: "80vw"
+        height: "100%",
+        width: "100%"
       }}
       whenCreated={(mapInstance) => {
         mapRef.current = mapInstance
