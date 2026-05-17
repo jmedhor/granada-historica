@@ -140,13 +140,9 @@ function App() {
                 Ruta historica (UGR)
               </button>
 
-            </div>
-
-            {/* -------------------------------- */}
-            {/* BOTON EVITAR PAGO */}
-            {/* -------------------------------- */}
-
-            <div className="toggle-group">
+              {/* -------------------------------- */}
+              {/* BOTON EVITAR PAGO */}
+              {/* -------------------------------- */}
 
               <button
                 className={evitarPago ? "toggle danger active" : "toggle danger"}
@@ -166,10 +162,6 @@ function App() {
         {/* --------------------------------------------------- */}
 
         <div className="header-ugr">
-
-          <span>
-            Bibliografia y datos aportados por la
-          </span>
 
           <a href="https://www.ugr.es">
 
