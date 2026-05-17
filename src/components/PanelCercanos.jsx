@@ -1,3 +1,5 @@
+import { coloresRuta } from "../utils/coloresRuta.js"
+
 function PanelCercanos({
 
   puntosCercanos,
@@ -59,12 +61,21 @@ function PanelCercanos({
 
         {puntosCercanos.map((punto) => (
 
-          <li
-            key={`${punto.id}-${punto.ruta_id}`}
-            onClick={() => irAPunto(punto)}
-          >
+            <li
+              key={`${punto.id}-${punto.ruta_id}`}
+              onClick={() => irAPunto(punto)}
 
-            <span className="paso-num">
+              style={{
+                background: coloresRuta[punto.ruta_id],
+                color: "white",
+                borderRadius: "10px",
+                marginBottom: "10px"
+              }}
+            >
+
+            <span
+              className="paso-num"
+            >
               📌
             </span>
 

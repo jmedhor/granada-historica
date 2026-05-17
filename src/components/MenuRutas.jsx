@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { coloresRuta } from '../utils/coloresRuta.js'
 
 function MenuRutas({
   rutaSeleccionada,
@@ -63,6 +64,14 @@ function MenuRutas({
                 ? "activa"
                 : ""
             }
+
+            style={{
+              background: coloresRuta[ruta.id],
+              color: "white",
+              borderRadius: "10px",
+              marginBottom: "10px",
+              fontWeight: "600"
+            }}
           >
 
             {/* Nombre de la ruta */}

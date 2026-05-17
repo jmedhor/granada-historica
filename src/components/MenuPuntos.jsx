@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { coloresRuta } from "../utils/coloresRuta.js"
 
 function MenuPuntos({
   ruta,
@@ -56,8 +57,13 @@ function MenuPuntos({
     <div className="menu-puntos">
 
       {/* Nombre de la ruta */}
-      <h3>{ruta.nombre}</h3>
-
+      <h3
+        style={{
+          color: coloresRuta[ruta.id]
+        }}
+      >
+        {ruta.nombre}
+      </h3>
       {/* Lista de puntos */}
       <ul>
 
@@ -66,8 +72,14 @@ function MenuPuntos({
           <li
             key={punto.id}
 
-            // Centrar mapa y abrir popup del punto
             onClick={() => mapRef.current.centrarYAbrir(punto)}
+
+            style={{
+              background: coloresRuta[punto.ruta_id],
+              color: "white",
+              borderRadius: "10px",
+              marginBottom: "10px"
+            }}
           >
 
             {/* Numero de orden de visita */}

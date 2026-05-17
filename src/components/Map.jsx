@@ -32,6 +32,8 @@ import FlechasRuta from './FlechasRuta.jsx'
 
 import PopupRuta from './Popup'
 
+import { coloresRuta } from '../utils/coloresRuta.js'
+
 import gpsRed from '../assets/gps_red.png'
 import gpsBlue from '../assets/gps_blue.png'
 import gpsOrange from '../assets/gps_orange.png'
@@ -96,21 +98,6 @@ const iconosRutas = {
   })
 
 }
-
-// ---------------------------------------------------
-// COLORES DE POLYLINES POR RUTA
-// ---------------------------------------------------
-
-const coloresRuta = {
-  1: "#e63946",
-  2: "#3a86ff",
-  3: "#f77f00",
-  4: "#2a9d8f",
-  5: "#ff4d8d",
-  6: "#222222",
-  7: "#8338ec"
-}
-
 
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
