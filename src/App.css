@@ -1290,3 +1290,35 @@ body{
 
   right: 20px;
 }
+
+/* -------------------------- */
+/* COLORES DE CLUSTER POR RUTA */
+/* -------------------------- */
+
+.cluster-ruta-1 .cluster-core {
+  background: linear-gradient(135deg, #e63946, #9b2226);
+}
+
+.cluster-ruta-2 .cluster-core {
+  background: linear-gradient(135deg, #3a86ff, #1d4ed8);
+}
+
+.cluster-ruta-3 .cluster-core {
+  background: linear-gradient(135deg, #f77f00, #d97706);
+}
+
+.cluster-ruta-4 .cluster-core {
+  background: linear-gradient(135deg, #2a9d8f, #0f766e);
+}
+
+.cluster-ruta-5 .cluster-core {
+  background: linear-gradient(135deg, #ff006e, #c9184a);
+}
+
+.cluster-ruta-6 .cluster-core {
+  background: linear-gradient(135deg, #222, #000);
+}
+
+.cluster-ruta-7 .cluster-core {
+  background: linear-gradient(135deg, #7209b7, #560bad);
+}
