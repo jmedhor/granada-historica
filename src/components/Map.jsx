@@ -416,7 +416,20 @@ function Mapa({
 
       .then(res => res.json())
 
-      .then(data => setTodosPuntos(data))
+      .then(data => {
+
+        const puntosActivos = data.filter(
+
+          punto =>
+
+            punto.activo === true &&
+            punto.ruta_activa === true
+
+        )
+
+        setTodosPuntos(puntosActivos)
+
+      })
 
       .catch(err => console.error(err))
 
@@ -448,9 +461,13 @@ function Mapa({
 
   const puntos = rutaSeleccionada
     ? todosPuntos.filter(
-        p => p.ruta_id === rutaSeleccionada.id
+        p =>
+          p.ruta_id === rutaSeleccionada.id &&
+          p.activo === true
       )
-    : todosPuntos
+    : todosPuntos.filter(
+        p => p.activo === true
+      )
 
   // ---------------------------------------------------
   // USA EL ORDEN CALCULADO SI EXISTE

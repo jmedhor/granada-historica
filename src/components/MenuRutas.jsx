@@ -23,9 +23,17 @@ function MenuRutas({
 
     fetch("http://localhost:8000/rutas")
       .then(res => res.json())
-      .then(data => setRutas(data))
-      .catch(err => console.error(err))
+      .then(data => {
 
+        const rutasActivas = data.filter(
+          ruta => ruta.activo === true
+        )
+
+        setRutas(rutasActivas)
+
+
+      })
+      .catch(err => console.error(err))
   }, [])
 
   // -----------------------------------------

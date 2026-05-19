@@ -9,6 +9,7 @@ class PuntoBase(BaseModel):
     pago: bool = False
     url: Optional[str] = None
     importancia: int = 5
+    activo: bool = True
 
 class PuntoOut(PuntoBase):
     id: int
@@ -20,6 +21,7 @@ class RutaBase(BaseModel):
     nombre: str
     descripcion: str = ""
     bibliografia: Optional[str] = "Información procedente de la facultad de historia por la Universidad de Granada"
+    activo: bool = True
 
 class RutaOut(RutaBase):
     id: int
