@@ -57,6 +57,38 @@ function PanelCercanos({
         </p>
       )}
 
+      {/* --------------------------------------------------- */}
+      {/* BOTON CREAR RUTA DESDE CERCANOS */}
+      {/* --------------------------------------------------- */}
+
+      {puntosCercanos.length > 0 && (
+
+        <div className="bloque-ruta-cercanos">
+
+          <button
+            className="btn-start"
+            onClick={() => {
+
+              if (mapRef.current?.crearRutaDesdeCercanos) {
+
+                mapRef.current.crearRutaDesdeCercanos(
+                  puntosCercanos
+                )
+
+              }
+
+            }}
+          >
+            🧭 Hacer ruta por puntos cercanos
+          </button>
+
+          {/* SEPARADOR VISUAL */}
+          <div className="separador-cercanos"></div>
+
+        </div>
+
+      )}
+
       <ul>
 
         {puntosCercanos.map((punto) => (

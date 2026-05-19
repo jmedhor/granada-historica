@@ -10,6 +10,6 @@ export const coloresRuta = {
   4: "#2a9d8f", // Verde
   5: "#ff4d8d", // Rosa
   6: "#222222", // Negro
-  7: "#8338ec"  // Morado
-
+  7: "#8338ec",  // Morado
+  cercanos: "#ff4d6d" // Especial
 }

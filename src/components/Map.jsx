@@ -104,6 +104,7 @@ const iconosRutas = {
   // ---------------------------------------------------
 
 
+
 // ---------------------------------------------------
 // CREAR ICONO CLUSTER
 // ---------------------------------------------------
@@ -150,7 +151,9 @@ function MapController({ setMapRef }) {
   const map = useMap()
 
   useEffect(() => {
+
     setMapRef(map)
+
   }, [map])
 
   return null
@@ -275,16 +278,18 @@ function Mapa({
   // Referencias a markers para abrir popups
   const markersRef = useRef({})
 
+
+
+
+
   // ---------------------------------------------------
   // FUNCION PARA CENTRAR Y ABRIR POPUP
   // ---------------------------------------------------
 
   const centrarYAbrir = (punto) => {
-
-    const marker = markersRef.current[punto.id]
-
-    // Centra el mapa
-    if (mapRef.current) {
+      const marker = markersRef.current[punto.id]
+      // Centra el mapa
+      if (mapRef.current) {
 
       mapRef.current.flyTo(
         [punto.latitud, punto.longitud],
@@ -296,6 +301,77 @@ function Mapa({
     // Abre popup automaticamente
     if (marker) {
       marker.openPopup()
+    }
+  }
+
+  // ---------------------------------------------------
+  // CREA RUTA DINAMICA DESDE PUNTOS CERCANOS
+  // ---------------------------------------------------
+
+  const crearRutaDesdePuntosCercanos = async (puntosSeleccionados) => {
+
+    // Seguridad
+    if (!puntosSeleccionados || puntosSeleccionados.length === 0) return
+
+    setCargandoRuta(true)
+
+    // --------------------------------
+    // SOLO RUTA OPTIMA
+    // --------------------------------
+
+    try{
+
+      let resultado = await obtenerRutaOptima(
+        puntosSeleccionados,
+        userLocation,
+        evitarPago
+      )
+
+      // --------------------------------
+      // GUARDAR SEGMENTOS Y ORDEN
+      // --------------------------------
+
+      setRutasSegmentos(resultado.legs)
+      setRutasSegmentosLocal(resultado.legs)
+      setOrdenPuntos(resultado.puntosOrdenados)
+
+      // --------------------------------
+      // CALCULAR DURACION
+      // --------------------------------
+
+      const tiempoTexto = calcularDuracionRuta(
+        resultado.legs,
+        resultado.puntosOrdenados
+      )
+
+      setDuracionRuta(tiempoTexto)
+
+      // --------------------------------
+      // ACTIVA RUTA VIRTUAL DE CERCANOS
+      // --------------------------------
+
+      setRutaSeleccionada({
+        id: "cercanos",
+        nombre: "Ruta de puntos cercanos"
+      })
+
+      setModoCercanos(false)
+
+    }
+
+    catch (err) {
+
+      console.error(
+        "Error creando ruta desde puntos cercanos:",
+        err
+      )
+
+    }
+
+    finally {
+
+      setCargandoRuta(false)
+
     }
   }
 
@@ -666,7 +742,14 @@ function Mapa({
 
           mapRef.current = map
 
+          // --------------------------------
+          // FUNCIONES GLOBALES DEL MAPA
+          // --------------------------------
+
           map.centrarYAbrir = centrarYAbrir
+
+          map.crearRutaDesdeCercanos =
+            crearRutaDesdePuntosCercanos
 
         }}
       />
