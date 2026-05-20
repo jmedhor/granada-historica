@@ -1,9 +1,14 @@
 # NazaRoute
 
+
 NazaRoute es una aplicación web de rutas turísticas históricas por la ciudad
 de Granada. Permite al usuario explorar puntos de interés cultural e histórico
 siguiendo rutas diseñadas con rigor académico, con información aportada por la
 Universidad de Granada (UGR).
+
+La aplicación combina mapas interactivos, cálculo de rutas reales mediante OSRM,
+filtrado dinámico de puntos turísticos y navegación paso a paso para ofrecer una
+experiencia inmersiva y adaptable al tiempo y preferencias del usuario.
 
 ---
 
@@ -21,48 +26,167 @@ Universidad de Granada (UGR).
 
 ---
 
-## Descripción general
+# Descripción general
 
 NazaRoute ofrece al usuario distintas rutas turísticas peatonales por Granada,
-con un fuerte enfoque en el contexto histórico de la ciudad. Cada punto de
-interés incluye información histórica detallada, bibliografía académica y
-opciones de navegación paso a paso.
+con un fuerte enfoque en el contexto histórico de la ciudad.
 
-En un futuro se contempla la expansión a otros medios de transporte
-y otras mejoras varias para mejorar la sensación general de la aplicacion.
+Cada punto de interés incluye:
+
+- Información histórica
+- Contexto ampliado en modo historiador
+- Bibliografía académica
+- Navegación paso a paso
+- Integración visual sobre mapa interactivo
+
+La aplicación permite además generar rutas dinámicas según:
+
+- Cercanía al usuario
+- Tiempo disponible
+- Exclusión de lugares de pago
+- Tipo de optimización de ruta
+
+Todo el sistema utiliza rutas reales calculadas sobre la red urbana mediante
+OSRM y OpenStreetMap.
 
 ---
 
-## Funcionalidades principales
+# Funcionalidades principales
 
-- Visualización de rutas históricas sobre mapa interactivo (Leaflet)
-- Dos modos de ruta: **orden histórico** y **ruta más corta** (algoritmo A*)
-- Navegación paso a paso por los puntos de interés
-- Filtro de lugares de pago y tiempo límite del usuario
-- Panel de bibliografía académica por ruta (UGR)
-- Detección de puntos de interés cercanos al usuario con posibilidad de ruta por los mismos
-- Modo historiador con información extendida en los popups
+## Rutas históricas interactivas
+
+- Visualización de rutas históricas sobre mapa interactivo
+- Integración completa con Leaflet
+- Segmentos de ruta reales mediante OSRM
+
+## Modos de cálculo de ruta
+
+La aplicación permite dos estrategias distintas:
+
+### Ruta más corta
+Optimiza automáticamente el recorrido para minimizar la distancia total.
+
+### Ruta histórica
+Respeta el orden histórico/académico definido por la UGR.
 
 ---
 
-## Tecnologías utilizadas
+## Navegación paso a paso
 
-### Frontend
-- React + Vite
-- Leaflet / react-leaflet
+- Visualización progresiva de segmentos
+- Flechas direccionales sobre el mapa
+- Centrado automático en el siguiente punto
+- Panel lateral de navegación
+
+---
+
+## Rutas dinámicas por cercanía
+
+El usuario puede generar rutas automáticas usando:
+
+- Su posición actual en el mapa
+- Puntos cercanos dentro de un radio configurable
+- Reordenación automática mediante OSRM
+
+---
+
+## Filtros avanzados
+
+### Evitar lugares de pago
+Excluye automáticamente puntos turísticos marcados como de pago.
+
+### Tiempo disponible
+El usuario puede indicar cuántas horas tiene disponibles y la aplicación:
+
+- Calcula duración estimada
+- Limita automáticamente la cantidad de puntos
+- Ajusta la ruta resultante dinámicamente
+
+---
+
+## Sistema de duración estimada
+
+La aplicación calcula:
+
+- Tiempo de trayecto real (OSRM)
+- Tiempo estimado de visita por punto
+- Duración total aproximada de la ruta
+
+---
+
+## Paneles interactivos
+
+### Panel de puntos
+Lista ordenada de puntos turísticos.
+
+### Panel de bibliografía
+Bibliografía académica asociada a cada ruta.
+
+### Panel de cercanos
+Visualización rápida de puntos próximos al usuario.
+
+---
+
+## Modo historiador
+
+Permite mostrar información histórica extendida dentro de los popups del mapa.
+
+---
+
+## Visualización avanzada de mapa
+
+- Clustering de marcadores
+- Marcadores personalizados por ruta
+- Numeración automática de puntos
+- Flechas de dirección
+- Popups enriquecidos
+- Centrado dinámico del mapa
+
+---
+
+# Tecnologías utilizadas
+
+## Frontend
+
+- React
+- Vite
+- Leaflet
+- react-leaflet
+- leaflet.markercluster
 - react-leaflet-cluster
 - leaflet-polylinedecorator
 
-### Backend
-- Python (FastAPI)
-- Base de datos con Postgre usando Supabase
+---
 
-### Enrutamiento
+## Backend
+
+- Python
+- FastAPI
+- SQLAlchemy
+- psycopg2
+- python-dotenv
+
+---
+
+## Base de datos
+
+- PostgreSQL
+- Supabase
+
+---
+
+## Enrutamiento
+
 - OSRM (Open Source Routing Machine)
-- Algoritmo A* propio para optimización del orden de visita
+- OpenStreetMap
+- Algoritmo A* personalizado
 
-### Infraestructura
-- Docker + Docker Compose
+---
+
+## Infraestructura
+
+- Docker
+- Docker Compose
 
 ---
 
@@ -77,8 +201,9 @@ nazaroute/
 │   │   │   ├── MenuRutas.jsx  # Lista de rutas disponibles
 │   │   │   ├── MenuPuntos.jsx # Lista de puntos de la ruta
 │   │   │   ├── PanelRuta.jsx  # Navegación paso a paso
-│   │   │   ├── PanelBibliografia.jsx
-│   │   │   └── PanelCercanos.jsx
+│   │   │   ├── PanelBibliografia.jsx # Menu bibliografia
+│   │   │   ├── Popup.jsx # Marcadores para cada punto
+│   │   │   └── PanelCercanos.jsx # Menu para puntos cercanos al usuario
 │   │   ├── services/
 │   │   │   ├── osrm.js        # Llamadas a la API de OSRM
 │   │   │   └── astar.js       # Algoritmo A*
@@ -86,7 +211,7 @@ nazaroute/
 │   │   ├── utils/
 │   │   │   ├── coloresRuta.js # Archivo con colores de cada ruta
 │   │   │   └── distancia.js   # Cálculo de distancias
-│   │   └── App.jsx
+│   │   └── App.jsx # Lógica principal de la aplicación
 │   └── App.css
 │
 ├── backend/                   # API Python (FastAPI)
