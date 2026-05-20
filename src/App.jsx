@@ -252,6 +252,13 @@ function App() {
                 {duracionRuta}
               </strong>
 
+              <button
+                className="cerrar-duracion"
+                onClick={() => setDuracionRuta(null)}
+              >
+                ✖
+              </button>
+
             </div>
 
           )}
