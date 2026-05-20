@@ -74,6 +74,12 @@ function App() {
   // Segmento actual mostrado durante navegacion
   const [segmentoActual, setSegmentoActual] = useState(0)
 
+  // Modo para superadministrador
+  const [modoSuperadmin, setModoSuperadmin] = useState(false)
+
+  // Modo para administrador historico
+  const [modoAdminHistorico, setModoAdminHistorico] = useState(false)
+
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
   // ---------------------------------------------------
@@ -119,10 +125,13 @@ function App() {
             Rutas historicas por la ciudad de Granada
           </span>
 
+
+
         </div>
 
         {/* CONTROLES CENTRALES */}
         <div className="header-right">
+
 
           <div className="selector-ruta">
 
@@ -205,6 +214,8 @@ function App() {
           </div>
 
         </div>
+
+
 
         {/* --------------------------------------------------- */}
         {/* BLOQUE UGR */}
