@@ -22,7 +22,7 @@ import 'leaflet-polylinedecorator'
 import {
   obtenerRutaHistorica,
   obtenerRutaOptima
-} from '../../services/osrm.js'
+} from '../services/osrm.js'
 
 import {
   calcularDistanciaMetros
@@ -34,17 +34,27 @@ import PopupRuta from './Popup'
 
 import { coloresRuta } from '../utils/coloresRuta.js'
 
-import gpsRed from '../assets/gps_red.png'
-import gpsBlue from '../assets/gps_blue.png'
-import gpsOrange from '../assets/gps_orange.png'
-import gpsGreen from '../assets/gps_green.png'
-import gpsPink from '../assets/gps_pink.png'
-import gpsBlack from '../assets/gps_black.png'
-import gpsPurple from '../assets/gps_purple.png'
+import gpsRed from '../../assets/gps_red.png'
+import gpsBlue from '../../assets/gps_blue.png'
+import gpsOrange from '../../assets/gps_orange.png'
+import gpsGreen from '../../assets/gps_green.png'
+import gpsPink from '../../assets/gps_pink.png'
+import gpsBlack from '../../assets/gps_black.png'
+import gpsPurple from '../../assets/gps_purple.png'
+import userMarker from '../../assets/userMarker.png'
+
 
 // ---------------------------------------------------
 // ICONOS DE MARCADORES POR RUTA
 // ---------------------------------------------------
+
+
+const marcadorUser = new L.Icon({
+  iconUrl: userMarker,
+  iconSize: [35, 35],
+  iconAnchor: [17, 35],
+  popupAnchor: [0, -35]
+})
 
 const iconosRutas = {
 
@@ -995,6 +1005,7 @@ function Mapa({
           userLocation.lat,
           userLocation.lon
         ]}
+        icon={marcadorUser}
       >
 
       </Marker>

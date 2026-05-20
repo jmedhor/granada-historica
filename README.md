@@ -204,6 +204,8 @@ nazaroute/
 │   │   │   ├── PanelBibliografia.jsx # Menu bibliografia
 │   │   │   ├── Popup.jsx # Marcadores para cada punto
 │   │   │   └── PanelCercanos.jsx # Menu para puntos cercanos al usuario
+│   │   │   └── FlechasRuta.jsx # Decoración para caminos de rutas
+|   |   |
 │   │   ├── services/
 │   │   │   ├── osrm.js        # Llamadas a la API de OSRM
 │   │   │   └── astar.js       # Algoritmo A*
@@ -211,17 +213,29 @@ nazaroute/
 │   │   ├── utils/
 │   │   │   ├── coloresRuta.js # Archivo con colores de cada ruta
 │   │   │   └── distancia.js   # Cálculo de distancias
-│   │   └── App.jsx # Lógica principal de la aplicación
-│   └── App.css
+|   |   |
+│   │   ├── App.jsx # Lógica principal de la aplicación
+│   |   ├── App.css # Estilos para la aplicacion
+│   |   ├── index.css # Estilos para la base de la aplicación
+│   |   └── main.jsx # Archivo raíz de la aplicación
+|   |
+|   ├──assets/ # Imagenes varias para la aplicación
+|   |
+│   └── package.json # Dependencias para instalación
 │
-├── backend/                   # API Python (FastAPI)
-│   └── main.py
+├── backend/                   # API Python (FastAPI) junto a B.D Postgre
+│   ├── main.py # Archivo principal de FastAPI
+│   ├── database.py # Funcion para obtener la base de datos
+│   ├── crud.py # Metodos para obtener la informacion de la BD
+│   ├── schemas.py # Definicion de los schemas para las clases de objetos
+│   └── models.py # Definicion de modelos para las clases de objetos
+
 │
 ├── docker/                    # Configuración Docker
 │   └── docker-compose.osrm.yml
 │
 └── osrm/                      # Datos y scripts de OSRM
-    ├── input/                 # ficheros .osm.pbf (no versionados)
+    ├── input/                 # (CREAR MANUALMENTE - Ver sección 4) ficheros .osm.pbf (no versionados)
     ├── walking/               # dataset OSRM para pie (no versionado)
     ├── prepare-osrm.sh        # script de preprocesado
     └── README.md

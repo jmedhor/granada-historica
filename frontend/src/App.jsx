@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 
 import './App.css'
 
-import logoUGR from './assets/logo-ugr.png'
+import logoUGR from '../assets/logo-ugr.png'
 
 import Mapa from './components/Map.jsx'
 import MenuRutas from './components/MenuRutas.jsx'
