@@ -5,7 +5,8 @@ function MenuPuntos({
   ruta,
   mapRef,
   evitarPago,
-  ordenPuntos
+  ordenPuntos,
+  puntosRutaVirtual
 }) {
 
   // -----------------------------------------
@@ -22,6 +23,11 @@ function MenuPuntos({
   useEffect(() => {
 
     if (!ruta) return
+
+    if(puntosRutaVirtual){
+      setPuntos(puntosRutaVirtual)
+      return
+    }
 
     fetch(`http://localhost:8000/rutas/${ruta.id}/puntos`)
       .then(res => res.json())

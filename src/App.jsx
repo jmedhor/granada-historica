@@ -400,6 +400,12 @@ function App() {
                     mapRef={mapRef}
                     evitarPago={evitarPago}
                     ordenPuntos={ordenPuntos}
+
+                    puntosRutaVirtual={
+                      rutaSeleccionada?.id === "cercanos"
+                        ? ordenPuntos
+                        : null
+                    }
                   />
 
                 )}
