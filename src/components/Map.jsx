@@ -364,6 +364,13 @@ function Mapa({
   // Referencias a markers para abrir popups
   const markersRef = useRef({})
 
+  // Referencia a userLocation actualizada en todo momento
+  const userLocationRef = useRef(userLocation)
+
+  useEffect(() => {
+    userLocationRef.current = userLocation
+  }, [userLocation])
+
 
 
 
@@ -410,7 +417,7 @@ function Mapa({
 
       let resultado = await obtenerRutaOptima(
         puntosSeleccionados,
-        userLocation,
+        userLocationRef.current,
         evitarPago
       )
 
@@ -718,7 +725,7 @@ function Mapa({
 
           resultado = await obtenerRutaHistorica(
             puntos,
-            userLocation,
+            userLocationRef.current,
             evitarPago
           )
 
@@ -732,7 +739,7 @@ function Mapa({
 
           resultado = await obtenerRutaOptima(
             puntos,
-            userLocation,
+            userLocationRef.current,
             evitarPago
           )
 
