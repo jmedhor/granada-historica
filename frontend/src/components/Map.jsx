@@ -371,6 +371,9 @@ function Mapa({
   // Datos bases para ruta dinamica por puntos cercanos
   const [rutaCercanosBase, setRutaCercanosBase] = useState(null)
 
+  // Mensaje para cuando no hay tiempo para hacer la ruta
+  const [mensajeTiempo, setMensajeTiempo] = useState(null)
+
   // Referencias a markers para abrir popups
   const markersRef = useRef({})
 
@@ -442,16 +445,46 @@ function Mapa({
 
       if (usarFiltroTiempo) {
 
+        let resultadoT
+
         puntosFinales = filtrarPuntosPorTiempo(
           resultado.puntosOrdenados,
           resultado.legs,
           horasDisponibles
         )
 
-        legsFinales = resultado.legs.slice(
-          0,
-          Math.max(0, puntosFinales.length - 1)
+        // --------------------------------
+        // NO HAY TIEMPO PARA NINGUN PUNTO
+        // --------------------------------
+
+        if (puntosFinales.length === 0) {
+
+          setMensajeTiempo(
+            "No dispones de tiempo suficiente para realizar esta ruta."
+          )
+
+          setOrdenPuntos([])
+          setRutasSegmentos([])
+          setRutasSegmentosLocal([])
+          setDuracionRuta(null)
+
+          return
+        }
+
+        // --------------------------------
+        // LIMPIAR MENSAJE SI TODO OK
+        // --------------------------------
+
+        setMensajeTiempo(null)
+
+        resultadoT = await obtenerRutaOptima(
+          puntosFinales,
+          userLocationRef.current,
+          evitarPago
         )
+
+        legsFinales = resultadoT.legs
+
       }
 
       // ---------------------------------------------------
@@ -591,6 +624,23 @@ function Mapa({
     setPuntosCercanos(cercanos)
 
   }, [userLocation, todosPuntos, modoCercanos, evitarPago])
+
+
+  // ---------------------------------------------------
+  // LIMPIA MENSAJE DE TIEMPO
+  // ---------------------------------------------------
+
+  useEffect(() => {
+
+    // Si no hay ruta seleccionada
+    // o el filtro esta desactivado
+    if (!rutaSeleccionada || !usarFiltroTiempo) {
+
+      setMensajeTiempo(null)
+
+    }
+
+  }, [rutaSeleccionada, usarFiltroTiempo])
 
   // ---------------------------------------------------
   // REDIMENSIONA EL MAPA AL OCULTAR/MOSTRAR PANEL
@@ -770,10 +820,53 @@ function Mapa({
             horasDisponibles
           )
 
-          legsFinales = resultado.legs.slice(
-            0,
-            Math.max(0, puntosFinales.length - 1)
-          )
+          // --------------------------------
+          // NO HAY TIEMPO PARA NINGUN PUNTO
+          // --------------------------------
+
+          if (puntosFinales.length === 0) {
+
+            setMensajeTiempo(
+              "No dispones de tiempo suficiente para realizar esta ruta."
+            )
+
+            setOrdenPuntos([])
+            setRutasSegmentos([])
+            setRutasSegmentosLocal([])
+            setDuracionRuta(null)
+
+            return
+          }
+
+          // --------------------------------
+          // LIMPIAR MENSAJE SI TODO OK
+          // --------------------------------
+
+          setMensajeTiempo(null)
+
+          let resultadoT
+
+          if (modoRuta === "historica" ) {
+
+            resultadoT = await obtenerRutaHistorica(
+              puntosFinales,
+              userLocationRef.current,
+              evitarPago
+            )
+
+          }
+          else {
+
+            resultadoT = await obtenerRutaOptima(
+              puntosFinales,
+              userLocationRef.current,
+              evitarPago
+            )
+
+          }
+
+          legsFinales = resultadoT.legs
+
         }
 
         // ---------------------------------------------------
@@ -910,6 +1003,16 @@ function Mapa({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
+
+      {/* MENSAJE DE TIEMPO */}
+      {mensajeTiempo && (
+
+        <div className="mensaje-tiempo">
+          ⏰ {mensajeTiempo}
+        </div>
+
+      )}
+
       {/* LOADING */}
       {cargandoRuta && (
 
@@ -918,6 +1021,8 @@ function Mapa({
         </div>
 
       )}
+
+
 
       {/* ------------------------------------------------ */}
       {/* BOTON PUNTOS CERCANOS */}

@@ -1409,3 +1409,33 @@ body{
 .cluster-ruta-7 .cluster-core {
   background: linear-gradient(135deg, #7209b7, #560bad);
 }
+
+/* ------------------------------------- */
+/* MENSAJE PARA CAUNDO NO HAY TIEMPO PARA HACER LA RUTA
+/* ------------------------------------- */
+
+.mensaje-tiempo {
+
+  position: absolute;
+
+  top: 70px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 2000;
+
+  background: #fff3cd;
+  color: #856404;
+
+  border: 1px solid #ffeaa7;
+
+  padding: 12px 18px;
+
+  border-radius: 12px;
+
+  font-weight: 600;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+
+}
