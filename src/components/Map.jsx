@@ -392,6 +392,7 @@ function Mapa({
 
   // ---------------------------------------------------
   // CREA RUTA DINAMICA DESDE PUNTOS CERCANOS
+  // TODO HACER QUE AFECTEN LOS FILTROS
   // ---------------------------------------------------
 
   const crearRutaDesdePuntosCercanos = async (puntosSeleccionados) => {

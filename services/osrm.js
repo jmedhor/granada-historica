@@ -5,7 +5,7 @@ import { calcularRutaAStar } from "./astar"
 // API usada para calcular rutas reales
 // ---------------------------------------------------
 
-const OSRM_BASE = "https://router.project-osrm.org"
+const OSRM_BASE = "http://localhost:5001"
 
 // ---------------------------------------------------
 // RUTA HISTORICA
