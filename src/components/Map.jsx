@@ -219,6 +219,86 @@ function calcularDuracionRuta(legs, puntosOrdenados) {
 }
 
 // ---------------------------------------------------
+// CALCULA TIEMPO TOTAL DE RUTA EN SEGUNDOS
+// ---------------------------------------------------
+
+function calcularTiempoTotalRuta(legs, puntosOrdenados) {
+
+  // --------------------------------
+  // SEGUNDOS DE TRAYECTO (OSRM)
+  // --------------------------------
+
+  const segundosTrayecto = legs.reduce(
+    (acc, leg) => acc + leg.duration,
+    0
+  )
+
+  // --------------------------------
+  // SEGUNDOS DE VISITA (15 MIN POR PUNTO)
+  // --------------------------------
+
+  const segundosVisita =
+    puntosOrdenados.length * 15 * 60
+
+  // --------------------------------
+  // TOTAL
+  // --------------------------------
+
+  return segundosTrayecto + segundosVisita
+}
+
+// ---------------------------------------------------
+// FILTRA PUNTOS SEGUN TIEMPO DISPONIBLE
+// ---------------------------------------------------
+
+function filtrarPuntosPorTiempo(
+  puntosOrdenados,
+  legs,
+  horasDisponibles
+) {
+
+  const maxSegundos = horasDisponibles * 3600
+
+  let acumulado = 0
+  const resultado = []
+
+  // --------------------------------
+  // RECORRER PUNTOS EN ORDEN
+  // --------------------------------
+
+  for (let i = 0; i < puntosOrdenados.length; i++) {
+
+    const punto = puntosOrdenados[i]
+
+    // --------------------------------
+    // TIEMPO VISITA (15 MIN)
+    // --------------------------------
+
+    acumulado += 15 * 60
+
+    // --------------------------------
+    // TIEMPO TRAYECTO
+    // --------------------------------
+
+    if (legs[i]) {
+      acumulado += legs[i].duration
+    }
+
+    // --------------------------------
+    // SI SUPERA TIEMPO -> STOP
+    // --------------------------------
+
+    if (acumulado > maxSegundos) {
+      break
+    }
+
+    resultado.push(punto)
+  }
+
+  return resultado
+}
+
+// ---------------------------------------------------
 // COMPONENTE PRINCIPAL DEL MAPA
 // ---------------------------------------------------
 
@@ -254,7 +334,10 @@ function Mapa({
   modoNavegacion,
   segmentoActual,
 
-  mostrarPanel
+  mostrarPanel,
+
+  usarFiltroTiempo,
+  horasDisponibles
 
 
 }) {
@@ -274,6 +357,9 @@ function Mapa({
     lat: 37.1773,
     lon: -3.5986
   })
+
+  // Datos bases para ruta dinamica por puntos cercanos
+  const [rutaCercanosBase, setRutaCercanosBase] = useState(null)
 
   // Referencias a markers para abrir popups
   const markersRef = useRef({})
@@ -327,21 +413,45 @@ function Mapa({
         evitarPago
       )
 
-      // --------------------------------
-      // GUARDAR SEGMENTOS Y ORDEN
-      // --------------------------------
+      setRutaCercanosBase(resultado)
 
-      setRutasSegmentos(resultado.legs)
-      setRutasSegmentosLocal(resultado.legs)
-      setOrdenPuntos(resultado.puntosOrdenados)
+      // ---------------------------------------------------
+      // APLICAR FILTRO DE TIEMPO (SI ESTA ACTIVO)
+      // ---------------------------------------------------
+
+      let puntosFinales = resultado.puntosOrdenados
+      let legsFinales = resultado.legs
+
+      if (usarFiltroTiempo) {
+
+        puntosFinales = filtrarPuntosPorTiempo(
+          resultado.puntosOrdenados,
+          resultado.legs,
+          horasDisponibles
+        )
+
+        legsFinales = resultado.legs.slice(
+          0,
+          Math.max(0, puntosFinales.length - 1)
+        )
+      }
+
+      // ---------------------------------------------------
+      // GUARDAR RESULTADO FINAL
+      // ---------------------------------------------------
+
+      setOrdenPuntos(puntosFinales)
+      setRutasSegmentos(legsFinales)
+      setRutasSegmentosLocal(legsFinales)
+
 
       // --------------------------------
       // CALCULAR DURACION
       // --------------------------------
 
       const tiempoTexto = calcularDuracionRuta(
-        resultado.legs,
-        resultado.puntosOrdenados
+        legsFinales,
+        puntosFinales
       )
 
       setDuracionRuta(tiempoTexto)
@@ -464,7 +574,6 @@ function Mapa({
 
   }, [userLocation, todosPuntos, modoCercanos, evitarPago])
 
-
   // ---------------------------------------------------
   // REDIMENSIONA EL MAPA AL OCULTAR/MOSTRAR PANEL
   // ---------------------------------------------------
@@ -475,7 +584,6 @@ function Mapa({
         mapRef.current.invalidateSize()
       }
     }, 50)
-    console.log("cambiaa")
   }, [mostrarPanel])
 
   // ---------------------------------------------------
@@ -629,23 +737,42 @@ function Mapa({
 
         }
 
-        // --------------------------------
-        // GUARDA SEGMENTOS Y ORDEN
-        // --------------------------------
+        // ---------------------------------------------------
+        // APLICAR FILTRO DE TIEMPO (SI ESTA ACTIVO)
+        // ---------------------------------------------------
 
-        setRutasSegmentos(resultado.legs)
+        let puntosFinales = resultado.puntosOrdenados
+        let legsFinales = resultado.legs
 
-        setRutasSegmentosLocal(resultado.legs)
+        if (usarFiltroTiempo) {
 
-        setOrdenPuntos(resultado.puntosOrdenados)
+          puntosFinales = filtrarPuntosPorTiempo(
+            resultado.puntosOrdenados,
+            resultado.legs,
+            horasDisponibles
+          )
+
+          legsFinales = resultado.legs.slice(
+            0,
+            Math.max(0, puntosFinales.length - 1)
+          )
+        }
+
+        // ---------------------------------------------------
+        // GUARDAR RESULTADO FINAL
+        // ---------------------------------------------------
+
+        setOrdenPuntos(puntosFinales)
+        setRutasSegmentos(legsFinales)
+        setRutasSegmentosLocal(legsFinales)
 
         // --------------------------------
         // CALCULA DURACION APROXIMADA
         // --------------------------------
 
         const tiempoTexto = calcularDuracionRuta(
-          resultado.legs,
-          resultado.puntosOrdenados
+          legsFinales,
+          puntosFinales
         )
 
         setDuracionRuta(tiempoTexto)
@@ -675,7 +802,9 @@ function Mapa({
     todosPuntos,
     modoRuta,
     userLocation,
-    evitarPago
+    evitarPago,
+    usarFiltroTiempo,
+    horasDisponibles,
   ])
 
   // ---------------------------------------------------

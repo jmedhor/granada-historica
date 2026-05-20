@@ -42,6 +42,12 @@ function App() {
   // Estado para evitar lugares de pago
   const [evitarPago, setEvitarPago] = useState(false)
 
+  // Activa o desactiva el filtro de tiempo
+  const [usarFiltroTiempo, setUsarFiltroTiempo] = useState(false)
+
+  // Horas disponibles para la ruta (1-7)
+  const [horasDisponibles, setHorasDisponibles] = useState(3)
+
   // Estado para ocultar o mostrar el panel derecho
   // Actualmente siempre esta activo
   const [mostrarPanel, setMostrarPanel] = useState(true)
@@ -151,6 +157,49 @@ function App() {
                 Evitar lugares de pago
               </button>
 
+              {/* ------------------------------------------------ */}
+              {/* FILTRO DE TIEMPO DISPONIBLE */}
+              {/* ------------------------------------------------ */}
+
+              <div className="toggle-group">
+
+                <button
+                  className={
+                    usarFiltroTiempo
+                      ? "toggle danger active"
+                      : "toggle danger"
+                  }
+                  onClick={() =>
+                    setUsarFiltroTiempo(!usarFiltroTiempo)
+                  }
+                >
+                  ⏱️ Tengo {horasDisponibles}h disponibles
+                </button>
+
+                {usarFiltroTiempo && (
+                  <select
+                    className="toggle"
+                    value={horasDisponibles}
+                    onChange={(e) =>
+                      setHorasDisponibles(
+                        Number(e.target.value)
+                      )
+                    }
+                  >
+
+                    <option value={1}>1 hora</option>
+                    <option value={2}>2 horas</option>
+                    <option value={3}>3 horas</option>
+                    <option value={4}>4 horas</option>
+                    <option value={5}>5 horas</option>
+                    <option value={6}>6 horas</option>
+                    <option value={7}>7 horas</option>
+
+                  </select>
+                )}
+
+              </div>
+
             </div>
 
           </div>
@@ -243,6 +292,9 @@ function App() {
             segmentoActual={segmentoActual}
 
             mostrarPanel={mostrarPanel}
+
+            usarFiltroTiempo={usarFiltroTiempo}
+            horasDisponibles={horasDisponibles}
 
           />
 
