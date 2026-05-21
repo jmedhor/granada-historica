@@ -417,6 +417,10 @@ function Mapa({
 
   const crearRutaDesdePuntosCercanos = async (puntosSeleccionados) => {
 
+    if(cargandoRuta){
+      return
+    }
+
     // Seguridad
     if (!puntosSeleccionados || puntosSeleccionados.length === 0) return
 
@@ -434,7 +438,7 @@ function Mapa({
         evitarPago
       )
 
-      setRutaCercanosBase(resultado)
+      setRutaCercanosBase(puntosSeleccionados)
 
       // ---------------------------------------------------
       // APLICAR FILTRO DE TIEMPO (SI ESTA ACTIVO)
@@ -511,9 +515,17 @@ function Mapa({
       // ACTIVA RUTA VIRTUAL DE CERCANOS
       // --------------------------------
 
-      setRutaSeleccionada({
-        id: "cercanos",
-        nombre: "Ruta de puntos cercanos"
+      setRutaSeleccionada(prev => {
+
+        if (prev?.id === "cercanos") {
+          return prev
+        }
+
+        return {
+          id: "cercanos",
+          nombre: "Ruta de puntos cercanos"
+        }
+
       })
 
       setModoCercanos(false)
@@ -538,24 +550,37 @@ function Mapa({
 
   // ---------------------------------------------------
   // BUSCA PUNTOS CERCANOS AL USUARIO
+  // APLICANDO FILTROS ACTIVOS
   // ---------------------------------------------------
 
-  const buscarPuntosCercanos = () => {
+  const buscarPuntosCercanos = async () => {
 
-    // Radio maximo
+    // --------------------------------
+    // RADIO MAXIMO
+    // --------------------------------
+
     const RADIO_METROS = 350
 
-    // Filtra puntos cercanos
+    // --------------------------------
+    // FILTRAR PUNTOS CERCANOS
+    // + FILTRO EVITAR PAGO
+    // --------------------------------
+
     const cercanos = todosPuntos.filter(
 
       (punto) => {
 
-      // Filtro de puntos de pago
+        // -----------------------------
+        // FILTRO PUNTOS DE PAGO
+        // -----------------------------
 
-      if (evitarPago && punto.pago) {
-        return false
-      }
+        if (evitarPago && punto.pago) {
+          return false
+        }
 
+        // -----------------------------
+        // CALCULO DISTANCIA
+        // -----------------------------
 
         const distancia =
           calcularDistanciaMetros(
@@ -572,13 +597,22 @@ function Mapa({
 
     )
 
-    // Guarda resultado
+    // --------------------------------
+    // GUARDAR PUNTOS CERCANOS
+    // --------------------------------
+
     setPuntosCercanos(cercanos)
 
-    // Activa panel
+    // --------------------------------
+    // ACTIVAR PANEL CERCANOS
+    // --------------------------------
+
     setModoCercanos(true)
 
-    // Centra mapa
+    // --------------------------------
+    // CENTRAR MAPA
+    // --------------------------------
+
     if (mapRef.current) {
 
       mapRef.current.flyTo(
@@ -590,6 +624,23 @@ function Mapa({
       )
 
     }
+
+    // --------------------------------
+    // SI NO HAY PUNTOS -> STOP
+    // --------------------------------
+
+    if (cercanos.length === 0) {
+      return
+    }
+
+    // --------------------------------
+    // CREAR RUTA DIRECTAMENTE
+    // YA CON FILTROS APLICADOS
+    // --------------------------------
+
+    await crearRutaDesdePuntosCercanos(
+      cercanos
+    )
   }
 
   // ---------------------------------------------------
@@ -625,6 +676,52 @@ function Mapa({
 
   }, [userLocation, todosPuntos, modoCercanos, evitarPago])
 
+
+  // ---------------------------------------------------
+  // RECALCULA RUTA DINAMICA DE CERCANOS
+  // CUANDO CAMBIAN LOS FILTROS
+  // ---------------------------------------------------
+
+  useEffect(() => {
+
+    // --------------------------------
+    // SOLO SI EXISTE RUTA DE CERCANOS
+    // --------------------------------
+
+    if (
+      !rutaSeleccionada ||
+      rutaSeleccionada.id !== "cercanos"
+    ) {
+      return
+    }
+
+    // --------------------------------
+    // SEGURIDAD
+    // --------------------------------
+
+    if (
+      !rutaCercanosBase ||
+      rutaCercanosBase.length === 0
+    ) {
+      return
+    }
+
+    // --------------------------------
+    // RECALCULAR RUTA
+    // --------------------------------
+
+    crearRutaDesdePuntosCercanos(
+      rutaCercanosBase
+    )
+
+  }, [
+
+    evitarPago,
+    usarFiltroTiempo,
+    horasDisponibles,
+    userLocation
+
+  ])
 
   // ---------------------------------------------------
   // LIMPIA MENSAJE DE TIEMPO
