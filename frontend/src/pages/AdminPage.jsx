@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { getRutas } from "../services/api.js"
 import RutasList from "../components/admin/RutasList.jsx"
-import RutasListHistoriador from "../components/admin/RutasListHistoriador.jsx"
 import PuntosList from "../components/admin/PuntosList.jsx"
 import PuntosDeRuta from "../components/admin/PuntosDeRuta.jsx"
 
@@ -22,7 +21,6 @@ function AdminPage() {
   const [errorPin, setErrorPin] = useState(false)
 
   // Tabs superadmin: "rutas" | "puntos"
-  // Tabs historiador: "puntos" | "bibliografia"
   const [tab, setTab] = useState("rutas")
 
   // Ruta cuya lista de puntos se está gestionando (superadmin)
@@ -47,7 +45,7 @@ function AdminPage() {
       setErrorPin(false)
     } else if (pin === PIN_HISTORIADOR) {
       setRol("historiador")
-      setTab("puntos")
+      setTab("rutas")
       setErrorPin(false)
     } else {
       setErrorPin(true)
@@ -102,18 +100,13 @@ function AdminPage() {
   // Panel admin
   // -----------------------------------------
 
-  // Tabs según el rol
-  const tabsSuperadmin = [
+  // Tabs
+  const tabsAdmin = [
     { id: "rutas",  label: "🗺️ Rutas" },
     { id: "puntos", label: "📍 Todos los puntos" },
   ]
 
-  const tabsHistoriador = [
-    { id: "puntos",       label: "📍 Puntos" },
-    { id: "bibliografia", label: "📚 Bibliografía" },
-  ]
 
-  const tabs = rol === "superadmin" ? tabsSuperadmin : tabsHistoriador
 
   return (
     <div className="admin-page">
@@ -132,7 +125,7 @@ function AdminPage() {
           {/* Tabs: ocultar cuando se gestiona puntos de una ruta */}
           {!rutaGestionando && (
             <div className="admin-tabs">
-              {tabs.map(t => (
+              {tabsAdmin.map(t => (
                 <button
                   key={t.id}
                   className={tab === t.id ? "admin-tab active" : "admin-tab"}
@@ -169,6 +162,7 @@ function AdminPage() {
         {/* ---- SUPERADMIN: lista rutas ---- */}
         {rol === "superadmin" && !rutaGestionando && tab === "rutas" && (
           <RutasList
+            rol={rol}
             onGestionarPuntos={setRutaGestionando}
           />
         )}
@@ -178,15 +172,20 @@ function AdminPage() {
           <PuntosList rol="superadmin" />
         )}
 
-        {/* ---- HISTORIADOR: puntos ---- */}
+        {/* ---- HISTORIADOR: bibliografia de rutas ---- */}
+        {rol === "historiador" && tab === "rutas" && (
+          <RutasList
+            rol={rol}
+            onGestionarPuntos={setRutaGestionando}
+          />
+        )}
+
+        {/* ---- HISTORIADOR: todos los puntos ---- */}
         {rol === "historiador" && tab === "puntos" && (
           <PuntosList rol="historiador" />
         )}
 
-        {/* ---- HISTORIADOR: bibliografía ---- */}
-        {rol === "historiador" && tab === "bibliografia" && (
-          <RutasListHistoriador />
-        )}
+
 
       </main>
 

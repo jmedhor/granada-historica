@@ -6,11 +6,14 @@ import ConfirmModal from "./ConfirmModal.jsx"
 // ---------------------------------------------------
 // LISTA DE RUTAS CON CRUD
 // Props:
+//   rol               - "superadmin" | "historiador"
 //   onGestionarPuntos - callback(ruta) para abrir
-//                       el gestor de puntos de esa ruta
+//                       el gestor de puntos (solo superadmin)
 // ---------------------------------------------------
 
-function RutasList({ onGestionarPuntos }) {
+function RutasList({ rol, onGestionarPuntos }) {
+
+  const esSuperadmin = rol === "superadmin"
 
   const [rutas, setRutas] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -63,9 +66,11 @@ function RutasList({ onGestionarPuntos }) {
 
       <div className="admin-seccion-header">
         <h2>🗺️ Rutas</h2>
-        <button className="btn-admin-nuevo" onClick={() => setFormRuta({})}>
-          + Nueva ruta
-        </button>
+        {esSuperadmin && (
+          <button className="btn-admin-nuevo" onClick={() => setFormRuta({})}>
+            + Nueva ruta
+          </button>
+        )}
       </div>
 
       <table className="admin-tabla">
@@ -87,32 +92,36 @@ function RutasList({ onGestionarPuntos }) {
               <td>{ruta.puntos?.length ?? 0}</td>
               <td className="admin-acciones">
 
-                {/* Gestionar puntos de esta ruta */}
-                <button
-                  className="btn-admin-puntos"
-                  onClick={() => onGestionarPuntos(ruta)}
-                  title="Gestionar puntos"
-                >
-                  📍
-                </button>
+                {/* Gestionar puntos: solo superadmin */}
+                {esSuperadmin && (
+                  <button
+                    className="btn-admin-puntos"
+                    onClick={() => onGestionarPuntos(ruta)}
+                    title="Gestionar puntos"
+                  >
+                    📍
+                  </button>
+                )}
 
-                {/* Editar ruta */}
+                {/* Editar ruta (superadmin) o bibliografia (historiador) */}
                 <button
                   className="btn-admin-editar"
                   onClick={() => setFormRuta(ruta)}
-                  title="Editar ruta"
+                  title={esSuperadmin ? "Editar ruta" : "Editar bibliografía"}
                 >
                   ✏️
                 </button>
 
-                {/* Borrar ruta */}
-                <button
-                  className="btn-admin-borrar"
-                  onClick={() => setRutaABorrar(ruta)}
-                  title="Borrar ruta"
-                >
-                  🗑️
-                </button>
+                {/* Borrar ruta: solo superadmin */}
+                {esSuperadmin && (
+                  <button
+                    className="btn-admin-borrar"
+                    onClick={() => setRutaABorrar(ruta)}
+                    title="Borrar ruta"
+                  >
+                    🗑️
+                  </button>
+                )}
 
               </td>
             </tr>
@@ -125,6 +134,7 @@ function RutasList({ onGestionarPuntos }) {
           rutaInicial={formRuta?.id ? formRuta : null}
           onGuardar={handleGuardar}
           onCancelar={() => setFormRuta(null)}
+          rol={rol}
         />
       )}
 

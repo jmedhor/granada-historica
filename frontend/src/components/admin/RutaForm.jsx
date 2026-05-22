@@ -7,9 +7,13 @@ import { useState, useEffect } from "react"
 //   rutaInicial - objeto ruta si es edicion, null si es creacion
 //   onGuardar   - callback con los datos del formulario
 //   onCancelar  - callback para cerrar el formulario
+//   rol         - "superadmin" | "historiador"
+//                 historiador solo ve el campo bibliografia
 // ---------------------------------------------------
 
-function RutaForm({ rutaInicial, onGuardar, onCancelar }) {
+function RutaForm({ rutaInicial, onGuardar, onCancelar, rol }) {
+
+  const esSuperadmin = rol === "superadmin"
 
   // -----------------------------------------
   // Estado del formulario
@@ -67,30 +71,40 @@ function RutaForm({ rutaInicial, onGuardar, onCancelar }) {
       <div className="admin-form-box">
 
         <h3 className="admin-form-titulo">
-          {rutaInicial ? "✏️ Editar ruta" : "➕ Nueva ruta"}
+          {esSuperadmin
+            ? (rutaInicial ? "✏️ Editar ruta" : "➕ Nueva ruta")
+            : `📚 Bibliografía: ${rutaInicial?.nombre || ""}`}
         </h3>
 
         <form onSubmit={handleSubmit}>
 
-          {/* NOMBRE */}
-          <label className="admin-label">Nombre</label>
-          <input
-            className="admin-input"
-            name="nombre"
-            value={form.nombre}
-            onChange={handleChange}
-            required
-          />
+          {/* NOMBRE - solo superadmin */}
+          {esSuperadmin && (
+            <>
+              <label className="admin-label">Nombre</label>
+              <input
+                className="admin-input"
+                name="nombre"
+                value={form.nombre}
+                onChange={handleChange}
+                required
+              />
+            </>
+          )}
 
-          {/* DESCRIPCION */}
-          <label className="admin-label">Descripción</label>
-          <textarea
-            className="admin-textarea"
-            name="descripcion"
-            value={form.descripcion}
-            onChange={handleChange}
-            rows={3}
-          />
+          {/* DESCRIPCION - solo superadmin */}
+          {esSuperadmin && (
+            <>
+              <label className="admin-label">Descripción</label>
+              <textarea
+                className="admin-textarea"
+                name="descripcion"
+                value={form.descripcion}
+                onChange={handleChange}
+                rows={3}
+              />
+            </>
+          )}
 
           {/* BIBLIOGRAFIA */}
           <label className="admin-label">Bibliografía</label>
@@ -102,16 +116,18 @@ function RutaForm({ rutaInicial, onGuardar, onCancelar }) {
             rows={5}
           />
 
-          {/* ACTIVO */}
-          <label className="admin-label-check">
-            <input
-              type="checkbox"
-              name="activo"
-              checked={form.activo}
-              onChange={handleChange}
-            />
-            Ruta activa (visible en el mapa)
-          </label>
+          {/* ACTIVO - solo superadmin */}
+          {esSuperadmin && (
+            <label className="admin-label-check">
+              <input
+                type="checkbox"
+                name="activo"
+                checked={form.activo}
+                onChange={handleChange}
+              />
+              Ruta activa (visible en el mapa)
+            </label>
+          )}
 
           {/* BOTONES */}
           <div className="admin-form-acciones">
