@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import './App.css'
 
@@ -22,6 +23,9 @@ function App() {
 
   // Referencia al mapa de Leaflet
   const mapRef = useRef()
+
+  // Para react router
+  const navigate = useNavigate()
 
   // Estado para activar informacion historica extra
   const [modoHistoriador, setModoHistoriador] = useState(false)
@@ -125,12 +129,17 @@ function App() {
             Rutas historicas por la ciudad de Granada
           </span>
 
-
-
         </div>
 
         {/* CONTROLES CENTRALES */}
         <div className="header-right">
+
+          <button
+            className="btn-admin"
+            onClick={() => navigate('/admin')}
+          >
+            Admin
+          </button>
 
 
           <div className="selector-ruta">

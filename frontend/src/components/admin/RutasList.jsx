@@ -1,0 +1,143 @@
+import { useState, useEffect } from "react"
+import { getRutas, createRuta, updateRuta, deleteRuta } from "../../services/api.js"
+import RutaForm from "./RutaForm.jsx"
+import ConfirmModal from "./ConfirmModal.jsx"
+
+// ---------------------------------------------------
+// LISTA DE RUTAS CON CRUD
+// Props:
+//   onGestionarPuntos - callback(ruta) para abrir
+//                       el gestor de puntos de esa ruta
+// ---------------------------------------------------
+
+function RutasList({ onGestionarPuntos }) {
+
+  const [rutas, setRutas] = useState([])
+  const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState(null)
+  const [formRuta, setFormRuta] = useState(null)
+  const [rutaABorrar, setRutaABorrar] = useState(null)
+
+  useEffect(() => { cargarRutas() }, [])
+
+  const cargarRutas = async () => {
+    try {
+      setCargando(true)
+      setRutas(await getRutas())
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setCargando(false)
+    }
+  }
+
+  const handleGuardar = async (datos) => {
+    try {
+      if (formRuta?.id) {
+        await updateRuta(formRuta.id, datos)
+      } else {
+        await createRuta(datos)
+      }
+      setFormRuta(null)
+      cargarRutas()
+    } catch (e) {
+      alert("Error al guardar: " + e.message)
+    }
+  }
+
+  const handleBorrar = async () => {
+    try {
+      await deleteRuta(rutaABorrar.id)
+      setRutaABorrar(null)
+      cargarRutas()
+    } catch (e) {
+      alert("Error al borrar: " + e.message)
+    }
+  }
+
+  if (cargando) return <p className="admin-info">Cargando rutas...</p>
+  if (error)    return <p className="admin-error">{error}</p>
+
+  return (
+    <div className="admin-seccion">
+
+      <div className="admin-seccion-header">
+        <h2>🗺️ Rutas</h2>
+        <button className="btn-admin-nuevo" onClick={() => setFormRuta({})}>
+          + Nueva ruta
+        </button>
+      </div>
+
+      <table className="admin-tabla">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Activa</th>
+            <th>Puntos</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rutas.map(ruta => (
+            <tr key={ruta.id}>
+              <td>{ruta.id}</td>
+              <td>{ruta.nombre}</td>
+              <td>{ruta.activo ? "✅" : "❌"}</td>
+              <td>{ruta.puntos?.length ?? 0}</td>
+              <td className="admin-acciones">
+
+                {/* Gestionar puntos de esta ruta */}
+                <button
+                  className="btn-admin-puntos"
+                  onClick={() => onGestionarPuntos(ruta)}
+                  title="Gestionar puntos"
+                >
+                  📍
+                </button>
+
+                {/* Editar ruta */}
+                <button
+                  className="btn-admin-editar"
+                  onClick={() => setFormRuta(ruta)}
+                  title="Editar ruta"
+                >
+                  ✏️
+                </button>
+
+                {/* Borrar ruta */}
+                <button
+                  className="btn-admin-borrar"
+                  onClick={() => setRutaABorrar(ruta)}
+                  title="Borrar ruta"
+                >
+                  🗑️
+                </button>
+
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {formRuta !== null && (
+        <RutaForm
+          rutaInicial={formRuta?.id ? formRuta : null}
+          onGuardar={handleGuardar}
+          onCancelar={() => setFormRuta(null)}
+        />
+      )}
+
+      {rutaABorrar && (
+        <ConfirmModal
+          mensaje={`¿Borrar la ruta "${rutaABorrar.nombre}"? Esta acción no se puede deshacer.`}
+          onConfirm={handleBorrar}
+          onCancel={() => setRutaABorrar(null)}
+        />
+      )}
+
+    </div>
+  )
+}
+
+export default RutasList
