@@ -88,7 +88,7 @@ function RutasList({ rol, onGestionarPuntos }) {
             <tr key={ruta.id}>
               <td>{ruta.id}</td>
               <td>{ruta.nombre}</td>
-              <td>{ruta.activo ? "✅" : "❌"}</td>
+              <td>{ruta.activo ? "Activa" : "No activa"}</td>
               <td>{ruta.puntos?.length ?? 0}</td>
               <td className="admin-acciones">
 
@@ -99,7 +99,7 @@ function RutasList({ rol, onGestionarPuntos }) {
                     onClick={() => onGestionarPuntos(ruta)}
                     title="Gestionar puntos"
                   >
-                    📍
+                    Puntos
                   </button>
                 )}
 
@@ -109,7 +109,7 @@ function RutasList({ rol, onGestionarPuntos }) {
                   onClick={() => setFormRuta(ruta)}
                   title={esSuperadmin ? "Editar ruta" : "Editar bibliografía"}
                 >
-                  ✏️
+                  Editar
                 </button>
 
                 {/* Borrar ruta: solo superadmin */}
@@ -119,7 +119,7 @@ function RutasList({ rol, onGestionarPuntos }) {
                     onClick={() => setRutaABorrar(ruta)}
                     title="Borrar ruta"
                   >
-                    🗑️
+                    Borrar
                   </button>
                 )}
 

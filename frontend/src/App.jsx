@@ -53,7 +53,6 @@ function App() {
   const [horasDisponibles, setHorasDisponibles] = useState(3)
 
   // Estado para ocultar o mostrar el panel derecho
-  // Actualmente siempre esta activo
   const [mostrarPanel, setMostrarPanel] = useState(true)
 
   // Estado para visualizar bibliografia
@@ -77,12 +76,6 @@ function App() {
 
   // Segmento actual mostrado durante navegacion
   const [segmentoActual, setSegmentoActual] = useState(0)
-
-  // Modo para superadministrador
-  const [modoSuperadmin, setModoSuperadmin] = useState(false)
-
-  // Modo para administrador historico
-  const [modoAdminHistorico, setModoAdminHistorico] = useState(false)
 
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
@@ -191,7 +184,7 @@ function App() {
                     setUsarFiltroTiempo(!usarFiltroTiempo)
                   }
                 >
-                  ⏱️ Tengo {horasDisponibles}h disponibles
+                  Tiempo disponible: {horasDisponibles}h
                 </button>
 
                 {usarFiltroTiempo && (
@@ -266,7 +259,7 @@ function App() {
 
             <div className="duracion-ruta-box">
 
-              ⏱️ Duracion aproximada de la ruta:
+              Duracion aproximada de la ruta:
 
               <strong>
                 {duracionRuta}
@@ -276,7 +269,7 @@ function App() {
                 className="cerrar-duracion"
                 onClick={() => setDuracionRuta(null)}
               >
-                ✖
+                X
               </button>
 
             </div>
@@ -424,7 +417,7 @@ function App() {
 
                   }}
                 >
-                  🧭 Comenzar ruta
+                  Comenzar ruta
                 </button>
 
               )}
@@ -436,7 +429,7 @@ function App() {
                   className="btn-start-bib"
                   onClick={() => setModoBibliografia(true)}
                 >
-                  📚 Visualizar bibliografia
+                  Visualizar bibliografia
                 </button>
 
               )}

@@ -10,7 +10,7 @@ function PanelBibliografia({ ruta }) {
 
       <div className="panel-bibliografia">
 
-        <h3>📚 Bibliografía</h3>
+        <h3>Bibliografía</h3>
 
         <div className="no-cercanos">
           Selecciona una ruta para visualizar

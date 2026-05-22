@@ -59,9 +59,9 @@ function FilaPunto({ punto, onEditar, onQuitar }) {
 
       <td>{punto.id}</td>
       <td>{punto.nombre}</td>
-      <td>{punto.pago ? "💰" : "🆓"}</td>
+      <td>{punto.pago ? "Pago" : "Gratis"}</td>
       <td>{punto.importancia}</td>
-      <td>{punto.activo ? "✅" : "❌"}</td>
+      <td>{punto.activo ? "Activo" : "No activo"}</td>
       <td className="admin-acciones">
 
         <button
@@ -69,7 +69,7 @@ function FilaPunto({ punto, onEditar, onQuitar }) {
           onClick={() => onEditar(punto)}
           title="Editar punto"
         >
-          ✏️
+          Editar
         </button>
 
         <button
@@ -77,7 +77,7 @@ function FilaPunto({ punto, onEditar, onQuitar }) {
           onClick={() => onQuitar(punto)}
           title="Quitar de esta ruta"
         >
-          ✖
+          Quitar
         </button>
 
       </td>
@@ -203,7 +203,7 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
             ← Volver
           </button>
           <h2 style={{ margin: 0 }}>
-            📍 Puntos de: <em>{ruta.nombre}</em>
+            Puntos de: <em>{ruta.nombre}</em>
           </h2>
         </div>
 

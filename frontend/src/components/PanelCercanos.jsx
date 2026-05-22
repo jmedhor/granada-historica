@@ -48,7 +48,7 @@ function PanelCercanos({
         ← Volver
         </button>
       <h3>
-        📍 Puntos cercanos (Aprox. 350m)
+        Puntos cercanos (Aprox. 350m)
       </h3>
 
       {puntosCercanos.length === 0 && (
@@ -79,7 +79,7 @@ function PanelCercanos({
 
             }}
           >
-            🧭 Hacer ruta por puntos cercanos
+            Hacer ruta por puntos cercanos
           </button>
 
           {/* SEPARADOR VISUAL */}
@@ -108,7 +108,7 @@ function PanelCercanos({
             <span
               className="paso-num"
             >
-              📌
+              -
             </span>
 
             <span className="paso-texto2">

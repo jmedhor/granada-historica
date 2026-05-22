@@ -21,7 +21,7 @@ function FlechasRuta({
 
   useEffect(() => {
 
-    // Seguridad
+    // Evita crear decoradores sin coordenadas validas
     if (!positions || positions.length === 0) {
       return
     }

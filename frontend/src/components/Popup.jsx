@@ -59,7 +59,7 @@ function PopupRuta({
               textDecoration: "underline"
             }}
           >
-            Mas informacion 🔗
+            Mas informacion
           </a>
 
         </p>
@@ -71,7 +71,7 @@ function PopupRuta({
       {/* Activar o desactivar modo historiador */}
       <label className="popup-toggle">
 
-        🎓 Modo Historiador
+        Modo Historiador
 
         <input
           type="checkbox"
@@ -97,7 +97,7 @@ function PopupRuta({
 
           }}
         >
-          🧭 Comenzar ruta
+          Comenzar ruta
         </button>
       )}
 

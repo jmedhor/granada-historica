@@ -70,7 +70,7 @@ function PanelRuta({
     return (
       <div className="panel-ruta">
 
-        <h3>🧭 Navegación</h3>
+        <h3>Navegación</h3>
 
         <p>Selecciona una ruta para comenzar</p>
 

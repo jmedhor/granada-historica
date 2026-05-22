@@ -1698,7 +1698,7 @@ body{
 }
 
 .btn-admin-editar {
-  background: #e8f4fd;
+  background: #28A3FC;
 }
 
 .btn-admin-editar:hover {
@@ -1707,7 +1707,7 @@ body{
 }
 
 .btn-admin-borrar {
-  background: #fde8e8;
+  background: #F72323;
 }
 
 .btn-admin-borrar:hover {
@@ -1956,7 +1956,7 @@ body{
   padding: 6px 10px;
   cursor: pointer;
   font-size: 16px;
-  background: #e8fdf0;
+  background: #24A355;
   transition: transform 0.15s ease;
 }
 

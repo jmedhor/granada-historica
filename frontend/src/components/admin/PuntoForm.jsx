@@ -128,7 +128,7 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
       <div className="admin-form-box">
 
         <h3 className="admin-form-titulo">
-          {puntoInicial ? "✏️ Editar punto" : "➕ Nuevo punto"}
+          {puntoInicial ? "Editar punto" : "+ Nuevo punto"}
         </h3>
 
         <form onSubmit={handleSubmit}>
@@ -163,7 +163,7 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
               className="btn-abrir-mapa"
               onClick={() => setMapaAbierto(!mapaAbierto)}
             >
-              {mapaAbierto ? "🗺️ Cerrar mapa" : "🗺️ Abrir mapa"}
+              {mapaAbierto ? "Cerrar mapa" : "Abrir mapa"}
             </button>
           </div>}
 
@@ -198,7 +198,7 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
           {mapaAbierto && (
             <div className="admin-minimapa">
               <p className="admin-minimapa-hint">
-                📌 Haz clic en el mapa para seleccionar las coordenadas
+                Haz clic en el mapa para seleccionar las coordenadas
               </p>
               <MapContainer
                 center={centroMapa}

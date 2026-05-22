@@ -72,8 +72,8 @@ function RutaForm({ rutaInicial, onGuardar, onCancelar, rol }) {
 
         <h3 className="admin-form-titulo">
           {esSuperadmin
-            ? (rutaInicial ? "✏️ Editar ruta" : "➕ Nueva ruta")
-            : `📚 Bibliografía: ${rutaInicial?.nombre || ""}`}
+            ? (rutaInicial ? "Editar ruta" : "+ Nueva ruta")
+            : `Bibliografía: ${rutaInicial?.nombre || ""}`}
         </h3>
 
         <form onSubmit={handleSubmit}>

@@ -112,7 +112,7 @@ function PuntosList({ rol }) {
 
       {/* CABECERA */}
       <div className="admin-seccion-header">
-        <h2>📍 Puntos</h2>
+        <h2>Puntos</h2>
         {esSuperadmin && (
           <button
             className="btn-admin-nuevo"
@@ -149,8 +149,8 @@ function PuntosList({ rol }) {
               <td>{punto.id}</td>
               <td>{punto.nombre}</td>
               <td>{punto.ruta_nombre || "—"}</td>
-              <td>{punto.pago ? "💰" : "🆓"}</td>
-              <td>{punto.activo ? "✅" : "❌"}</td>
+              <td>{punto.pago ? "Pago" : "Gratis"}</td>
+              <td>{punto.activo ? "Si" : "No"}</td>
               <td className="admin-acciones">
 
                 {/* Editar: disponible para todos los roles */}
@@ -158,7 +158,7 @@ function PuntosList({ rol }) {
                   className="btn-admin-editar"
                   onClick={() => setFormPunto(punto)}
                 >
-                  ✏️
+                  Editar
                 </button>
 
                 {/* Borrar: solo superadmin */}
@@ -167,7 +167,7 @@ function PuntosList({ rol }) {
                     className="btn-admin-borrar"
                     onClick={() => setPuntoABorrar(punto)}
                   >
-                    🗑️
+                    Borrar
                   </button>
                 )}
 

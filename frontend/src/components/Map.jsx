@@ -5,7 +5,6 @@ import {
   Popup,
   Polyline,
   useMapEvents,
-  Tooltip,
   useMap
 } from 'react-leaflet'
 
@@ -169,28 +168,6 @@ function MapController({ setMapRef }) {
   return null
 }
 
-// ---------------------------------------------------
-// ICONO PERSONALIZADO DE CLUSTERS (DEPRECATED)
-// ---------------------------------------------------
-
-function crearClusterCustomIcon(cluster) {
-
-  const cantidad = cluster.getChildCount()
-
-  return L.divIcon({
-
-    html: `
-      <div class="cluster-wrapper">
-        <div class="cluster-core">${cantidad}</div>
-      </div>
-    `,
-
-    className: 'custom-marker-cluster',
-
-    iconSize: L.point(50, 50, true)
-
-  })
-}
 
 // ---------------------------------------------------
 // CALCULA EL TEXTO DE DURACION DE RUTA
@@ -230,6 +207,7 @@ function calcularDuracionRuta(legs, puntosOrdenados) {
 
 // ---------------------------------------------------
 // CALCULA TIEMPO TOTAL DE RUTA EN SEGUNDOS
+// DEPRECATED
 // ---------------------------------------------------
 
 function calcularTiempoTotalRuta(legs, puntosOrdenados) {
@@ -412,7 +390,6 @@ function Mapa({
 
   // ---------------------------------------------------
   // CREA RUTA DINAMICA DESDE PUNTOS CERCANOS
-  // TODO HACER QUE AFECTEN LOS FILTROS
   // ---------------------------------------------------
 
   const crearRutaDesdePuntosCercanos = async (puntosSeleccionados) => {
@@ -1105,7 +1082,7 @@ function Mapa({
       {mensajeTiempo && (
 
         <div className="mensaje-tiempo">
-          ⏰ {mensajeTiempo}
+          {mensajeTiempo}
         </div>
 
       )}
@@ -1131,7 +1108,7 @@ function Mapa({
           className="btn-cercanos"
           onClick={buscarPuntosCercanos}
         >
-          📍 Ver puntos cercanos a mi
+          Ver puntos cercanos a mi
         </button>
 
       )}

@@ -16,14 +16,14 @@ function AdminPage() {
 
   const navigate = useNavigate()
 
-  const [pin, setPin]           = useState("")
-  const [rol, setRol]           = useState(null)
+  const [pin, setPin] = useState("")
+  const [rol, setRol] = useState(null)
   const [errorPin, setErrorPin] = useState(false)
 
   // Tabs superadmin: "rutas" | "puntos"
   const [tab, setTab] = useState("rutas")
 
-  // Ruta cuya lista de puntos se está gestionando (superadmin)
+  // Ruta cuya lista de puntos se esta gestionando (superadmin)
   const [rutaGestionando, setRutaGestionando] = useState(null)
 
   // Lista de rutas para pasarla a PuntosDeRuta
@@ -102,8 +102,8 @@ function AdminPage() {
 
   // Tabs
   const tabsAdmin = [
-    { id: "rutas",  label: "🗺️ Rutas" },
-    { id: "puntos", label: "📍 Todos los puntos" },
+    { id: "rutas",  label: "Rutas" },
+    { id: "puntos", label: "Todos los puntos" },
   ]
 
 
@@ -114,9 +114,9 @@ function AdminPage() {
       <header className="admin-header">
 
         <div className="admin-header-left">
-          <h1>⚙️ NazaRoute Admin</h1>
+          <h1>NazaRoute Admin</h1>
           <span className="admin-rol-badge">
-            {rol === "superadmin" ? "👑 Superadmin" : "🎓 Admin Historiador"}
+            {rol === "superadmin" ? "Superadmin" : "Admin Historiador"}
           </span>
         </div>
 
