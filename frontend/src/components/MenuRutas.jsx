@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { coloresRuta } from '../utils/coloresRuta.js'
+import { getRutas} from '../services/api.js'
 
 function MenuRutas({
   rutaSeleccionada,
@@ -20,20 +21,15 @@ function MenuRutas({
   // -----------------------------------------
 
   useEffect(() => {
-
-    fetch("http://localhost:8000/rutas")
-      .then(res => res.json())
+    getRutas()
       .then(data => {
+        const rutasArray = Array.isArray(data) ? data : []
 
-        const rutasActivas = data.filter(
-          ruta => ruta.activo === true
+        setRutas(
+          rutasArray.filter(ruta => ruta.activo === true)
         )
-
-        setRutas(rutasActivas)
-
-
       })
-      .catch(err => console.error(err))
+      .catch(console.error)
   }, [])
 
   // -----------------------------------------

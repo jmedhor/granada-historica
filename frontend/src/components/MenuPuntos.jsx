@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { coloresRuta } from "../utils/coloresRuta.js"
+import { getPuntosDeRuta } from "../services/api.js"
 
 function MenuPuntos({
   ruta,
@@ -21,16 +22,14 @@ function MenuPuntos({
   // -----------------------------------------
 
   useEffect(() => {
-
     if (!ruta) return
 
-    if(puntosRutaVirtual){
+    if (puntosRutaVirtual) {
       setPuntos(puntosRutaVirtual)
       return
     }
 
-    fetch(`http://localhost:8000/rutas/${ruta.id}/puntos`)
-      .then(res => res.json())
+    getPuntosDeRuta(ruta.id)
       .then(data => setPuntos(data))
       .catch(err => console.error(err))
 

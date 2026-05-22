@@ -27,6 +27,8 @@ import {
   calcularDistanciaMetros
 } from '../utils/distancia.js'
 
+import { getTodosPuntos } from '../services/api.js'
+
 import FlechasRuta from './FlechasRuta.jsx'
 
 import PopupRuta from './Popup'
@@ -755,28 +757,19 @@ function Mapa({
   // ---------------------------------------------------
 
   useEffect(() => {
-
-    fetch("http://localhost:8000/puntos")
-
-      .then(res => res.json())
-
+    getTodosPuntos()
       .then(data => {
+        const puntosArray = Array.isArray(data) ? data : []
 
-        const puntosActivos = data.filter(
-
-          punto =>
-
-            punto.activo === true &&
-            punto.ruta_activa === true
-
+        setTodosPuntos(
+          puntosArray.filter(
+            punto =>
+              punto.activo === true &&
+              punto.ruta_activa === true
+          )
         )
-
-        setTodosPuntos(puntosActivos)
-
       })
-
-      .catch(err => console.error(err))
-
+      .catch(console.error)
   }, [])
 
   // ---------------------------------------------------
