@@ -1,6 +1,7 @@
 // ---------------------------------------------------
-// CALCULA DISTANCIA ENTRE DOS COORDENADAS
-// FORMULA HAVERSINE
+// Calcula distancia entre dos coordenadas usando
+// la formula de Haversine
+// Devuelve distancia en metros
 // ---------------------------------------------------
 
 export function calcularDistanciaMetros(
@@ -12,35 +13,32 @@ export function calcularDistanciaMetros(
 
 ) {
 
-  const R = 6371e3
+  const RADIO_TIERRA = 6371e3
 
-  const rad = (grados) =>
-    grados * Math.PI / 180
+  // conversion de grados a radianes
+  const latitud1 = gradosARadianes(lat1)
+  const latitud2 = gradosARadianes(lat2)
 
-  const dLat = rad(lat2 - lat1)
+  const diferenciaLatitud = gradosARadianes(lat2 - lat1)
+  const diferenciaLongitud = gradosARadianes(lon2 - lon1)
 
-  const dLon = rad(lon2 - lon1)
-
+  // formula Haversine
   const a =
+    Math.sin(diferenciaLatitud / 2) ** 2 +
+    Math.cos(latitud1) *
+    Math.cos(latitud2) *
+    Math.sin(diferenciaLongitud / 2) ** 2
 
-    Math.sin(dLat / 2) *
-    Math.sin(dLat / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
-    +
+  return RADIO_TIERRA * c
+}
 
-    Math.cos(rad(lat1)) *
-    Math.cos(rad(lat2))
+// ---------------------------------------------------
+// Convierte grados a radianes
+// ---------------------------------------------------
 
-    *
 
-    Math.sin(dLon / 2) *
-    Math.sin(dLon / 2)
-
-  const c =
-    2 * Math.atan2(
-      Math.sqrt(a),
-      Math.sqrt(1 - a)
-    )
-
-  return R * c
+function gradosARadianes(grados) {
+  return grados * Math.PI / 180
 }
