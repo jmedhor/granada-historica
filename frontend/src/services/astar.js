@@ -52,7 +52,7 @@ export function calcularRutaAStar(puntos, userLocation) {
       // a cuanto menor valor, solo se toma en cuenta la distancia
       // ---------------------------------------------------
 
-      const score = distancia - (punto.importancia * 150)
+      const score = distancia - ((punto.importancia ?? 5) * 150)
 
       // si encontramos un mejor candidato lo guardamos
       if (score < mejorScore) {

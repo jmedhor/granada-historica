@@ -92,7 +92,7 @@ export async function obtenerRutaOptima(
   const puntosOrdenados = calcularRutaAStar(
     puntosFiltrados,
     userLocation
-  )
+  ).filter(Boolean)
 
   // si no quedan puntos devolvemos vacio
   if (puntosOrdenados.length === 0) {

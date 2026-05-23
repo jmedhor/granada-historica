@@ -21,26 +21,30 @@ def get_puntos_de_ruta(db: Session, ruta_id: int):
 def get_todos_puntos(db: Session):
     """
     Devuelve todos los puntos con info de su ruta.
-    Útil para mostrar todos los markers en el mapa.
+    Incluye puntos sin ruta asignada (ruta_id = None).
     """
+    todos = db.query(Punto).all()
     resultado = []
-    rutas = get_rutas(db)
-    for ruta in rutas:
-        for punto in ruta.puntos:
-            resultado.append({
-                "id": punto.id,
-                "nombre": punto.nombre,
-                "descripcion": punto.descripcion,
-                "latitud": punto.latitud,
-                "longitud": punto.longitud,
-                "ruta_id": ruta.id,
-                "ruta_nombre": ruta.nombre,
-                "ruta_activa": ruta.activo,
-                "pago": punto.pago,
-                "url": punto.url,
-                "importancia": punto.importancia,
-                "activo": punto.activo,
-            })
+
+    for punto in todos:
+        # Obtener la ruta asociada si existe
+        ruta = punto.rutas[0] if punto.rutas else None
+
+        resultado.append({
+            "id":          punto.id,
+            "nombre":      punto.nombre,
+            "descripcion": punto.descripcion,
+            "latitud":     punto.latitud,
+            "longitud":    punto.longitud,
+            "ruta_id":     ruta.id if ruta else None,
+            "ruta_nombre": ruta.nombre if ruta else None,
+            "ruta_activa": ruta.activo if ruta else False,
+            "pago":        punto.pago,
+            "url":         punto.url,
+            "importancia": punto.importancia,
+            "activo":      punto.activo,
+        })
+
     return resultado
 
 # ---------------------------------------------------
@@ -134,28 +138,27 @@ def create_punto(db: Session, datos: PuntoCreate):
     return nuevo_punto
 
 def update_punto(db: Session, punto_id: int, datos: PuntoUpdate):
-    """
-    Actualiza los campos de un punto existente.
-    Si se cambia ruta_id, actualiza la relacion en ruta_punto.
-    """
     punto = get_punto(db, punto_id)
     if not punto:
         return None
 
     campos = datos.model_dump(exclude_unset=True)
 
-    # Gestionar cambio de ruta por separado
+    # Extraer ruta_id ANTES de iterar campos
+    # "ruta_id" in campos indica que el cliente lo mandó explícitamente
+    ruta_id_enviada = "ruta_id" in campos
     nueva_ruta_id = campos.pop("ruta_id", None)
 
     for campo, valor in campos.items():
         setattr(punto, campo, valor)
 
-    # Reasignar ruta si se indica una nueva
-    if nueva_ruta_id is not None:
+    # Si el cliente mandó ruta_id (aunque sea null), actualizar relacion
+    if ruta_id_enviada:
         punto.rutas.clear()
-        nueva_ruta = get_ruta(db, nueva_ruta_id)
-        if nueva_ruta:
-            nueva_ruta.puntos.append(punto)
+        if nueva_ruta_id is not None:
+            nueva_ruta = get_ruta(db, nueva_ruta_id)
+            if nueva_ruta:
+                nueva_ruta.puntos.append(punto)
 
     db.commit()
     db.refresh(punto)

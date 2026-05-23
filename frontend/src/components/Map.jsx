@@ -42,6 +42,7 @@ import gpsGreen from '../../assets/gps_green.png'
 import gpsPink from '../../assets/gps_pink.png'
 import gpsBlack from '../../assets/gps_black.png'
 import gpsPurple from '../../assets/gps_purple.png'
+import gpsNuevos from '../../assets/nuevos.png'
 import userMarker from '../../assets/userMarker.png'
 
 
@@ -56,6 +57,17 @@ const marcadorUser = new L.Icon({
   iconAnchor: [17, 35],
   popupAnchor: [0, -35]
 })
+
+// Para puntos creados desde el panel admin
+
+const iconosNuevos = new L.Icon({
+  iconUrl: gpsNuevos,
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+  popupAnchor: [0, -40]
+})
+
+// Para puntos ya asignados alguna de las 7 rutas principales de Nazaroute
 
 const iconosRutas = {
 
@@ -1213,7 +1225,7 @@ function Mapa({
                 <Marker
                   key={`${punto.id}-${punto.ruta_id}`}
                   position={[punto.latitud, punto.longitud]}
-                  icon={iconosRutas[punto.ruta_id] || iconosRutas[1]}
+                  icon={iconosRutas[punto.ruta_id] || iconosNuevos}
                   ref={(el) => {
                     if (el) markersRef.current[punto.id] = el
                   }}
@@ -1239,6 +1251,53 @@ function Mapa({
       }
 
       {/* ------------------------------------------------ */}
+      {/* CLUSTER PARA PUNTOS SIN RUTA ASIGNADA (nuevos)  */}
+      {/* ------------------------------------------------ */}
+
+      {!rutaSeleccionada && !modoCercanos && (() => {
+
+        const puntosNuevos = puntosOrdenados.filter(
+          p =>
+            !iconosRutas[p.ruta_id] &&
+            (!evitarPago || !p.pago)
+        )
+
+        if (puntosNuevos.length === 0) return null
+
+        return (
+          <MarkerClusterGroup
+            key="nuevos"
+            chunkedLoading
+            maxClusterRadius={75}
+            showCoverageOnHover={false}
+            iconCreateFunction={crearClusterPorRuta("cluster-ruta-nuevos")}
+          >
+            {puntosNuevos.map(punto => (
+              <Marker
+                key={`${punto.id}-${punto.ruta_id}`}
+                position={[punto.latitud, punto.longitud]}
+                icon={iconosNuevos}
+                ref={(el) => {
+                  if (el) markersRef.current[punto.id] = el
+                }}
+              >
+                <Popup>
+                  <PopupRuta
+                    punto={punto}
+                    ruta={{ id: punto.ruta_id, nombre: punto.ruta_nombre }}
+                    modoHistoriador={modoHistoriador}
+                    setModoHistoriador={setModoHistoriador}
+                    rutaSeleccionada={rutaSeleccionada}
+                    setRutaSeleccionada={setRutaSeleccionada}
+                  />
+                </Popup>
+              </Marker>
+            ))}
+          </MarkerClusterGroup>
+        )
+      })()}
+
+      {/* ------------------------------------------------ */}
       {/* MARKERS NORMALES EN MODO CERCANOS */}
       {/* ------------------------------------------------ */}
 
@@ -1260,7 +1319,7 @@ function Mapa({
               ]}
               icon={
                 iconosRutas[punto.ruta_id]
-                || iconosRutas[1]
+                || iconosNuevos
               }
               ref={(el) => {
 

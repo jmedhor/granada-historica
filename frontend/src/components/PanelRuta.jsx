@@ -127,7 +127,7 @@ function PanelRuta({
 
           }}
         >
-          Paso siguiente →
+          Paso →  siguiente
         </button>
 
       </div>
@@ -140,7 +140,7 @@ function PanelRuta({
           setModoNavegacion(false)
         }}
       >
-        ✖ Finalizar ruta
+        Finalizar ruta
       </button>
 
       {/* ------------------------------------------------- */}

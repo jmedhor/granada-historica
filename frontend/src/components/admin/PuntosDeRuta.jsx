@@ -135,10 +135,10 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
 
   // -----------------------------------------
   // Drag end - reordena el array local
-  // Nota: el orden visual es local, el backend
+  // IMPORTANTE: el orden visual es local, el backend
   // no tiene campo "orden" actualmente.
-  // Si se quiere persistir habria que añadir
-  // un campo `orden` al modelo Punto.
+  // Si se quiere escalar habria que añadir
+  // un campo "orden" al modelo Punto.
   // -----------------------------------------
 
   const handleDragEnd = ({ active, over }) => {

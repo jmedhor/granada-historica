@@ -914,6 +914,10 @@ body{
   box-shadow: 0 3px 10px rgba(0,0,0,0.4);
 }
 
+.cluster-ruta-nuevos .cluster-core {
+  background: linear-gradient(135deg, #2dc653, #1a8a3a);
+}
+
 /* -------------- DURACION DE RUTA ----------- */
 
 .duracion-ruta-box {
