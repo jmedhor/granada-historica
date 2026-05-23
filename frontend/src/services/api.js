@@ -3,7 +3,7 @@
 // Centraliza todos los fetch al API de FastAPI
 // ---------------------------------------------------
 
-const BASE_URL = "http://localhost:8000"
+const BASE_URL = "http://192.168.1.137:8000"
 
 // ---------------------------------------------------
 // HELPER - fetch con manejo de errores

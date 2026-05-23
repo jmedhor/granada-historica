@@ -1,7 +1,28 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+// ----------------------------
 
-import './App.css'
+// Estilos para la aplicacion seccionados
+// ANTIGUO: import './styles/App.css'
+
+import "./styles/global.css"
+import "./styles/header.css"
+import "./styles/mapa.css"
+import "./styles/MenuPuntos.css"
+import "./styles/MenuRutas.css"
+import "./styles/PanelBibliografia.css"
+import "./styles/PanelCercanos.css"
+import "./styles/PanelRuta.css"
+import "./styles/Popup.css"
+
+// Admin
+
+import "./styles/AdminButton-other.css"
+import "./styles/AdminPage.css"
+import "./styles/AdminSection.css"
+import "./styles/ConfirmModal.css"
+
+// ----------------------------
 
 import logoUGR from '../assets/logo-ugr.png'
 

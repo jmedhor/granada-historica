@@ -1,0 +1,107 @@
+/* ----------- LAYOUT ------------- */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  background: #7b1e1e;
+  color: white;
+  padding: 5px 20px;
+  height: 50px;
+  position: relative;
+}
+
+.header-right {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: rgba(255,255,255,0.1);
+  padding: 8px 12px;
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* PANEL DERECHO */
+
+.panel-derecha {
+  width: 220px;
+  height: 93%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  box-shadow: -6px 0 20px rgba(0,0,0,0.1);
+}
+
+/* ----------- TITULO + SUBTITULO ----------- */
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Titulo principal */
+.titulo-app {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Subtitulo */
+.subtitulo-app {
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(255,255,255,0.8);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+/* Hover subtitulo */
+.header-left:hover .subtitulo-app {
+  opacity: 1;
+}
+
+/* ----------- BLOQUE UGR ----------- */
+
+.header-ugr {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 8px 12px;
+
+  backdrop-filter: blur(6px);
+
+  transition: 0.25s ease;
+}
+
+.header-ugr:hover {
+  transform: translateY(-50%) scale(1.02);
+}
+
+.logo-ugr {
+  height: 35px;
+  width: auto;
+  object-fit: contain;
+
+  transition: 0.25s ease;
+}
+
+.header-ugr:hover .logo-ugr {
+  opacity: 1;
+  transform: scale(1.05);
+}

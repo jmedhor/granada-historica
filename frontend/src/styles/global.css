@@ -1,0 +1,296 @@
+/* ---------- RESET ---------- */
+
+body{
+  margin:0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color:#f5f1e8;
+  overflow: hidden;
+}
+
+/* ---------- APP GENERAL ---------- */
+
+.App{
+  text-align:center;
+}
+
+/* ------------------------------------------------ */
+/* LAYOUT PRINCIPAL */
+/* ------------------------------------------------ */
+
+.main-layout {
+
+  display: flex;
+
+  height: calc(100vh - 50px);
+
+  width: 100%;
+}
+
+/* ------------------------------------------------ */
+/* LAYOUT EXPANDIDO SIN PANEL */
+/* ------------------------------------------------ */
+
+.main-layout-full {
+
+  display: flex;
+
+  height: calc(100vh - 50px);
+
+  width: 100%;
+}
+
+/* ------------------------------------------------ */
+/* BOTON VOLVER */
+/* ------------------------------------------------ */
+
+.btn-volver {
+
+  background:
+    linear-gradient(
+      135deg,
+      #9b2226,
+      #6a040f
+    );
+
+  color: white;
+
+  border: none;
+
+  padding: 10px;
+
+  border-radius: 10px;
+
+  margin-bottom: 10px;
+
+  cursor: pointer;
+
+  font-weight: 700;
+
+  transition: all 0.25s ease;
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-volver:hover {
+
+  transform: translateY(-1px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #bb3e03,
+      #9b2226
+    );
+}
+
+/* ----------- TOGGLES MODERNOS ----------- */
+
+.toggle-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.toggle {
+  padding: 8px 9px;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(6px);
+}
+
+.toggle:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+
+.toggle.active {
+  background: #ffffff;
+  color: #7b1e1e;
+  border-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.toggle.danger {
+  border-color: rgba(255,255,255,0.4);
+}
+
+.toggle.danger.active {
+  background: #e63946;
+  color: white;
+  border-color: #e63946;
+}
+
+.toggle:active {
+  transform: scale(0.95);
+}
+
+.toggle-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-color: white;
+  color: #1f1f1f;
+
+  border: 2px solid #e63946;
+  border-radius: 10px;
+
+  padding: 8px 14px;
+  margin-left: 10px;
+
+  font-weight: 600;
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  outline: none;
+
+  min-width: 90px;
+}
+
+/* Hover */
+.toggle-group select:hover {
+  background-color: #fff1f2;
+  border-color: #c1121f;
+}
+
+/* Focus */
+.toggle-group select:focus {
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+  border-color: #c1121f;
+}
+
+/* Opciones del desplegable */
+.toggle-group select option {
+  background: white;
+  color: #1f1f1f;
+  font-weight: 500;
+}
+
+
+/* ------------------------------------------------ */
+/* COLUMNA DE BOTONES DEL PANEL DERECHO */
+/* ------------------------------------------------ */
+
+.columna-botones {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-bottom: 15px;
+
+}
+
+/* ------------------------------------------------ */
+/* CONTROLES HORIZONTALES */
+/* ------------------------------------------------ */
+
+.controles-ruta {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.controles-ruta button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition: all 0.2s ease;
+}
+
+.controles-ruta button:last-child {
+  background: #222;
+  color: white;
+}
+
+.controles-ruta button:last-child:hover {
+  background: #000;
+}
+
+/* deshabilitado */
+.controles-ruta button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ------------------------------------------------ */
+/* BOTON MOSTRAR / OCULTAR PANEL */
+/* ------------------------------------------------ */
+
+.btn-toggle-panel {
+
+  position: absolute;
+
+  top: 80px;
+  right: 265px;
+
+  z-index: 2500;
+
+  padding: 12px 16px;
+
+  border: none;
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6a4c93,
+      #8338ec
+    );
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.22);
+
+  transition: all 0.25s ease;
+
+  backdrop-filter: blur(6px);
+}
+
+.btn-toggle-panel.oculto {
+  right: 20px;
+}
+
+.btn-toggle-panel:hover {
+
+  transform:
+    translateY(-2px)
+    scale(1.02);
+
+  background:
+    linear-gradient(
+      135deg,
+      #7b5bb0,
+      #9d4edd
+    );
+}
+
+.btn-toggle-panel.full {
+
+  right: 20px;
+}
