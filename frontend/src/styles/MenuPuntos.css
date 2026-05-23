@@ -171,3 +171,31 @@
       #27496d
     );
 }
+
+
+/* ================================================== */
+/* RESPONSIVE MENU PUNTOS                             */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  .menu-puntos {
+    width: 100%;
+    height: auto;
+    max-height: 38vh;
+    box-shadow: none;
+    border-radius: 8px;
+  }
+
+  .menu-puntos li {
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  .btn-start,
+  .btn-start-bib {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+}

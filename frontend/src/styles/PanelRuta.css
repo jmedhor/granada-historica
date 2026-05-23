@@ -190,3 +190,31 @@
       #d00000
     );
 }
+
+
+/* ================================================== */
+/* RESPONSIVE PANEL RUTA                              */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  .panel-ruta {
+    width: 100%;
+    height: auto;
+    max-height: 38vh;
+    box-shadow: none;
+    border-radius: 8px;
+  }
+
+  .btn-anterior,
+  .btn-siguiente {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .btn-finalizar-ruta {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+}

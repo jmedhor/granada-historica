@@ -222,3 +222,40 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 
 }
+
+/* ================================================== */
+/* RESPONSIVE MAPA                                    */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  /* Mapa ocupa todo el ancho disponible */
+  .map-container {
+    width: 100% !important;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Boton cercanos reposicionado */
+  .btn-cercanos {
+    top: 10px;
+    left: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  /* Duracion ruta - ajuste de ancho */
+  .duracion-ruta-box {
+    width: 88%;
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+
+  /* Mensaje tiempo - ajuste posicion */
+  .mensaje-tiempo {
+    width: 88%;
+    font-size: 13px;
+    top: 60px;
+  }
+
+}

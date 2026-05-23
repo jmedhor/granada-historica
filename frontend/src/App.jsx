@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 // ----------------------------
 
@@ -118,6 +118,27 @@ function App() {
     )
   }
 
+
+  // ---------------------------------------------------
+  // FIX ALTURA REAL EN MOVIL
+  // 100vh en moviles incluye la barra del navegador
+  // Este efecto calcula el vh real y lo guarda en CSS
+  // ---------------------------------------------------
+
+  useEffect(() => {
+
+    const actualizarVh = () => {
+      const vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+    }
+
+    actualizarVh()
+    window.addEventListener('resize', actualizarVh)
+
+    return () => window.removeEventListener('resize', actualizarVh)
+
+  }, [])
+
   // ---------------------------------------------------
   // RENDER PRINCIPAL
   // ---------------------------------------------------
@@ -130,18 +151,32 @@ function App() {
       {/* HEADER SUPERIOR */}
       {/* --------------------------------------------------- */}
 
-      <header className="app-header">
+<header className="app-header">
 
-        {/* TITULO PRINCIPAL */}
-        <div className="header-left">
+        {/* FILA SUPERIOR: titulo + logo (visible en movil) */}
+        <div className="header-top-row">
 
-          <h1 className="titulo-app">
-            NazaRoute
-          </h1>
+          <div className="header-left">
 
-          <span className="subtitulo-app">
-            Rutas historicas por la ciudad de Granada
-          </span>
+            <h1 className="titulo-app">
+              NazaRoute
+            </h1>
+
+            <span className="subtitulo-app">
+              Rutas historicas por la ciudad de Granada
+            </span>
+
+          </div>
+
+          <div className="header-ugr">
+            <a href="https://www.ugr.es">
+              <img
+                src={logoUGR}
+                alt="Universidad de Granada"
+                className="logo-ugr"
+              />
+            </a>
+          </div>
 
         </div>
 
@@ -155,12 +190,7 @@ function App() {
             Admin
           </button>
 
-
           <div className="selector-ruta">
-
-            {/* -------------------------------- */}
-            {/* BOTONES DE TIPO DE RUTA */}
-            {/* -------------------------------- */}
 
             <div className="toggle-group">
 
@@ -178,20 +208,12 @@ function App() {
                 Ruta historica (UGR)
               </button>
 
-              {/* -------------------------------- */}
-              {/* BOTON EVITAR PAGO */}
-              {/* -------------------------------- */}
-
               <button
                 className={evitarPago ? "toggle danger active" : "toggle danger"}
                 onClick={() => setEvitarPago(!evitarPago)}
               >
                 Evitar lugares de pago
               </button>
-
-              {/* ------------------------------------------------ */}
-              {/* FILTRO DE TIEMPO DISPONIBLE */}
-              {/* ------------------------------------------------ */}
 
               <div className="toggle-group">
 
@@ -201,9 +223,7 @@ function App() {
                       ? "toggle danger active"
                       : "toggle danger"
                   }
-                  onClick={() =>
-                    setUsarFiltroTiempo(!usarFiltroTiempo)
-                  }
+                  onClick={() => setUsarFiltroTiempo(!usarFiltroTiempo)}
                 >
                   Tiempo disponible: {horasDisponibles}h
                 </button>
@@ -213,12 +233,9 @@ function App() {
                     className="toggle"
                     value={horasDisponibles}
                     onChange={(e) =>
-                      setHorasDisponibles(
-                        Number(e.target.value)
-                      )
+                      setHorasDisponibles(Number(e.target.value))
                     }
                   >
-
                     <option value={1}>1 hora</option>
                     <option value={2}>2 horas</option>
                     <option value={3}>3 horas</option>
@@ -226,7 +243,6 @@ function App() {
                     <option value={5}>5 horas</option>
                     <option value={6}>6 horas</option>
                     <option value={7}>7 horas</option>
-
                   </select>
                 )}
 
@@ -235,26 +251,6 @@ function App() {
             </div>
 
           </div>
-
-        </div>
-
-
-
-        {/* --------------------------------------------------- */}
-        {/* BLOQUE UGR */}
-        {/* --------------------------------------------------- */}
-
-        <div className="header-ugr">
-
-          <a href="https://www.ugr.es">
-
-            <img
-              src={logoUGR}
-              alt="Universidad de Granada"
-              className="logo-ugr"
-            />
-
-          </a>
 
         </div>
 

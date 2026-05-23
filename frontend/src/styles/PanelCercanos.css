@@ -227,3 +227,25 @@
   margin-top: 18px;
 
 }
+
+
+/* ================================================== */
+/* RESPONSIVE PANEL CERCANOS                          */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  .panel-cercanos {
+    width: 100%;
+    height: auto;
+    max-height: 38vh;
+    box-shadow: none;
+    border-radius: 8px;
+  }
+
+  .panel-cercanos li {
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+}

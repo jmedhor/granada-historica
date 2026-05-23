@@ -294,3 +294,93 @@ body{
 
   right: 20px;
 }
+
+/* ================================================== */
+/* RESPONSIVE - MOVIL                                 */
+/* Breakpoint principal: 768px                        */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  /* ------------------------------------------------ */
+  /* BODY - evitar scroll horizontal                  */
+  /* ------------------------------------------------ */
+
+  body {
+    overflow-x: hidden;
+  }
+
+  /* ------------------------------------------------ */
+  /* LAYOUT - columna en movil                        */
+  /* ------------------------------------------------ */
+
+  .main-layout,
+  .main-layout-full {
+    flex-direction: column;
+    height: calc(var(--vh, 1vh) * 100 - 110px);
+  }
+
+  /* ------------------------------------------------ */
+  /* TOGGLES - envuelven en movil                     */
+  /* ------------------------------------------------ */
+
+  .toggle-group {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+  }
+
+  .toggle {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .toggle-group select {
+    font-size: 12px;
+    padding: 6px 10px;
+    margin-left: 0;
+    min-width: 80px;
+  }
+
+  /* ------------------------------------------------ */
+  /* COLUMNA BOTONES - fila en movil                  */
+  /* ------------------------------------------------ */
+
+  .columna-botones {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  /* ------------------------------------------------ */
+  /* BOTON TOGGLE PANEL - reposicionar en movil       */
+  /* ------------------------------------------------ */
+
+  .btn-toggle-panel {
+    top: auto;
+    bottom: 10px;
+    right: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .btn-toggle-panel.oculto {
+    right: 10px;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .main-layout,
+  .main-layout-full {
+    height: calc(var(--vh, 1vh) * 100 - 130px);
+  }
+
+  .toggle {
+    font-size: 11px;
+    padding: 5px 7px;
+  }
+
+}

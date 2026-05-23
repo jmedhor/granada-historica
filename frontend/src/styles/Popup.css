@@ -90,3 +90,22 @@
 .info-punto::before {
   content: "📍";
 }
+
+
+/* ================================================== */
+/* RESPONSIVE POPUP                                   */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  .popup-contenido {
+    max-width: 200px;
+    font-size: 13px;
+  }
+
+  .btn-popup-ruta {
+    font-size: 13px;
+    padding: 9px;
+  }
+
+}

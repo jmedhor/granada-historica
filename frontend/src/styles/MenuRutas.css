@@ -70,3 +70,26 @@
   flex-direction:column;
   gap:10px;
 }
+
+
+/* ================================================== */
+/* RESPONSIVE MENU RUTAS                              */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  .menu-rutas {
+    width: 100%;
+    height: auto;
+    max-height: 38vh;
+    box-shadow: none;
+    border-radius: 8px;
+  }
+
+  .menu-rutas li {
+    min-height: 44px;
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+}

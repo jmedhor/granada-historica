@@ -46,3 +46,20 @@
   font-weight: bold;
   border: 1px solid white;
 }
+
+
+/* ================================================== */
+/* RESPONSIVE PANEL BIBLIOGRAFIA                      */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  .panel-bibliografia {
+    width: 100%;
+    height: auto;
+    max-height: 38vh;
+    box-shadow: none;
+    border-radius: 8px;
+  }
+
+}
