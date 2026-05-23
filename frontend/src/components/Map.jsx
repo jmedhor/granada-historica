@@ -1374,7 +1374,7 @@ function Mapa({
               ]}
               icon={
                 iconosRutas[punto.ruta_id]
-                || iconosRutas[1]
+                || iconosNuevos
               }
               ref={(el) => {
 
