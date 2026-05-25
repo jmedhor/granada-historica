@@ -246,16 +246,16 @@
 
   /* Duracion ruta - ajuste de ancho */
   .duracion-ruta-box {
-    width: 88%;
+    width: 58%;
     font-size: 12px;
     padding: 10px 14px;
   }
 
   /* Mensaje tiempo - ajuste posicion */
   .mensaje-tiempo {
-    width: 88%;
+    width: 58%;
     font-size: 13px;
-    top: 60px;
+    top: 20px;
   }
 
 }

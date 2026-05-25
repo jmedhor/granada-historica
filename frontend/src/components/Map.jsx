@@ -1014,6 +1014,9 @@ function Mapa({
     if (!siguientePunto) return
 
     // Centra mapa
+
+    centrarYAbrir(siguientePunto);
+    /*
     mapRef.current.flyTo(
 
       [
@@ -1028,6 +1031,8 @@ function Mapa({
       }
 
     )
+  */
+
 
   }, [
 

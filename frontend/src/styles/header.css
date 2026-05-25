@@ -116,13 +116,12 @@
 .header-top-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
+  gap: 10px;
 }
 
 /* ------------------------------------------------ */
-/* BOTON OPCIONES MOVIL                             */
-/* Solo visible en movil                            */
+/* BOTON HAMBURGUESA - oculto en escritorio         */
 /* ------------------------------------------------ */
 
 .btn-opciones-movil {
@@ -130,12 +129,12 @@
   background: rgba(255,255,255,0.2);
   border: none;
   color: white;
-  font-size: 20px;
-  font-weight: 700;
-  padding: 6px 12px;
+  font-size: 22px;
+  padding: 4px 8px;
   border-radius: 8px;
   cursor: pointer;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 /* ================================================== */
@@ -146,74 +145,202 @@
 
   .app-header {
     height: auto;
-    flex-direction: column;
-    align-items: flex-start;
     padding: 8px 14px;
-    gap: 0;
   }
 
   .titulo-app {
-    font-size: 15px;
+    font-size: 20px;
   }
 
   .subtitulo-app {
     font-size: 10px;
   }
 
-  /* Logo UGR en flujo normal */
   .header-top-row .header-ugr {
     position: static;
     transform: none;
     padding: 0;
+    margin-left: auto;
   }
 
   .logo-ugr {
-    height: 26px;
+    height: 30px;
   }
 
-  /* Boton opciones visible en movil */
+  /* Boton hamburguesa visible en movil */
   .btn-opciones-movil {
     display: block;
   }
 
-  /* Controles ocultos por defecto en movil */
+  /* Controles de escritorio ocultos en movil */
   .header-right {
     display: none;
-    position: static;
-    transform: none;
-    width: 100%;
-    padding: 8px 0 4px 0;
-    background: transparent;
-    flex-wrap: wrap;
-    gap: 6px;
-    justify-content: flex-start;
   }
 
-  /* Visibles cuando el boton esta activo */
-  .header-right--visible {
-    display: flex;
-  }
-
-  /* Panel derecho - barra inferior en movil */
+  /* Panel derecho inferior compacto */
   .panel-derecha {
     width: 100%;
     height: auto;
-    max-height: 32vh;
+    max-height: 30vh;
     overflow-y: auto;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.12);
     padding: 8px 12px;
   }
 
 }
 
-@media (max-width: 480px) {
+/* ================================================== */
+/* MENU LATERAL MOVIL                                 */
+/* ================================================== */
 
-  .titulo-app {
-    font-size: 14px;
+/* Overlay oscuro */
+.menu-movil-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 3000;
+}
+
+/* Drawer lateral */
+.menu-movil-lateral {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 78vw;
+  max-width: 300px;
+  height: 100vh;
+  background: white;
+  z-index: 3100;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+}
+
+/* Cabecera del drawer */
+.menu-movil-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #7b1e1e;
+  color: white;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.menu-movil-cerrar {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 15px;
+}
+
+/* Seccion dentro del drawer */
+.menu-movil-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.menu-movil-titulo-seccion {
+  margin: 0 0 4px 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Botones del drawer */
+.menu-movil-btn {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  background: white;
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.menu-movil-btn:hover {
+  border-color: #7b1e1e;
+  background: #fdf5f5;
+}
+
+.menu-movil-btn.activo {
+  background: #7b1e1e;
+  color: white;
+  border-color: #7b1e1e;
+}
+
+.menu-movil-btn.activo.peligro {
+  background: #e63946;
+  border-color: #e63946;
+}
+
+.menu-movil-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+}
+
+/* El overlay y el lateral se muestran via JSX (condicional) */
+/* pero necesitan display flex/block cuando estan en el DOM  */
+
+.menu-movil-overlay {
+  display: block;
+}
+
+.menu-movil-lateral {
+  display: flex;
+}
+
+/* ------------------------------------------------ */
+/* BOTON HAMBURGUESA IZQUIERDA - drawer de rutas    */
+/* ------------------------------------------------ */
+
+.btn-panel-movil {
+  display: none;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  font-size: 22px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  line-height: 1;
+  flex-shrink: 0;
+  order: -1;
+}
+
+@media (max-width: 768px) {
+
+  .btn-panel-movil {
+    display: block;
   }
 
-  .panel-derecha {
-    max-height: 30vh;
+  /* Drawer desde la derecha para opciones */
+  .menu-movil-lateral--derecha {
+    left: auto;
+    right: 0;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.2);
   }
 
 }

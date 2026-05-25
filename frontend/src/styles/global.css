@@ -359,6 +359,7 @@ body{
   /* ------------------------------------------------ */
 
   .btn-toggle-panel {
+    visibility: hidden;
     top: 60px;
     bottom: auto;
     right: 10px;
@@ -383,5 +384,70 @@ body{
     font-size: 11px;
     padding: 5px 7px;
   }
+
+}
+
+/* ================================================== */
+/* BARRA DE NAVEGACION MOVIL                          */
+/* Fija en la parte inferior, solo visible en movil   */
+/* ================================================== */
+
+.nav-movil-barra {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .nav-movil-barra {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2800;
+
+    background: white;
+    padding: 12px 16px;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.15);
+    box-sizing: border-box;
+  }
+
+  .nav-movil-btn {
+    flex: 1;
+    padding: 11px 8px;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #eee;
+    color: #333;
+    transition: all 0.2s ease;
+  }
+
+  .nav-movil-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .nav-movil-btn--finalizar {
+    background: linear-gradient(135deg, #6a040f, #9d0208);
+    color: white;
+    flex: 0 0 auto;
+    padding: 11px 16px;
+  }
+
+  .nav-movil-progreso {
+    font-size: 13px;
+    font-weight: 700;
+    color: #7b1e1e;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
 
 }

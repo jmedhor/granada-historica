@@ -71,25 +71,38 @@
   gap:10px;
 }
 
-
-/* ================================================== */
-/* RESPONSIVE MENU RUTAS                              */
-/* ================================================== */
-
 @media (max-width: 768px) {
 
   .menu-rutas {
-    width: 70%;
+    width: 100%;
     height: auto;
-    max-height: 38vh;
+    max-height: 28vh;
     box-shadow: none;
-    border-radius: 8px;
+    border-radius: 6px;
+    padding: 6px 10px;
+  }
+
+  .menu-rutas h2 {
+    font-size: 12px;
+    margin-bottom: 5px;
+    padding-bottom: 4px;
+  }
+
+  .menu-rutas ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
   }
 
   .menu-rutas li {
-    min-height: 44px;
-    font-size: 13px;
-    padding: 10px 12px;
+    flex: 1 1 calc(50% - 5px);
+    min-height: 34px;
+    font-size: 11px;
+    padding: 6px 8px;
+    margin-bottom: 0;
+    border-radius: 6px;
+    text-align: center;
+    justify-content: center;
   }
 
 }
