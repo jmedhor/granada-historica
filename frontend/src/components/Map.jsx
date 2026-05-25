@@ -624,6 +624,7 @@ function Mapa({
       return
     }
 
+
   }
 
   // ---------------------------------------------------
@@ -741,16 +742,20 @@ function Mapa({
   function MapaClickHandler() {
 
     useMapEvents({
-
       click(e) {
+
+        // ignorar clics de botones para "puntos cercanos"
+        const target = e.originalEvent?.target
+
+        if (target && target.closest('button')) {
+          return
+        }
 
         setUserLocation({
           lat: e.latlng.lat,
           lon: e.latlng.lng
         })
-
       }
-
     })
 
     return null

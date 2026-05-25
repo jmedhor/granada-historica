@@ -16,7 +16,9 @@ function DrawerCercanos({
   mapRef,
   setModoCercanos,
   setPuntosCercanos,
-  onCerrar
+  onPincharPunto,
+  onCerrar,
+  onRutaCercanos,
 }) {
 
   // -----------------------------------------
@@ -37,7 +39,8 @@ function DrawerCercanos({
       mapRef.current.centrarYAbrir(punto)
     }
 
-    onCerrar()
+    onPincharPunto()
+
   }
 
   // -----------------------------------------
@@ -75,7 +78,7 @@ function DrawerCercanos({
               if (mapRef.current?.crearRutaDesdeCercanos) {
                 mapRef.current.crearRutaDesdeCercanos(puntosCercanos)
               }
-              onCerrar()
+              onRutaCercanos()
             }}
           >
             Hacer ruta por puntos cercanos

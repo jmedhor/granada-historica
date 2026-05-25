@@ -170,7 +170,7 @@ function App() {
   // ---------------------------------------------------
   // ABRE EL DRAWER EN VISTA CERCANOS
   // cuando el mapa activa el modo cercanos
-  // SOLO PARA MOVIL
+  // SOLO MOVIL
   // ---------------------------------------------------
 
   useEffect(() => {
@@ -428,12 +428,18 @@ function App() {
                 mapRef={mapRef}
                 setModoCercanos={setModoCercanos}
                 setPuntosCercanos={setPuntosCercanos}
+                onPincharPunto={() => setMostrarPanelMovil(false)}
                 onCerrar={() => {
 
                     setMostrarPanelMovil(false)
                     setModoNavegacion(false)
                     setRutaSeleccionada(null)
                     setModoCercanos(false)
+                  }
+                }
+                onRutaCercanos={() => {
+                    setModoCercanos(false)
+                    setVistaDrawer("puntos")
                   }
                 }
               />
