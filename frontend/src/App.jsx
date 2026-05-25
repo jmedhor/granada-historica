@@ -521,7 +521,7 @@ function App() {
               )}
             </div>
 
-            <div className="menu-movil-seccion">
+            <div className="menu-movil-seccion-admin">
               <button
                 className="menu-movil-btn"
                 onClick={() => navigate('/admin')}

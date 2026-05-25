@@ -9,6 +9,9 @@
   flex: 1;
 
   height: 100%;
+
+  transition: all 0.3s ease;
+
 }
 
 /* ------------------------------------------------ */
@@ -20,6 +23,8 @@
   width: 100%;
 
   height: 100%;
+
+
 }
 
 /* --------- LOADER ---------------- */
@@ -36,6 +41,9 @@
   font-weight: bold;
   z-index: 1000;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+
+  animation: fadeIn 0.3s ease;
+
 }
 
 /* ------------- NUMEROS MARCADORES ------- */
@@ -54,6 +62,9 @@
   border: 2px solid white;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   flex-shrink: 0;
+
+  transition: transform 0.2s ease;
+
 }
 
 /* ----------- MARKERCLUSTER ---------- */
@@ -75,6 +86,8 @@
   backdrop-filter: blur(6px);
   box-shadow: 0 0 15px rgba(69, 123, 157, 0.5);
   transition: 0.2s;
+  will-change: transform;
+
 }
 
 .cluster-wrapper:hover {
@@ -98,6 +111,7 @@
   font-weight: 800;
 
   box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+
 }
 
 .cluster-ruta-nuevos .cluster-core {
@@ -134,6 +148,8 @@
     0 0 0 1px rgba(255,255,255,0.08);
 
   transition: all 0.25s ease;
+  will-change: transform;
+
 }
 
 .duracion-ruta-box:hover {
@@ -154,11 +170,15 @@
   color: #555;
   padding: 2px 6px;
   border-radius: 6px;
+  transition: all 0.2s ease;
+
 }
 
 .cerrar-duracion:hover {
   background: #f2f2f2;
   color: black;
+  transform: scale(1.1);
+
 }
 
 /* -------------------------- */
@@ -221,6 +241,9 @@
 
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 
+  animation: fadeIn 0.3s ease;
+
+
 }
 
 /* ================================================== */
@@ -234,6 +257,8 @@
     width: 100% !important;
     flex: 1;
     min-height: 0;
+    transition: all 0.3s ease;
+
   }
 
   /* Boton cercanos reposicionado */
@@ -242,6 +267,8 @@
     left: 10px;
     padding: 10px 14px;
     font-size: 13px;
+    transition: all 0.3s ease;
+
   }
 
   /* Duracion ruta - ajuste de ancho */
@@ -249,6 +276,9 @@
     width: 58%;
     font-size: 12px;
     padding: 10px 14px;
+
+    transition: all 0.3s ease;
+
   }
 
   /* Mensaje tiempo - ajuste posicion */
@@ -256,6 +286,14 @@
     width: 58%;
     font-size: 13px;
     top: 20px;
+    transition: all 0.3s ease;
+
+  }
+
+  /* Keyframes for smooth UI */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
 }

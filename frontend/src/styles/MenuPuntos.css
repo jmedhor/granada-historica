@@ -8,6 +8,9 @@
   padding:15px;
   box-shadow:0 6px 18px rgba(0,0,0,0.15);
   overflow-y:auto;
+
+  transition: all 0.3s ease;
+  will-change: transform, opacity;
 }
 
 .menu-puntos h3{
@@ -18,6 +21,7 @@
   border-bottom:2px solid #eee;
   padding-bottom:6px;
 
+  transition: all 0.2s ease;
 }
 
 .menu-puntos ul{
@@ -38,7 +42,7 @@
   border-radius: 8px;
 
   cursor:pointer;
-  transition:all 0.25s ease;
+  transition: all 0.25s ease;
 
   background: linear-gradient(135deg, #f28482, #e63946);
   color:white;
@@ -47,11 +51,13 @@
 
   border-left:4px solid transparent;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+  will-change: transform;
 }
 
 .menu-puntos li:hover{
   background: linear-gradient(135deg, #ff9a9e, #e63946);
-  transform:translateX(4px) scale(1.01);
+  transform: translateX(4px) scale(1.01);
   border-left:4px solid #7b1e1e;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
@@ -63,6 +69,12 @@
 .menu-puntos::-webkit-scrollbar-thumb{
   background:#bbb;
   border-radius:10px;
+
+  transition: background 0.2s ease;
+}
+
+.menu-puntos::-webkit-scrollbar-thumb:hover{
+  background:#999;
 }
 
 /* ------------------------------------------------ */
@@ -91,15 +103,19 @@
 
   box-shadow:
     0 6px 14px rgba(0,0,0,0.18);
+
+  will-change: transform;
 }
 
 .btn-start:hover {
 
-  transform:
-    translateY(-2px)
-    scale(1.02);
+  transform: translateY(-2px) scale(1.02);
 
-  background: linear-gradient(135deg, #6a4c93, #3a0ca3)
+  background: linear-gradient(135deg, #6a4c93, #3a0ca3);
+}
+
+.btn-start:active {
+  transform: scale(0.96);
 }
 
 .btn-start-bib {
@@ -111,18 +127,20 @@
   font-size: 15px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.25s ease;
 
+  will-change: transform;
 }
 
 .btn-start-bib:hover {
 
-  transform:
-    translateY(-2px)
-    scale(1.02);
+  transform: translateY(-2px) scale(1.02);
 
-  background:
-  linear-gradient(135deg, #457b9d, #1d3557)
+  background: linear-gradient(135deg, #457b9d, #1d3557);
+}
+
+.btn-start-bib:active {
+  transform: scale(0.96);
 }
 
 /* ------------------------------------------------ */
@@ -156,13 +174,13 @@
 
   box-shadow:
     0 6px 14px rgba(0,0,0,0.18);
+
+  will-change: transform;
 }
 
 .btn-bibliografia:hover {
 
-  transform:
-    translateY(-2px)
-    scale(1.02);
+  transform: translateY(-2px) scale(1.02);
 
   background:
     linear-gradient(
@@ -172,6 +190,9 @@
     );
 }
 
+.btn-bibliografia:active {
+  transform: scale(0.96);
+}
 
 @media (max-width: 768px) {
 
@@ -182,6 +203,8 @@
     box-shadow: none;
     border-radius: 6px;
     padding: 8px 10px;
+
+    transition: all 0.3s ease;
   }
 
   .menu-puntos h3 {
@@ -195,12 +218,16 @@
     font-size: 11px;
     padding: 6px 8px;
     margin-bottom: 5px;
+
+    transition: all 0.2s ease;
   }
 
   .btn-start,
   .btn-start-bib {
     font-size: 12px;
     padding: 8px;
+
+    transition: all 0.2s ease;
   }
 
 }
