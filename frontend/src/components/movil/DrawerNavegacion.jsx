@@ -20,34 +20,38 @@ function DrawerNavegacion({
   return (
     <div className="nav-movil-barra">
 
-      {/* ANTERIOR */}
-      <button
-        className="nav-movil-btn"
-        disabled={segmentoActual === 0}
-        onClick={() =>
-          setSegmentoActual(prev => Math.max(prev - 1, 0))
-        }
-      >
-        ← Anterior
-      </button>
+      <div className="nav-movil-top">
 
-      {/* PROGRESO */}
-      <span className="nav-movil-progreso">
-        {segmentoActual + 1} / {rutasSegmentos.length}
-      </span>
+        {/* ANTERIOR */}
+        <button
+          className="nav-movil-btn"
+          disabled={segmentoActual === 0}
+          onClick={() =>
+            setSegmentoActual(prev => Math.max(prev - 1, 0))
+          }
+        >
+          ← Anterior
+        </button>
 
-      {/* SIGUIENTE */}
-      <button
-        className="nav-movil-btn"
-        disabled={segmentoActual === rutasSegmentos.length - 1}
-        onClick={() =>
-          setSegmentoActual(prev =>
-            Math.min(prev + 1, rutasSegmentos.length - 1)
-          )
-        }
-      >
-        Siguiente →
-      </button>
+        {/* PROGRESO */}
+        <span className="nav-movil-progreso">
+          {segmentoActual + 1} / {rutasSegmentos.length}
+        </span>
+
+        {/* SIGUIENTE */}
+        <button
+          className="nav-movil-btn"
+          disabled={segmentoActual === rutasSegmentos.length - 1}
+          onClick={() =>
+            setSegmentoActual(prev =>
+              Math.min(prev + 1, rutasSegmentos.length - 1)
+            )
+          }
+        >
+          Siguiente →
+        </button>
+
+      </div>
 
       {/* FINALIZAR */}
       <button
