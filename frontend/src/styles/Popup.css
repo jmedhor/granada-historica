@@ -1,0 +1,111 @@
+/* ----------- POPUP TOGGLE ---------- */
+
+.popup-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 6px;
+  color: #7b1e1e;
+  font-weight: 600;
+}
+
+.popup-toggle input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #7b1e1e;
+}
+
+/* ------------------------------------------------ */
+/* BOTON POPUP RUTA */
+/* ------------------------------------------------ */
+
+.btn-popup-ruta {
+
+  width: 100%;
+
+  margin-top: 10px;
+
+  padding: 10px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-weight: 700;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #457b9d,
+      #1d3557
+    );
+
+  transition: all 0.25s ease;
+}
+
+.btn-popup-ruta:hover {
+
+  transform: scale(1.02);
+
+  background:
+    linear-gradient(
+      135deg,
+      #5c8db1,
+      #27496d
+    );
+}
+
+
+.info-punto {
+  margin: 10px 0 5px 0;
+  padding: 10px 12px;
+
+  background: linear-gradient(135deg, #3a86ff, #8338ec);
+  color: white;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+
+  letter-spacing: 0.3px;
+}
+
+/* pequeño efecto de “badge” */
+.info-punto::before {
+  content: "📍";
+}
+
+
+/* ================================================== */
+/* RESPONSIVE POPUP                                   */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  .popup-contenido {
+    max-width: 200px;
+    font-size: 13px;
+  }
+
+  .btn-popup-ruta {
+    font-size: 13px;
+    padding: 9px;
+  }
+
+}

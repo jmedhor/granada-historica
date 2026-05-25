@@ -1,0 +1,229 @@
+/* -------------------------------------------------- */
+/* TABS                                               */
+/* -------------------------------------------------- */
+
+.admin-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.admin-tab {
+  padding: 8px 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-tab:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.admin-tab.active {
+  background: white;
+  color: #7b1e1e;
+  border-color: white;
+}
+
+/* -------------------------------------------------- */
+/* CONTENIDO PRINCIPAL                                */
+/* -------------------------------------------------- */
+
+.admin-contenido {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* -------------------------------------------------- */
+/* SECCION (rutas o puntos)                           */
+/* -------------------------------------------------- */
+
+.admin-seccion {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-seccion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.admin-seccion-header h2 {
+  margin: 0;
+  color: #7b1e1e;
+  font-size: 20px;
+}
+
+/* -------------------------------------------------- */
+/* BUSCADOR                                           */
+/* -------------------------------------------------- */
+
+.admin-buscador {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.admin-buscador:focus {
+  border-color: #7b1e1e;
+}
+
+/* -------------------------------------------------- */
+/* TABLA                                              */
+/* -------------------------------------------------- */
+
+.admin-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin-tabla th {
+  background: #7b1e1e;
+  color: white;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.admin-tabla th:first-child { border-radius: 8px 0 0 0; }
+.admin-tabla th:last-child  { border-radius: 0 8px 0 0; }
+
+.admin-tabla td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+}
+
+.admin-tabla tr:hover td {
+  background: #fdf5f5;
+}
+
+.admin-acciones {
+  display: flex;
+  gap: 6px;
+}
+
+/* -------------------------------------------------- */
+/* BOTONES DE ACCION EN TABLA                         */
+/* -------------------------------------------------- */
+
+.btn-admin-editar,
+.btn-admin-borrar {
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.15s ease;
+}
+
+.btn-admin-editar {
+  background: #28A3FC;
+}
+
+.btn-admin-editar:hover {
+  transform: scale(1.1);
+  background: #cce5ff;
+}
+
+.btn-admin-borrar {
+  background: #F72323;
+}
+
+.btn-admin-borrar:hover {
+  transform: scale(1.1);
+  background: #ffcccc;
+}
+
+.btn-admin-nuevo {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #7b1e1e, #a83232);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-admin-nuevo:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #9b2226, #c1121f);
+}
+
+/* -------------------------------------------------- */
+/* MINI MAPA EN PUNTOFORM                             */
+/* -------------------------------------------------- */
+
+.admin-coords-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.btn-abrir-mapa {
+  padding: 5px 12px;
+  background: linear-gradient(135deg, #457b9d, #1d3557);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-abrir-mapa:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #5c8db1, #27496d);
+}
+
+.admin-minimapa {
+  margin: 10px 0;
+}
+
+.admin-minimapa-hint {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 6px 0;
+  font-style: italic;
+}
+
+/* -------------------------------------------------- */
+/* DRAG HANDLE                                        */
+/* -------------------------------------------------- */
+
+.drag-handle {
+  cursor: grab;
+  color: #aaa;
+  font-size: 18px;
+  text-align: center;
+  user-select: none;
+  padding: 10px 8px;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}

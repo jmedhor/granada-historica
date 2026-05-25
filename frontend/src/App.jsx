@@ -1,7 +1,28 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+// ----------------------------
 
-import './App.css'
+// Estilos para la aplicacion seccionados
+// ANTIGUO: import './styles/App.css'
+
+import "./styles/global.css"
+import "./styles/header.css"
+import "./styles/mapa.css"
+import "./styles/MenuPuntos.css"
+import "./styles/MenuRutas.css"
+import "./styles/PanelBibliografia.css"
+import "./styles/PanelCercanos.css"
+import "./styles/PanelRuta.css"
+import "./styles/Popup.css"
+
+// Admin
+
+import "./styles/AdminButton-other.css"
+import "./styles/AdminPage.css"
+import "./styles/AdminSection.css"
+import "./styles/ConfirmModal.css"
+
+// ----------------------------
 
 import logoUGR from '../assets/logo-ugr.png'
 
@@ -11,6 +32,19 @@ import MenuPuntos from './components/MenuPuntos.jsx'
 import PanelRuta from './components/PanelRuta.jsx'
 import PanelBibliografia from './components/PanelBibliografia.jsx'
 import PanelCercanos from './components/PanelCercanos.jsx'
+
+
+// ---------------------------------------------------
+// COMPONENTES AUXILIARES PARA DRAWERS MOVIL
+// Versiones simplificadas de MenuRutas y MenuPuntos
+// que cierran el drawer al seleccionar
+// ---------------------------------------------------
+
+import DrawerRutas from './components/movil/DrawerRutas.jsx'
+import DrawerPuntos from './components/movil/DrawerPuntos.jsx'
+import DrawerBibliografia from './components/movil/DrawerBibliografia.jsx'
+import DrawerNavegacion from './components/movil/DrawerNavegacion.jsx'
+import DrawerCercanos from './components/movil/DrawerCercanos.jsx'
 
 function App() {
 
@@ -53,7 +87,7 @@ function App() {
   const [horasDisponibles, setHorasDisponibles] = useState(3)
 
   // Estado para ocultar o mostrar el panel derecho
-  const [mostrarPanel, setMostrarPanel] = useState(true)
+  const [mostrarPanel, setMostrarPanel] = useState(false)
 
   // Estado para visualizar bibliografia
   const [modoBibliografia, setModoBibliografia] = useState(false)
@@ -77,6 +111,16 @@ function App() {
   // Segmento actual mostrado durante navegacion
   const [segmentoActual, setSegmentoActual] = useState(0)
 
+  // Controla visibilidad del menu de opciones en movil
+  const [mostrarOpcionesMovil, setMostrarOpcionesMovil] = useState(false)
+
+  // Controla visibilidad del drawer de rutas/puntos en movil
+  const [mostrarPanelMovil, setMostrarPanelMovil] = useState(false)
+
+  // Vista activa dentro del drawer izquierdo de movil
+  // "rutas" | "puntos" | "bibliografia" | "navegacion"
+  const [vistaDrawer, setVistaDrawer] = useState("rutas")
+
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
   // ---------------------------------------------------
@@ -97,6 +141,49 @@ function App() {
     )
   }
 
+
+  // ---------------------------------------------------
+  // FIX ALTURA REAL EN MOVIL
+  // 100vh en moviles incluye la barra del navegador
+  // Este efecto calcula el vh real y lo guarda en CSS
+  // ---------------------------------------------------
+
+  useEffect(() => {
+
+    const actualizarVh = () => {
+      const vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+    }
+
+    actualizarVh()
+    window.addEventListener('resize', actualizarVh)
+
+    return () => window.removeEventListener('resize', actualizarVh)
+
+  }, [])
+
+
+  // ---------------------------------------------------
+  // ABRE EL DRAWER EN VISTA CERCANOS
+  // cuando el mapa activa el modo cercanos
+  // SOLO MOVIL
+  // ---------------------------------------------------
+
+  useEffect(() => {
+
+    // Solo abrir drawer automaticamente en movil
+    if (
+      modoCercanos &&
+      window.innerWidth <= 768
+    ) {
+
+      setVistaDrawer("cercanos")
+      setMostrarPanelMovil(true)
+
+    }
+
+  }, [modoCercanos])
+
   // ---------------------------------------------------
   // RENDER PRINCIPAL
   // ---------------------------------------------------
@@ -111,133 +198,341 @@ function App() {
 
       <header className="app-header">
 
-        {/* TITULO PRINCIPAL */}
-        <div className="header-left">
+        <div className="header-top-row">
 
-          <h1 className="titulo-app">
-            NazaRoute
-          </h1>
-
-          <span className="subtitulo-app">
-            Rutas historicas por la ciudad de Granada
-          </span>
-
-        </div>
-
-        {/* CONTROLES CENTRALES */}
-        <div className="header-right">
-
+          {/* BOTON HAMBURGUESA IZQUIERDA - abre drawer de rutas */}
           <button
-            className="btn-admin"
-            onClick={() => navigate('/admin')}
+            className="btn-panel-movil"
+            onClick={() => setMostrarPanelMovil(prev => !prev)}
+            aria-label="Ver rutas y puntos"
           >
-            Admin
+            &#9776;
           </button>
 
+          <div className="header-left">
+            <h1 className="titulo-app">NazaRoute</h1>
+            <span className="subtitulo-app">
+              Rutas historicas por la ciudad de Granada
+            </span>
+          </div>
 
-          <div className="selector-ruta">
 
-            {/* -------------------------------- */}
-            {/* BOTONES DE TIPO DE RUTA */}
-            {/* -------------------------------- */}
+          <div className="header-ugr">
+            <a href="https://www.ugr.es">
+              <img
+                src={logoUGR}
+                alt="Universidad de Granada"
+                className="logo-ugr"
+              />
+            </a>
+          </div>
 
-            <div className="toggle-group">
+          {/* CONTROLES - solo visibles en escritorio */}
+          <div className="header-right">
 
-              <button
-                className={modoRuta === "optima" ? "toggle active" : "toggle"}
-                onClick={() => setModoRuta("optima")}
-              >
-                Ruta mas corta
-              </button>
+            <button
+              className="btn-admin"
+              onClick={() => navigate('/admin')}
+            >
+              Admin
+            </button>
 
-              <button
-                className={modoRuta === "historica" ? "toggle active" : "toggle"}
-                onClick={() => setModoRuta("historica")}
-              >
-                Ruta historica (UGR)
-              </button>
-
-              {/* -------------------------------- */}
-              {/* BOTON EVITAR PAGO */}
-              {/* -------------------------------- */}
-
-              <button
-                className={evitarPago ? "toggle danger active" : "toggle danger"}
-                onClick={() => setEvitarPago(!evitarPago)}
-              >
-                Evitar lugares de pago
-              </button>
-
-              {/* ------------------------------------------------ */}
-              {/* FILTRO DE TIEMPO DISPONIBLE */}
-              {/* ------------------------------------------------ */}
-
+            <div className="selector-ruta">
               <div className="toggle-group">
 
                 <button
-                  className={
-                    usarFiltroTiempo
-                      ? "toggle danger active"
-                      : "toggle danger"
-                  }
-                  onClick={() =>
-                    setUsarFiltroTiempo(!usarFiltroTiempo)
-                  }
+                  className={modoRuta === "optima" ? "toggle active" : "toggle"}
+                  onClick={() => setModoRuta("optima")}
                 >
-                  Tiempo disponible: {horasDisponibles}h
+                  Ruta mas corta
                 </button>
 
-                {usarFiltroTiempo && (
-                  <select
-                    className="toggle"
-                    value={horasDisponibles}
-                    onChange={(e) =>
-                      setHorasDisponibles(
-                        Number(e.target.value)
-                      )
-                    }
+                <button
+                  className={modoRuta === "historica" ? "toggle active" : "toggle"}
+                  onClick={() => setModoRuta("historica")}
+                >
+                  Ruta historica (UGR)
+                </button>
+
+                <button
+                  className={evitarPago ? "toggle danger active" : "toggle danger"}
+                  onClick={() => setEvitarPago(!evitarPago)}
+                >
+                  Evitar lugares de pago
+                </button>
+
+                <div className="toggle-group">
+
+                  <button
+                    className={usarFiltroTiempo ? "toggle danger active" : "toggle danger"}
+                    onClick={() => setUsarFiltroTiempo(!usarFiltroTiempo)}
                   >
+                    Tiempo disponible: {horasDisponibles}h
+                  </button>
 
-                    <option value={1}>1 hora</option>
-                    <option value={2}>2 horas</option>
-                    <option value={3}>3 horas</option>
-                    <option value={4}>4 horas</option>
-                    <option value={5}>5 horas</option>
-                    <option value={6}>6 horas</option>
-                    <option value={7}>7 horas</option>
+                  {usarFiltroTiempo && (
+                    <select
+                      className="toggle"
+                      value={horasDisponibles}
+                      onChange={(e) => setHorasDisponibles(Number(e.target.value))}
+                    >
+                      <option value={1}>1 hora</option>
+                      <option value={2}>2 horas</option>
+                      <option value={3}>3 horas</option>
+                      <option value={4}>4 horas</option>
+                      <option value={5}>5 horas</option>
+                      <option value={6}>6 horas</option>
+                      <option value={7}>7 horas</option>
+                    </select>
+                  )}
 
-                  </select>
-                )}
+                </div>
 
               </div>
-
             </div>
 
           </div>
 
         </div>
 
-
-
-        {/* --------------------------------------------------- */}
-        {/* BLOQUE UGR */}
-        {/* --------------------------------------------------- */}
-
-        <div className="header-ugr">
-
-          <a href="https://www.ugr.es">
-
-            <img
-              src={logoUGR}
-              alt="Universidad de Granada"
-              className="logo-ugr"
-            />
-
-          </a>
-
-        </div>
-
       </header>
+
+
+      {/* --------------------------------------------------- */}
+      {/* DRAWER IZQUIERDA - RUTAS, PUNTOS, NAVEGACION, CERCA */}
+      {/* --------------------------------------------------- */}
+
+      {mostrarPanelMovil && (
+        <>
+          <div
+            className="menu-movil-overlay"
+            onClick={() => setMostrarPanelMovil(false)}
+          />
+
+          <div className="menu-movil-lateral">
+
+            {/* CABECERA DINAMICA */}
+            <div className="menu-movil-header">
+
+              <span>
+                {vistaDrawer === "rutas"       && "Rutas disponibles"}
+                {vistaDrawer === "puntos"      && (rutaSeleccionada?.nombre || "Puntos")}
+                {vistaDrawer === "bibliografia" && "Bibliografia"}
+                {vistaDrawer === "navegacion"  && "Navegacion"}
+                {vistaDrawer === "cercanos"  && "Puntos cercanos"}
+
+              </span>
+
+              <button
+                className="menu-movil-cerrar"
+                onClick={() => setMostrarPanelMovil(false)}
+              >
+                &#10005;
+              </button>
+
+              {/* BOTON OPCIONES DERECHA - abre drawer de opciones */}
+              <button
+                className="btn-opciones-movil"
+                onClick={() => {
+                  setMostrarOpcionesMovil(prev => !prev);
+                  setMostrarPanelMovil(prev => !prev)}
+                }
+                aria-label="Opciones de ruta"
+              >
+                &#9881;
+              </button>
+
+            </div>
+
+            {/* ---- VISTA RUTAS ---- */}
+            {vistaDrawer === "rutas" && (
+              <DrawerRutas
+                setRutaSeleccionada={(ruta) => {
+                  setRutaSeleccionada(ruta)
+                  setVistaDrawer("puntos")
+                }}
+                setModoCercanos={setModoCercanos}
+              />
+            )}
+
+            {/* ---- VISTA PUNTOS ---- */}
+            {vistaDrawer === "puntos" && rutaSeleccionada && (
+              <div className="menu-movil-seccion">
+
+                {/* Navegacion interna del drawer */}
+                <button
+                  className="menu-movil-btn"
+                  onClick={() => {
+                    setRutaSeleccionada(null)
+                    setModoNavegacion(false)
+                    setModoBibliografia(false)
+                    setModoCercanos(false)
+                    setVistaDrawer("rutas")
+                  }}
+                >
+                  ← Volver a rutas
+                </button>
+
+                <button
+                  className="menu-movil-btn activo"
+                  onClick={() => {
+                    setModoNavegacion(true)
+                    setSegmentoActual(0)
+                    setMostrarPanelMovil(false)
+                  }}
+                >
+                  Comenzar ruta
+                </button>
+
+                <button
+                  className="menu-movil-btn"
+                  onClick={() => setVistaDrawer("bibliografia")}
+                >
+                  Ver bibliografia
+                </button>
+
+                <p className="menu-movil-titulo-seccion" style={{ marginTop: 12 }}>
+                  Puntos de la ruta
+                </p>
+
+                <DrawerPuntos
+                  ruta={rutaSeleccionada}
+                  mapRef={mapRef}
+                  evitarPago={evitarPago}
+                  ordenPuntos={ordenPuntos}
+                  puntosRutaVirtual={
+                    rutaSeleccionada?.id === "cercanos" ? ordenPuntos : null
+                  }
+                  onCerrar={() => setMostrarPanelMovil(false)}
+                />
+
+              </div>
+            )}
+
+            {/* ---- VISTA BIBLIOGRAFIA ---- */}
+            {vistaDrawer === "bibliografia" && (
+              <DrawerBibliografia
+                ruta={rutaSeleccionada}
+                onVolver={() => setVistaDrawer("puntos")}
+              />
+            )}
+
+            {/* ---- VISTA CERCANOS ---- */}
+            {vistaDrawer === "cercanos" && (
+              <DrawerCercanos
+                puntosCercanos={puntosCercanos}
+                mapRef={mapRef}
+                setModoCercanos={setModoCercanos}
+                setPuntosCercanos={setPuntosCercanos}
+                onPincharPunto={() => setMostrarPanelMovil(false)}
+                onCerrar={() => {
+
+                    setMostrarPanelMovil(false)
+                    setModoNavegacion(false)
+                    setRutaSeleccionada(null)
+                    setModoCercanos(false)
+                    setVistaDrawer("rutas")
+                  }
+                }
+                onRutaCercanos={() => {
+                    setModoCercanos(false)
+                    setVistaDrawer("puntos")
+                  }
+                }
+              />
+            )}
+
+          </div>
+        </>
+      )}
+
+      {/* --------------------------------------------------- */}
+      {/* DRAWER DERECHA - OPCIONES                           */}
+      {/* --------------------------------------------------- */}
+
+      {mostrarOpcionesMovil && (
+        <>
+          <div
+            className="menu-movil-overlay"
+            onClick={() => setMostrarOpcionesMovil(false)}
+          />
+
+          <div className="menu-movil-lateral menu-movil-lateral--derecha">
+
+            <div className="menu-movil-header">
+              <span>Opciones</span>
+              <button
+                className="menu-movil-cerrar"
+                onClick={() => setMostrarOpcionesMovil(false)}
+              >
+                &#10005;
+              </button>
+            </div>
+
+            <div className="menu-movil-seccion">
+              <p className="menu-movil-titulo-seccion">Tipo de ruta</p>
+
+              <button
+                className={modoRuta === "optima" ? "menu-movil-btn activo" : "menu-movil-btn"}
+                onClick={() => setModoRuta("optima")}
+              >
+                Ruta mas corta
+              </button>
+
+              <button
+                className={modoRuta === "historica" ? "menu-movil-btn activo" : "menu-movil-btn"}
+                onClick={() => setModoRuta("historica")}
+              >
+                Ruta historica (UGR)
+              </button>
+            </div>
+
+            <div className="menu-movil-seccion">
+              <p className="menu-movil-titulo-seccion">Filtros</p>
+
+              <button
+                className={evitarPago ? "menu-movil-btn activo peligro" : "menu-movil-btn"}
+                onClick={() => setEvitarPago(!evitarPago)}
+              >
+                {evitarPago ? "Evitando lugares de pago" : "Evitar lugares de pago"}
+              </button>
+
+              <button
+                className={usarFiltroTiempo ? "menu-movil-btn activo peligro" : "menu-movil-btn"}
+                onClick={() => setUsarFiltroTiempo(!usarFiltroTiempo)}
+              >
+                {usarFiltroTiempo ? `Tiempo: ${horasDisponibles}h activado` : "Filtrar por tiempo"}
+              </button>
+
+              {usarFiltroTiempo && (
+                <select
+                  className="menu-movil-select"
+                  value={horasDisponibles}
+                  onChange={(e) => setHorasDisponibles(Number(e.target.value))}
+                >
+                  <option value={1}>1 hora</option>
+                  <option value={2}>2 horas</option>
+                  <option value={3}>3 horas</option>
+                  <option value={4}>4 horas</option>
+                  <option value={5}>5 horas</option>
+                  <option value={6}>6 horas</option>
+                  <option value={7}>7 horas</option>
+                </select>
+              )}
+            </div>
+
+            <div className="menu-movil-seccion-admin">
+              <button
+                className="menu-movil-btn"
+                onClick={() => navigate('/admin')}
+              >
+                Panel de administracion
+              </button>
+            </div>
+
+          </div>
+        </>
+      )}
 
       {/* --------------------------------------------------- */}
       {/* CONTENIDO PRINCIPAL */}
@@ -330,8 +625,8 @@ function App() {
         >
 
           {mostrarPanel
-            ? "Ocultar"
-            : "Mostrar"}
+            ? "Ocultar panel"
+            : "Mostrar panel"}
 
         </button>
 
@@ -508,6 +803,20 @@ function App() {
         )}
 
       </div>
+
+      {/* --------------------------------------------------- */}
+      {/* BARRA DE NAVEGACION MOVIL                           */}
+      {/* Solo visible en movil cuando modoNavegacion activo  */}
+      {/* --------------------------------------------------- */}
+
+      {modoNavegacion && (
+        <DrawerNavegacion
+          rutasSegmentos={rutasSegmentos}
+          segmentoActual={segmentoActual}
+          setSegmentoActual={setSegmentoActual}
+          setModoNavegacion={setModoNavegacion}
+        />
+      )}
 
     </div>
 

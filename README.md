@@ -1,14 +1,13 @@
 # NazaRoute
 
-
 NazaRoute es una aplicación web de rutas turísticas históricas por la ciudad
 de Granada. Permite al usuario explorar puntos de interés cultural e histórico
 siguiendo rutas diseñadas con rigor académico, con información aportada por la
 Universidad de Granada (UGR).
 
 La aplicación combina mapas interactivos, cálculo de rutas reales mediante OSRM,
-filtrado dinámico de puntos turísticos y navegación paso a paso para ofrecer una
-experiencia inmersiva y adaptable al tiempo y preferencias del usuario.
+filtrado dinámico de puntos turísticos, navegación paso a paso y un panel de
+administración completo para la gestión de contenidos.
 
 ---
 
@@ -16,6 +15,8 @@ experiencia inmersiva y adaptable al tiempo y preferencias del usuario.
 
 - [Descripción general](#descripción-general)
 - [Funcionalidades principales](#funcionalidades-principales)
+- [Panel de administración](#panel-de-administración)
+- [Interfaz móvil](#interfaz-móvil)
 - [Tecnologías utilizadas](#tecnologías-utilizadas)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Requisitos previos](#requisitos-previos)
@@ -61,10 +62,9 @@ OSRM y OpenStreetMap.
 
 ## Modos de cálculo de ruta
 
-La aplicación permite dos estrategias distintas:
-
 ### Ruta más corta
-Optimiza automáticamente el recorrido para minimizar la distancia total.
+Optimiza automáticamente el recorrido para minimizar la distancia total
+usando el algoritmo A* personalizado.
 
 ### Ruta histórica
 Respeta el orden histórico/académico definido por la UGR.
@@ -76,7 +76,8 @@ Respeta el orden histórico/académico definido por la UGR.
 - Visualización progresiva de segmentos
 - Flechas direccionales sobre el mapa
 - Centrado automático en el siguiente punto
-- Panel lateral de navegación
+- Panel lateral de navegación (escritorio)
+- Barra de controles fija en parte inferior (móvil)
 
 ---
 
@@ -85,7 +86,7 @@ Respeta el orden histórico/académico definido por la UGR.
 El usuario puede generar rutas automáticas usando:
 
 - Su posición actual en el mapa
-- Puntos cercanos dentro de un radio configurable
+- Puntos cercanos dentro de un radio de 350m
 - Reordenación automática mediante OSRM
 
 ---
@@ -109,38 +110,87 @@ El usuario puede indicar cuántas horas tiene disponibles y la aplicación:
 La aplicación calcula:
 
 - Tiempo de trayecto real (OSRM)
-- Tiempo estimado de visita por punto
+- Tiempo estimado de visita por punto (15 min por punto)
 - Duración total aproximada de la ruta
-
----
-
-## Paneles interactivos
-
-### Panel de puntos
-Lista ordenada de puntos turísticos.
-
-### Panel de bibliografía
-Bibliografía académica asociada a cada ruta.
-
-### Panel de cercanos
-Visualización rápida de puntos próximos al usuario.
 
 ---
 
 ## Modo historiador
 
-Permite mostrar información histórica extendida dentro de los popups del mapa.
+Permite mostrar información histórica extendida dentro de los popups del mapa,
+activable directamente desde el popup de cada marcador.
 
 ---
 
 ## Visualización avanzada de mapa
 
-- Clustering de marcadores
+- Clustering de marcadores agrupados por ruta con colores diferenciados
 - Marcadores personalizados por ruta
 - Numeración automática de puntos
-- Flechas de dirección
+- Flechas de dirección sobre los segmentos
 - Popups enriquecidos
 - Centrado dinámico del mapa
+
+---
+
+# Panel de administración
+
+Accesible desde `/admin`. Protegido por PIN de acceso. Existen dos roles
+con permisos distintos.
+
+## Roles
+
+### Superadmin
+Acceso completo a todas las funciones de gestión:
+
+- Crear, editar y eliminar rutas
+- Gestionar puntos de cada ruta (crear, editar, reordenar, quitar, borrar)
+- Añadir puntos existentes a rutas
+- Editar bibliografía de rutas
+- Activar o desactivar rutas y puntos
+
+### Admin Historiador
+Acceso limitado a:
+
+- Editar los campos descriptivos de puntos existentes (nombre, descripción, URL, importancia, pago)
+- Editar la bibliografía de cada ruta
+- No puede modificar coordenadas, estado activo, ni crear o borrar elementos
+
+## Funcionalidades del panel
+
+### Gestión de rutas
+Tabla con todas las rutas del sistema. Acciones disponibles según rol:
+
+- Editar nombre, descripción, bibliografía y estado activo
+- Acceder al gestor de puntos de cada ruta
+- Eliminar ruta (con confirmación)
+
+### Gestor de puntos por ruta
+Vista dedicada por ruta con:
+
+- Lista de puntos con drag & drop para reordenar visualmente
+- Editar cada punto individualmente
+- Añadir un punto existente del sistema a la ruta
+- Crear un nuevo punto directamente asociado a la ruta
+- Quitar un punto de la ruta sin borrarlo del sistema
+
+### Formulario de punto
+Incluye:
+
+- Nombre, descripción, URL, importancia (slider 1-10)
+- Coordenadas con mini mapa integrado: clic en el mapa para seleccionar ubicación
+- Ruta asociada, acceso de pago, estado activo
+
+### Vista de todos los puntos
+Tabla con buscador que muestra todos los puntos del sistema
+independientemente de su ruta. Permite editar y borrar.
+
+---
+
+# Interfaz móvil
+
+La aplicación es completamente funcional en dispositivos móviles.
+El panel de administración no está adaptado para móvil intencionadamente.
 
 ---
 
@@ -150,11 +200,11 @@ Permite mostrar información histórica extendida dentro de los popups del mapa.
 
 - React
 - Vite
-- Leaflet
-- react-leaflet
-- leaflet.markercluster
-- react-leaflet-cluster
+- Leaflet / react-leaflet
+- leaflet.markercluster / react-leaflet-cluster
 - leaflet-polylinedecorator
+- @dnd-kit/core + @dnd-kit/sortable (drag & drop en panel admin)
+- react-router-dom
 
 ---
 
@@ -185,8 +235,7 @@ Permite mostrar información histórica extendida dentro de los popups del mapa.
 
 ## Infraestructura
 
-- Docker
-- Docker Compose
+- Docker / Docker Compose
 
 ---
 
@@ -194,50 +243,72 @@ Permite mostrar información histórica extendida dentro de los popups del mapa.
 
 ```text
 nazaroute/
-├── frontend/                  # Aplicación React
+├── frontend/
 │   ├── src/
-│   │   ├── components/        # Componentes principales
-│   │   │   ├── Map.jsx        # Mapa interactivo principal
-│   │   │   ├── MenuRutas.jsx  # Lista de rutas disponibles
-│   │   │   ├── MenuPuntos.jsx # Lista de puntos de la ruta
-│   │   │   ├── PanelRuta.jsx  # Navegación paso a paso
-│   │   │   ├── PanelBibliografia.jsx # Menu bibliografia
-│   │   │   ├── Popup.jsx # Marcadores para cada punto
-│   │   │   └── PanelCercanos.jsx # Menu para puntos cercanos al usuario
-│   │   │   └── FlechasRuta.jsx # Decoración para caminos de rutas
-|   |   |
+│   │   ├── components/
+│   │   │   ├── Map.jsx
+│   │   │   ├── MenuRutas.jsx
+│   │   │   ├── MenuPuntos.jsx
+│   │   │   ├── PanelRuta.jsx
+│   │   │   ├── PanelBibliografia.jsx
+│   │   │   ├── PanelCercanos.jsx
+│   │   │   ├── FlechasRuta.jsx
+│   │   │   ├── Popup.jsx
+│   │   │   ├── movil/
+│   │   │   │   ├── DrawerRutas.jsx
+│   │   │   │   ├── DrawerPuntos.jsx
+│   │   │   │   ├── DrawerBibliografia.jsx
+│   │   │   │   ├── DrawerCercanos.jsx
+│   │   │   │   └── DrawerNavegacion.jsx
+│   │   │   └── admin/
+│   │   │       ├── RutasList.jsx
+│   │   │       ├── RutaForm.jsx
+│   │   │       ├── PuntosList.jsx
+│   │   │       ├── PuntoForm.jsx
+│   │   │       ├── PuntosDeRuta.jsx
+│   │   │       └── ConfirmModal.jsx
+│   │   ├── pages/
+│   │   │   └── AdminPage.jsx
 │   │   ├── services/
-│   │   │   ├── osrm.js        # Llamadas a la API de OSRM
-│   │   │   └── astar.js       # Algoritmo A*
-|   |   |
+│   │   │   ├── api.js
+│   │   │   ├── osrm.js
+│   │   │   └── astar.js
 │   │   ├── utils/
-│   │   │   ├── coloresRuta.js # Archivo con colores de cada ruta
-│   │   │   └── distancia.js   # Cálculo de distancias
-|   |   |
-│   │   ├── App.jsx # Lógica principal de la aplicación
-│   |   ├── App.css # Estilos para la aplicacion
-│   |   ├── index.css # Estilos para la base de la aplicación
-│   |   └── main.jsx # Archivo raíz de la aplicación
-|   |
-|   ├──assets/ # Imagenes varias para la aplicación
-|   |
-│   └── package.json # Dependencias para instalación
+│   │   │   ├── coloresRuta.js
+│   │   │   └── distancia.js
+│   │   ├── styles/
+│   │   │   ├── global.css
+│   │   │   ├── header.css
+│   │   │   ├── mapa.css
+│   │   │   ├── MenuRutas.css
+│   │   │   ├── MenuPuntos.css
+│   │   │   ├── PanelRuta.css
+│   │   │   ├── PanelBibliografia.css
+│   │   │   ├── PanelCercanos.css
+│   │   │   ├── Popup.css
+│   │   │   ├── AdminPage.css
+│   │   │   ├── AdminSection.css
+│   │   │   ├── AdminButton-other.css
+│   │   │   └── ConfirmModal.css
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── assets/
+│   └── package.json
 │
-├── backend/                   # API Python (FastAPI) junto a B.D Postgre
-│   ├── main.py # Archivo principal de FastAPI
-│   ├── database.py # Funcion para obtener la base de datos
-│   ├── crud.py # Metodos para obtener la informacion de la BD
-│   ├── schemas.py # Definicion de los schemas para las clases de objetos
-│   └── models.py # Definicion de modelos para las clases de objetos
-
+├── backend/
+│   ├── main.py
+│   ├── database.py
+│   ├── crud.py
+│   ├── schemas.py
+│   └── models.py
 │
-├── docker/                    # Configuración Docker
+├── docker/
 │   └── docker-compose.osrm.yml
 │
-└── osrm/                      # Datos y scripts de OSRM
-    ├── input/                 # (CREAR MANUALMENTE - Ver sección 4) ficheros .osm.pbf (no versionados)
-    ├── walking/               # dataset OSRM para pie (no versionado)
-    ├── prepare-osrm.sh        # script de preprocesado
+└── osrm/
+    ├── input/
+    ├── walking/
+    ├── prepare-osrm.sh
     └── README.md
 ```
 
@@ -318,7 +389,7 @@ docker compose -f docker-compose.osrm.yml up -d
 
 Servidor expuesto en:
 
-- `localhost:5001` → perfil a pie (walking)
+- `localhost:5001` — perfil a pie (walking)
 
 ### Verificar que funciona
 
@@ -330,14 +401,21 @@ curl "http://localhost:5001/route/v1/foot/-3.5986,37.1773;-3.5900,37.1800?overvi
 
 ## Backend
 
-El backend expone una API REST con los siguientes endpoints principales:
+El backend expone una API REST. Corre por defecto en `http://localhost:8000`.
 
-| Método | Endpoint  | Descripción                        |
-|--------|-----------|------------------------------------|
-| GET    | `/rutas`  | Lista todas las rutas disponibles  |
-| GET    | `/puntos` | Lista todos los puntos de interés  |
-
-Corre por defecto en `http://localhost:8000`.
+| Método | Endpoint               | Descripción                              |
+|--------|------------------------|------------------------------------------|
+| GET    | `/rutas`               | Lista todas las rutas                    |
+| GET    | `/rutas/{id}`          | Detalle de una ruta                      |
+| GET    | `/rutas/{id}/puntos`   | Puntos de una ruta                       |
+| POST   | `/rutas`               | Crear ruta (superadmin)                  |
+| PATCH  | `/rutas/{id}`          | Editar ruta (superadmin)                 |
+| DELETE | `/rutas/{id}`          | Eliminar ruta (superadmin)               |
+| GET    | `/puntos`              | Lista todos los puntos                   |
+| GET    | `/puntos/{id}`         | Detalle de un punto                      |
+| POST   | `/puntos`              | Crear punto (superadmin)                 |
+| PATCH  | `/puntos/{id}`         | Editar punto (superadmin / historiador)  |
+| DELETE | `/puntos/{id}`         | Eliminar punto (superadmin)              |
 
 ---
 
@@ -348,12 +426,14 @@ El frontend corre por defecto en `http://localhost:5173`.
 Las llamadas a OSRM se realizan desde `src/services/osrm.js` contra
 `http://localhost:5001`.
 
+El panel de administración es accesible en `/admin`.
+
 ---
 
 ## Nota sobre versionado
 
-Los siguientes archivos **no deben subirse** al repositorio y están
-incluidos en el `.gitignore`:
+Los siguientes archivos **no deben subirse** al repositorio:
 
 - Ficheros `.osm.pbf`
 - Datasets generados por OSRM (`osrm/walking/`)
+- Fichero `.env` con variables de entorno

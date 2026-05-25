@@ -1,0 +1,299 @@
+/* ------------------------------------------------ */
+/* CONTENEDOR DEL MAPA */
+/* ------------------------------------------------ */
+
+.map-container {
+
+  position: relative;
+
+  flex: 1;
+
+  height: 100%;
+
+  transition: all 0.3s ease;
+
+}
+
+/* ------------------------------------------------ */
+/* MAPA LEAFLET */
+/* ------------------------------------------------ */
+
+.map-container .leaflet-container {
+
+  width: 100%;
+
+  height: 100%;
+
+
+}
+
+/* --------- LOADER ---------------- */
+
+.loading-overlay {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(123, 30, 30, 0.9);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+
+  animation: fadeIn 0.3s ease;
+
+}
+
+/* ------------- NUMEROS MARCADORES ------- */
+
+.numero-marker {
+  background: #7b1e1e;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+
+  transition: transform 0.2s ease;
+
+}
+
+/* ----------- MARKERCLUSTER ---------- */
+
+.custom-marker-cluster {
+  background: transparent;
+}
+
+.cluster-wrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 150px;
+  background: rgba(69, 123, 157, 0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 15px rgba(69, 123, 157, 0.5);
+  transition: 0.2s;
+  will-change: transform;
+
+}
+
+.cluster-wrapper:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(69, 123, 157, 0.8);
+}
+
+.cluster-core {
+  width: 34px;
+  height: 34px;
+  border-radius: 50px;
+
+  background: linear-gradient(135deg, #6a4c93, #3a0ca3);
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+
+}
+
+.cluster-ruta-nuevos .cluster-core {
+  background: linear-gradient(135deg, #A144E3, #4D107A);
+}
+
+/* -------------- DURACION DE RUTA ----------- */
+
+.duracion-ruta-box {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+
+  background: rgba(123, 30, 30, 0.92);
+  color: white;
+
+  padding: 12px 20px;
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+
+  backdrop-filter: blur(8px);
+
+  box-shadow:
+    0 4px 14px rgba(0,0,0,0.18),
+    0 0 0 1px rgba(255,255,255,0.08);
+
+  transition: all 0.25s ease;
+  will-change: transform;
+
+}
+
+.duracion-ruta-box:hover {
+  transform: translateX(-50%) scale(1.02);
+  background: rgba(168, 50, 50, 0.97);
+}
+
+.duracion-ruta-box strong {
+  color: #ffe0e0;
+  font-weight: 800;
+}
+
+.cerrar-duracion {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #555;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+}
+
+.cerrar-duracion:hover {
+  background: #f2f2f2;
+  color: black;
+  transform: scale(1.1);
+
+}
+
+/* -------------------------- */
+/* COLORES DE CLUSTER POR RUTA */
+/* -------------------------- */
+
+.cluster-ruta-1 .cluster-core {
+  background: linear-gradient(135deg, #e63946, #9b2226);
+}
+
+.cluster-ruta-2 .cluster-core {
+  background: linear-gradient(135deg, #3a86ff, #1d4ed8);
+}
+
+.cluster-ruta-3 .cluster-core {
+  background: linear-gradient(135deg, #f77f00, #d97706);
+}
+
+.cluster-ruta-4 .cluster-core {
+  background: linear-gradient(135deg, #2a9d8f, #0f766e);
+}
+
+.cluster-ruta-5 .cluster-core {
+  background: linear-gradient(135deg, #ff006e, #c9184a);
+}
+
+.cluster-ruta-6 .cluster-core {
+  background: linear-gradient(135deg, #222, #000);
+}
+
+.cluster-ruta-7 .cluster-core {
+  background: linear-gradient(135deg, #7209b7, #560bad);
+}
+
+/* ------------------------------------- */
+/* MENSAJE PARA CAUNDO NO HAY TIEMPO PARA HACER LA RUTA
+/* ------------------------------------- */
+
+.mensaje-tiempo {
+
+  position: absolute;
+
+  top: 70px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 2000;
+
+  background: #fff3cd;
+  color: #856404;
+
+  border: 1px solid #ffeaa7;
+
+  padding: 12px 18px;
+
+  border-radius: 12px;
+
+  font-weight: 600;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+
+  animation: fadeIn 0.3s ease;
+
+
+}
+
+/* ================================================== */
+/* RESPONSIVE MAPA                                    */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  /* Mapa ocupa todo el ancho disponible */
+  .map-container {
+    width: 100% !important;
+    flex: 1;
+    min-height: 0;
+    transition: all 0.3s ease;
+
+  }
+
+  /* Boton cercanos reposicionado */
+  .btn-cercanos {
+    top: 10px;
+    left: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    transition: all 0.3s ease;
+
+  }
+
+  /* Duracion ruta - ajuste de ancho */
+  .duracion-ruta-box {
+    width: 58%;
+    font-size: 12px;
+    padding: 10px 14px;
+
+    transition: all 0.3s ease;
+
+  }
+
+  /* Mensaje tiempo - ajuste posicion */
+  .mensaje-tiempo {
+    width: 58%;
+    font-size: 13px;
+    top: 20px;
+    transition: all 0.3s ease;
+
+  }
+
+  /* Keyframes for smooth UI */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+}

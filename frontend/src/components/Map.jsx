@@ -624,14 +624,7 @@ function Mapa({
       return
     }
 
-    // --------------------------------
-    // CREAR RUTA DIRECTAMENTE
-    // YA CON FILTROS APLICADOS
-    // --------------------------------
 
-    await crearRutaDesdePuntosCercanos(
-      cercanos
-    )
   }
 
   // ---------------------------------------------------
@@ -749,16 +742,20 @@ function Mapa({
   function MapaClickHandler() {
 
     useMapEvents({
-
       click(e) {
+
+        // ignorar clics de botones para "puntos cercanos"
+        const target = e.originalEvent?.target
+
+        if (target && target.closest('button')) {
+          return
+        }
 
         setUserLocation({
           lat: e.latlng.lat,
           lon: e.latlng.lng
         })
-
       }
-
     })
 
     return null
@@ -1014,6 +1011,9 @@ function Mapa({
     if (!siguientePunto) return
 
     // Centra mapa
+
+    centrarYAbrir(siguientePunto);
+    /*
     mapRef.current.flyTo(
 
       [
@@ -1028,6 +1028,8 @@ function Mapa({
       }
 
     )
+  */
+
 
   }, [
 

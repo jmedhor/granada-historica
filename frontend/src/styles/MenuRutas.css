@@ -1,0 +1,108 @@
+/* ---------- MENU RUTAS ---------- */
+
+.menu-rutas{
+  width:200px;
+  height:100%;
+  background:white;
+  border-radius:10px;
+  padding:15px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  overflow-y:auto;
+}
+
+.menu-rutas h2{
+  margin-top:0;
+  margin-bottom:12px;
+  font-size:18px;
+  color:#7b1e1e;
+  border-bottom:2px solid #eee;
+  padding-bottom:6px;
+}
+
+.menu-rutas ul{
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+
+.menu-rutas li{
+  padding:10px;
+  margin-bottom:6px;
+  cursor:pointer;
+  border-radius:8px;
+  transition:all 0.25s ease;
+  font-size:14px;
+  background: linear-gradient(135deg, #f28482, #e63946);
+  color:white;
+  font-weight:900;
+  border-left:4px solid transparent;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.menu-rutas li:hover{
+  background: linear-gradient(135deg, #ff9a9e, #e63946);
+  transform:translateX(4px) scale(1.01);
+  border-left:4px solid #7b1e1e;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.menu-rutas .activa{
+  background: linear-gradient(135deg, #7b1e1e, #a83232);
+  color:white;
+  font-weight:bold;
+  transform: scale(1.02);
+}
+
+.menu-rutas::-webkit-scrollbar{
+  width:6px;
+}
+
+.menu-rutas::-webkit-scrollbar-thumb{
+  background:#bbb;
+  border-radius:10px;
+}
+
+/* ----------- SELECTOR RUTA ----------- */
+
+.selector-ruta{
+  font-size:15px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+@media (max-width: 768px) {
+
+  .menu-rutas {
+    width: 100%;
+    height: auto;
+    max-height: 28vh;
+    box-shadow: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+  }
+
+  .menu-rutas h2 {
+    font-size: 12px;
+    margin-bottom: 5px;
+    padding-bottom: 4px;
+  }
+
+  .menu-rutas ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .menu-rutas li {
+    flex: 1 1 calc(50% - 5px);
+    min-height: 34px;
+    font-size: 11px;
+    padding: 6px 8px;
+    margin-bottom: 0;
+    border-radius: 6px;
+    text-align: center;
+    justify-content: center;
+  }
+
+}

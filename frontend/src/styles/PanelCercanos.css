@@ -1,0 +1,263 @@
+/* ------------------------------------------------ */
+/* PANEL PUNTOS CERCANOS */
+/* ------------------------------------------------ */
+
+.btn-cercanos {
+
+  position: absolute;
+
+  top: 15px;
+  left: 50px;
+
+  z-index: 2000;
+
+  padding: 12px 18px;
+
+  border: none;
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #B82828,
+      #D42020
+    );
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.22);
+
+  transition: all 0.25s ease;
+
+  backdrop-filter: blur(6px);
+}
+
+.btn-cercanos:hover {
+
+  transform:
+    translateY(-2px)
+    scale(1.02);
+
+  background:
+    linear-gradient(
+      135deg,
+      #B82828,
+      #D42020
+    );
+}
+
+/* ------------------------------------------------ */
+/* PANEL PUNTOS CERCANOS */
+/* ------------------------------------------------ */
+
+.panel-cercanos{
+
+  width:200px;
+  height:93%;
+
+  background:white;
+
+  border-radius:10px;
+
+  padding:15px;
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.15);
+
+  overflow-y:auto;
+}
+
+.panel-cercanos h3{
+
+  margin-top:0;
+  margin-bottom:12px;
+
+  font-size:18px;
+
+  color:#7b1e1e;
+
+  border-bottom:2px solid #eee;
+
+  padding-bottom:6px;
+}
+
+.panel-cercanos ul{
+
+  list-style:none;
+
+  padding:0;
+  margin:0;
+}
+
+.panel-cercanos li{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  min-height:48px;
+
+  padding:8px 12px;
+
+  margin-bottom:8px;
+
+  border-radius:8px;
+
+  cursor:pointer;
+
+  transition:all 0.25s ease;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f28482,
+      #e63946
+    );
+
+  color:white;
+
+  font-weight:900;
+
+  font-size:14px;
+
+  border-left:4px solid transparent;
+
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.1);
+}
+
+.panel-cercanos li:hover{
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff9a9e,
+      #e63946
+    );
+
+  transform:
+    translateX(4px)
+    scale(1.01);
+
+  border-left:4px solid #7b1e1e;
+
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.2);
+}
+
+.panel-cercanos::-webkit-scrollbar{
+
+  width:6px;
+}
+
+.panel-cercanos::-webkit-scrollbar-thumb{
+
+  background:#bbb;
+
+  border-radius:10px;
+}
+
+
+/* Para items de panel cercanos */
+.paso-texto2{
+  flex: 1;
+  color: white;
+}
+
+.no-cercanos {
+
+  margin-top: 14px;
+
+  padding: 14px 16px;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffe5e5,
+      #ffd6d6
+    );
+
+  border-left: 5px solid #e63946;
+
+  color: #7b1e1e;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  text-align: center;
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.08);
+
+}
+
+/* --------------------------------------------------- */
+/* BLOQUE RUTA CERCANOS */
+/* --------------------------------------------------- */
+
+.bloque-ruta-cercanos {
+
+  margin-top: 15px;
+  margin-bottom: 20px;
+
+}
+
+/* --------------------------------------------------- */
+/* SEPARADOR VISUAL */
+/* --------------------------------------------------- */
+
+.separador-cercanos {
+
+  width: 100%;
+  height: 1px;
+
+  background: rgba(255,255,255,0.15);
+
+  margin-top: 18px;
+
+}
+
+
+@media (max-width: 768px) {
+
+  .panel-cercanos {
+    width: 100%;
+    height: auto;
+    max-height: 30vh;
+    box-shadow: none;
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+
+  .panel-cercanos h3 {
+    font-size: 13px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+  }
+
+  .panel-cercanos li {
+    min-height: 34px;
+    font-size: 11px;
+    padding: 6px 8px;
+    margin-bottom: 5px;
+  }
+
+  .btn-cercanos {
+    top: 10px;
+    left: 100px;
+    padding: 9px 13px;
+    font-size: 16px;
+  }
+
+}

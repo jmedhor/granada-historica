@@ -1,0 +1,515 @@
+/* ---------- RESET ---------- */
+
+body{
+  margin:0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color:#f5f1e8;
+  overflow: hidden;
+
+  /* Smooth global transitions for UI feel */
+  transition: background-color 0.3s ease;
+}
+
+/* ---------- APP GENERAL ---------- */
+
+.App{
+  text-align:center;
+
+  /* Smooth layout appearance */
+  transition: all 0.3s ease;
+}
+
+/* ------------------------------------------------ */
+/* LAYOUT PRINCIPAL */
+/* ------------------------------------------------ */
+
+.main-layout {
+
+  display: flex;
+
+  height: calc(100vh - 50px);
+
+  width: 100%;
+
+  /* Smooth layout changes */
+  transition: all 0.3s ease;
+}
+
+/* ------------------------------------------------ */
+/* LAYOUT EXPANDIDO SIN PANEL */
+/* ------------------------------------------------ */
+
+.main-layout-full {
+
+  display: flex;
+
+  height: calc(100vh - 50px);
+
+  width: 100%;
+
+  /* Smooth layout changes */
+  transition: all 0.3s ease;
+}
+
+/* ------------------------------------------------ */
+/* BOTON VOLVER */
+/* ------------------------------------------------ */
+
+.btn-volver {
+
+  background:
+    linear-gradient(
+      135deg,
+      #9b2226,
+      #6a040f
+    );
+
+  color: white;
+
+  border: none;
+
+  padding: 10px;
+
+  border-radius: 10px;
+
+  margin-bottom: 10px;
+
+  cursor: pointer;
+
+  font-weight: 700;
+
+  transition: all 0.25s ease;
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.15);
+
+  /* Smooth hover preparation */
+  will-change: transform;
+}
+
+.btn-volver:hover {
+
+  transform: translateY(-1px) scale(1.02);
+
+  background:
+    linear-gradient(
+      135deg,
+      #bb3e03,
+      #9b2226
+    );
+}
+
+/* ----------- TOGGLES MODERNOS ----------- */
+
+.toggle-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+
+  /* Smooth group interaction */
+  transition: all 0.3s ease;
+}
+
+.toggle {
+  padding: 8px 9px;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(6px);
+
+  /* Smooth hover motion */
+  will-change: transform;
+}
+
+.toggle:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+
+.toggle.active {
+  background: #ffffff;
+  color: #7b1e1e;
+  border-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+
+  /* Smooth activation pop */
+  transform: scale(1.03);
+}
+
+.toggle.danger {
+  border-color: rgba(255,255,255,0.4);
+}
+
+.toggle.danger.active {
+  background: #e63946;
+  color: white;
+  border-color: #e63946;
+}
+
+.toggle:active {
+  transform: scale(0.95);
+}
+
+/* Select animation enhancement */
+.toggle-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-color: white;
+  color: #1f1f1f;
+
+  border: 2px solid #e63946;
+  border-radius: 10px;
+
+  padding: 8px 14px;
+  margin-left: 10px;
+
+  font-weight: 600;
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  outline: none;
+
+  min-width: 90px;
+
+  /* Smooth focus interaction */
+}
+
+.toggle-group select:hover {
+  background-color: #fff1f2;
+  border-color: #c1121f;
+
+  transform: translateY(-1px);
+}
+
+.toggle-group select:focus {
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+  border-color: #c1121f;
+
+  transform: scale(1.01);
+}
+
+/* ------------------------------------------------ */
+/* COLUMNA DE BOTONES DEL PANEL DERECHO */
+/* ------------------------------------------------ */
+
+.columna-botones {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-bottom: 15px;
+
+  /* Smooth stacking */
+  transition: all 0.3s ease;
+}
+
+/* ------------------------------------------------ */
+/* CONTROLES HORIZONTALES */
+/* ------------------------------------------------ */
+
+.controles-ruta {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  /* Smooth layout shift */
+  transition: all 0.3s ease;
+}
+
+.controles-ruta button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition: all 0.2s ease;
+
+  /* Button motion smooth */
+  will-change: transform;
+}
+
+.controles-ruta button:last-child {
+  background: #222;
+  color: white;
+}
+
+.controles-ruta button:last-child:hover {
+  background: #000;
+
+  transform: translateY(-1px);
+}
+
+.controles-ruta button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+
+  /* disabled smooth fade */
+  transition: opacity 0.3s ease;
+}
+
+/* ------------------------------------------------ */
+/* BOTON MOSTRAR / OCULTAR PANEL */
+/* ------------------------------------------------ */
+
+.btn-toggle-panel {
+
+  position: absolute;
+
+  top: 80px;
+  right: 265px;
+
+  z-index: 2500;
+
+  padding: 12px 16px;
+
+  border: none;
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6a4c93,
+      #8338ec
+    );
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.22);
+
+  transition: all 0.25s ease;
+
+  backdrop-filter: blur(6px);
+
+  /* Smooth floating animation */
+  will-change: transform;
+}
+
+.btn-toggle-panel.oculto {
+  right: 20px;
+
+  transition: right 0.3s ease;
+}
+
+.btn-toggle-panel:hover {
+
+  transform:
+    translateY(-2px)
+    scale(1.02);
+
+  background:
+    linear-gradient(
+      135deg,
+      #7b5bb0,
+      #9d4edd
+    );
+}
+
+.btn-toggle-panel.full {
+
+  right: 20px;
+}
+
+/* ================================================== */
+/* RESPONSIVE - MOVIL                                 */
+/* Breakpoint principal: 768px                        */
+/* ================================================== */
+
+@media (max-width: 768px) {
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .main-layout,
+  .main-layout-full {
+    flex-direction: column;
+    height: auto;
+    width: 100vw;
+
+    /* Smooth layout shift mobile */
+    transition: all 0.3s ease;
+  }
+
+  .toggle-group {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+  }
+
+  .toggle {
+    font-size: 12px;
+    padding: 6px 8px;
+
+    /* smoother tap feel */
+    transition: all 0.2s ease;
+  }
+
+  .toggle-group select {
+    font-size: 12px;
+    padding: 6px 10px;
+    margin-left: 0;
+    min-width: 80px;
+  }
+
+  .columna-botones {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .btn-toggle-panel {
+    visibility: hidden;
+    top: 60px;
+    bottom: auto;
+    right: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+
+    transition: all 0.25s ease;
+  }
+
+  .btn-toggle-panel.oculto {
+    right: 10px;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .main-layout,
+  .main-layout-full {
+    height: 100vh;
+  }
+
+  .toggle {
+    font-size: 11px;
+    padding: 5px 7px;
+  }
+}
+
+/* ------------------------------------------------ */
+/* BARRA DE NAVEGACION MOVIL                        */
+/* ------------------------------------------------ */
+
+.nav-movil-barra {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .nav-movil-barra {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2800;
+
+    background: white;
+    padding: 12px 16px;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.15);
+    box-sizing: border-box;
+
+    /* Smooth slide-in feel */
+    animation: fadeInUp 0.3s ease;
+  }
+
+  .nav-movil-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    background: white;
+    padding: 12px 16px;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.15);
+    box-sizing: border-box;
+
+    animation: fadeIn 0.3s ease;
+  }
+
+  .nav-movil-btn {
+    flex: 1;
+    padding: 11px 8px;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #eee;
+    color: #333;
+    transition: all 0.2s ease;
+
+    will-change: transform;
+  }
+
+  .nav-movil-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .nav-movil-btn--finalizar {
+    background: linear-gradient(135deg, #6a040f, #9d0208);
+    color: white;
+    flex: 0 0 auto;
+    padding: 11px 16px;
+
+    transition: all 0.25s ease;
+  }
+
+  .nav-movil-progreso {
+    font-size: 13px;
+    font-weight: 700;
+    color: #7b1e1e;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    animation: fadeIn 0.3s ease;
+  }
+
+}
+
+/* Keyframes for smooth UI motion */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

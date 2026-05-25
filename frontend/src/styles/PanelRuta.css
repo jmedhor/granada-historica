@@ -1,0 +1,220 @@
+/* --------------- PASOS --------------- */
+
+.panel-ruta {
+  width: 210px;
+  height: 100%;
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  overflow-y: auto;
+}
+
+.panel-ruta h3 {
+  margin-top: 0;
+  color: #7b1e1e;
+}
+
+.panel-ruta ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.panel-ruta li {
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  margin-bottom: 6px;
+  background: #edf6f9;
+  border-radius: 6px;
+  font-size: 13px;
+  align-items: center;
+  border-left: 4px solid #457b9d;
+}
+
+.paso-num {
+  background: #7b1e1e;
+  color: white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  border: 1px solid white;
+}
+
+.paso-texto {
+  flex: 1;
+  color: black;
+}
+
+/* ------------------------------------------------ */
+/* BOTON PASO ANTERIOR */
+/* ------------------------------------------------ */
+
+.btn-anterior {
+
+  flex: 1;
+
+  padding: 10px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  transition: all 0.2s ease;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f77f00,
+      #d62828
+    );
+}
+
+.btn-anterior:hover {
+
+  transform: translateY(-1px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff9500,
+      #e63946
+    );
+}
+
+/* ------------------------------------------------ */
+/* BOTON PASO SIGUIENTE */
+/* ------------------------------------------------ */
+
+.btn-siguiente {
+
+  flex: 1;
+
+  padding: 10px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  transition: all 0.2s ease;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3a86ff,
+      #8338ec
+    );
+}
+
+.btn-siguiente:hover {
+
+  transform: translateY(-1px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #5390ff,
+      #9d4edd
+    );
+}
+
+/* ------------------------------------------------ */
+/* BOTON FINALIZAR RUTA */
+/* ------------------------------------------------ */
+
+.btn-finalizar-ruta {
+
+  width: 100%;
+
+  margin-bottom: 10px;
+
+  padding: 11px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  transition: all 0.25s ease;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6a040f,
+      #9d0208
+    );
+
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.18);
+}
+
+.btn-finalizar-ruta:hover {
+
+  transform:
+    translateY(-1px)
+    scale(1.01);
+
+  background:
+    linear-gradient(
+      135deg,
+      #9d0208,
+      #d00000
+    );
+}
+
+
+/* ------------------------------------------------ */
+/* RESPONSIVE PANEL RUTA                              */
+/* ------------------------------------------------ */
+
+@media (max-width: 768px) {
+
+  .panel-ruta {
+    width: 100%;
+    height: auto;
+    max-height: 38vh;
+    box-shadow: none;
+    border-radius: 8px;
+  }
+
+  .btn-anterior,
+  .btn-siguiente {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .btn-finalizar-ruta {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+}
