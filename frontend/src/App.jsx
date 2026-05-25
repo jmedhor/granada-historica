@@ -74,7 +74,7 @@ function App() {
   const [horasDisponibles, setHorasDisponibles] = useState(3)
 
   // Estado para ocultar o mostrar el panel derecho
-  const [mostrarPanel, setMostrarPanel] = useState(true)
+  const [mostrarPanel, setMostrarPanel] = useState(false)
 
   // Estado para visualizar bibliografia
   const [modoBibliografia, setModoBibliografia] = useState(false)
@@ -97,6 +97,9 @@ function App() {
 
   // Segmento actual mostrado durante navegacion
   const [segmentoActual, setSegmentoActual] = useState(0)
+
+  // Controla visibilidad del menu de opciones en movil
+  const [mostrarOpcionesMovil, setMostrarOpcionesMovil] = useState(false)
 
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
@@ -151,22 +154,26 @@ function App() {
       {/* HEADER SUPERIOR */}
       {/* --------------------------------------------------- */}
 
-<header className="app-header">
+      <header className="app-header">
 
-        {/* FILA SUPERIOR: titulo + logo (visible en movil) */}
+        {/* FILA SUPERIOR: titulo + opciones + logo */}
         <div className="header-top-row">
 
           <div className="header-left">
-
-            <h1 className="titulo-app">
-              NazaRoute
-            </h1>
-
+            <h1 className="titulo-app">NazaRoute</h1>
             <span className="subtitulo-app">
               Rutas historicas por la ciudad de Granada
             </span>
-
           </div>
+
+          {/* BOTON OPCIONES - solo visible en movil */}
+          <button
+            className="btn-opciones-movil"
+            onClick={() => setMostrarOpcionesMovil(prev => !prev)}
+            aria-label="Opciones de ruta"
+          >
+            {mostrarOpcionesMovil ? "x" : "="}
+          </button>
 
           <div className="header-ugr">
             <a href="https://www.ugr.es">
@@ -180,8 +187,9 @@ function App() {
 
         </div>
 
-        {/* CONTROLES CENTRALES */}
-        <div className="header-right">
+        {/* CONTROLES CENTRALES - siempre visibles en escritorio */}
+        {/* En movil solo visibles si mostrarOpcionesMovil es true */}
+        <div className={`header-right${mostrarOpcionesMovil ? " header-right--visible" : ""}`}>
 
           <button
             className="btn-admin"
@@ -191,7 +199,6 @@ function App() {
           </button>
 
           <div className="selector-ruta">
-
             <div className="toggle-group">
 
               <button
@@ -218,11 +225,7 @@ function App() {
               <div className="toggle-group">
 
                 <button
-                  className={
-                    usarFiltroTiempo
-                      ? "toggle danger active"
-                      : "toggle danger"
-                  }
+                  className={usarFiltroTiempo ? "toggle danger active" : "toggle danger"}
                   onClick={() => setUsarFiltroTiempo(!usarFiltroTiempo)}
                 >
                   Tiempo disponible: {horasDisponibles}h
@@ -232,9 +235,7 @@ function App() {
                   <select
                     className="toggle"
                     value={horasDisponibles}
-                    onChange={(e) =>
-                      setHorasDisponibles(Number(e.target.value))
-                    }
+                    onChange={(e) => setHorasDisponibles(Number(e.target.value))}
                   >
                     <option value={1}>1 hora</option>
                     <option value={2}>2 horas</option>
@@ -249,7 +250,6 @@ function App() {
               </div>
 
             </div>
-
           </div>
 
         </div>
@@ -347,8 +347,8 @@ function App() {
         >
 
           {mostrarPanel
-            ? "Ocultar"
-            : "Mostrar"}
+            ? "Ocultar panel"
+            : "Mostrar panel"}
 
         </button>
 

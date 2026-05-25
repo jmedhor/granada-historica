@@ -109,10 +109,8 @@
 /* ================================================== */
 /* RESPONSIVE HEADER                                  */
 /* ================================================== */
-
 /* ------------------------------------------------ */
 /* FILA SUPERIOR DEL HEADER                         */
-/* Separa titulo y logo en una fila en movil        */
 /* ------------------------------------------------ */
 
 .header-top-row {
@@ -122,38 +120,47 @@
   width: 100%;
 }
 
+/* ------------------------------------------------ */
+/* BOTON OPCIONES MOVIL                             */
+/* Solo visible en movil                            */
+/* ------------------------------------------------ */
+
+.btn-opciones-movil {
+  display: none;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* ================================================== */
+/* RESPONSIVE HEADER                                  */
+/* ================================================== */
+
 @media (max-width: 768px) {
 
-  /* Header apila elementos en columna */
   .app-header {
     height: auto;
     flex-direction: column;
     align-items: flex-start;
-    padding: 10px 14px;
-    gap: 8px;
+    padding: 8px 14px;
+    gap: 0;
   }
 
   .titulo-app {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .subtitulo-app {
     font-size: 10px;
   }
 
-  /* Controles centrales pasan a flujo normal */
-  .header-right {
-    position: static;
-    transform: none;
-    width: 100%;
-    padding: 6px 0;
-    background: transparent;
-    flex-wrap: wrap;
-    gap: 6px;
-    justify-content: flex-start;
-  }
-
-  /* Logo UGR dentro de header-top-row */
+  /* Logo UGR en flujo normal */
   .header-top-row .header-ugr {
     position: static;
     transform: none;
@@ -161,17 +168,40 @@
   }
 
   .logo-ugr {
-    height: 28px;
+    height: 26px;
+  }
+
+  /* Boton opciones visible en movil */
+  .btn-opciones-movil {
+    display: block;
+  }
+
+  /* Controles ocultos por defecto en movil */
+  .header-right {
+    display: none;
+    position: static;
+    transform: none;
+    width: 100%;
+    padding: 8px 0 4px 0;
+    background: transparent;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+  }
+
+  /* Visibles cuando el boton esta activo */
+  .header-right--visible {
+    display: flex;
   }
 
   /* Panel derecho - barra inferior en movil */
   .panel-derecha {
     width: 100%;
     height: auto;
-    max-height: 42vh;
+    max-height: 32vh;
     overflow-y: auto;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-    padding: 10px 14px;
+    padding: 8px 12px;
   }
 
 }
@@ -179,11 +209,11 @@
 @media (max-width: 480px) {
 
   .titulo-app {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .panel-derecha {
-    max-height: 38vh;
+    max-height: 30vh;
   }
 
 }

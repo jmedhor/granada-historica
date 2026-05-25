@@ -229,23 +229,35 @@
 }
 
 
-/* ================================================== */
-/* RESPONSIVE PANEL CERCANOS                          */
-/* ================================================== */
-
 @media (max-width: 768px) {
 
   .panel-cercanos {
     width: 100%;
     height: auto;
-    max-height: 38vh;
+    max-height: 30vh;
     box-shadow: none;
-    border-radius: 8px;
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+
+  .panel-cercanos h3 {
+    font-size: 13px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
   }
 
   .panel-cercanos li {
-    min-height: 44px;
-    font-size: 13px;
+    min-height: 34px;
+    font-size: 11px;
+    padding: 6px 8px;
+    margin-bottom: 5px;
+  }
+
+  .btn-cercanos {
+    top: 10px;
+    left: 10px;
+    padding: 9px 13px;
+    font-size: 12px;
   }
 
 }

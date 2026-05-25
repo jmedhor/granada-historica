@@ -317,7 +317,8 @@ body{
   .main-layout,
   .main-layout-full {
     flex-direction: column;
-    height: calc(var(--vh, 1vh) * 100 - 110px);
+    height: auto;
+    width: 100vw;
   }
 
   /* ------------------------------------------------ */
@@ -358,8 +359,8 @@ body{
   /* ------------------------------------------------ */
 
   .btn-toggle-panel {
-    top: auto;
-    bottom: 10px;
+    top: 60px;
+    bottom: auto;
     right: 10px;
     padding: 10px 14px;
     font-size: 13px;
@@ -375,7 +376,7 @@ body{
 
   .main-layout,
   .main-layout-full {
-    height: calc(var(--vh, 1vh) * 100 - 130px);
+    height: 100vh;
   }
 
   .toggle {

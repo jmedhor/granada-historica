@@ -173,29 +173,34 @@
 }
 
 
-/* ================================================== */
-/* RESPONSIVE MENU PUNTOS                             */
-/* ================================================== */
-
 @media (max-width: 768px) {
 
   .menu-puntos {
     width: 100%;
     height: auto;
-    max-height: 38vh;
+    max-height: 30vh;
     box-shadow: none;
-    border-radius: 8px;
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+
+  .menu-puntos h3 {
+    font-size: 13px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
   }
 
   .menu-puntos li {
-    min-height: 44px;
-    font-size: 13px;
+    min-height: 34px;
+    font-size: 11px;
+    padding: 6px 8px;
+    margin-bottom: 5px;
   }
 
   .btn-start,
   .btn-start-bib {
-    font-size: 13px;
-    padding: 10px;
+    font-size: 12px;
+    padding: 8px;
   }
 
 }
