@@ -48,6 +48,7 @@ import DrawerRutas from './components/movil/DrawerRutas.jsx'
 import DrawerPuntos from './components/movil/DrawerPuntos.jsx'
 import DrawerBibliografia from './components/movil/DrawerBibliografia.jsx'
 import DrawerNavegacion from './components/movil/DrawerNavegacion.jsx'
+import DrawerCercanos from './components/movil/DrawerCercanos.jsx'
 
 function App() {
 
@@ -165,6 +166,28 @@ function App() {
 
   }, [])
 
+
+  // ---------------------------------------------------
+  // ABRE EL DRAWER EN VISTA CERCANOS
+  // cuando el mapa activa el modo cercanos
+  // SOLO PARA MOVIL
+  // ---------------------------------------------------
+
+  useEffect(() => {
+
+    // Solo abrir drawer automaticamente en movil
+    if (
+      modoCercanos &&
+      window.innerWidth <= 768
+    ) {
+
+      setVistaDrawer("cercanos")
+      setMostrarPanelMovil(true)
+
+    }
+
+  }, [modoCercanos])
+
   // ---------------------------------------------------
   // RENDER PRINCIPAL
   // ---------------------------------------------------
@@ -280,7 +303,7 @@ function App() {
 
 
       {/* --------------------------------------------------- */}
-      {/* DRAWER IZQUIERDA - RUTAS, PUNTOS, NAVEGACION        */}
+      {/* DRAWER IZQUIERDA - RUTAS, PUNTOS, NAVEGACION, CERCA */}
       {/* --------------------------------------------------- */}
 
       {mostrarPanelMovil && (
@@ -300,6 +323,8 @@ function App() {
                 {vistaDrawer === "puntos"      && (rutaSeleccionada?.nombre || "Puntos")}
                 {vistaDrawer === "bibliografia" && "Bibliografia"}
                 {vistaDrawer === "navegacion"  && "Navegacion"}
+                {vistaDrawer === "cercanos"  && "Puntos cercanos"}
+
               </span>
 
               <button
@@ -396,21 +421,22 @@ function App() {
               />
             )}
 
+            {/* ---- VISTA CERCANOS ---- */}
+            {vistaDrawer === "cercanos" && (
+              <DrawerCercanos
+                puntosCercanos={puntosCercanos}
+                mapRef={mapRef}
+                setModoCercanos={setModoCercanos}
+                setPuntosCercanos={setPuntosCercanos}
+                onCerrar={() => {
 
-            {/* ---- CERCANOS ---- */}
-            {modoCercanos && !rutaSeleccionada && (
-              <div className="menu-movil-seccion">
-                <button
-                  className="menu-movil-btn"
-                  onClick={() => {
-                    setModoCercanos(false)
-                    setPuntosCercanos([])
                     setMostrarPanelMovil(false)
-                  }}
-                >
-                  ← Volver
-                </button>
-              </div>
+                    setModoNavegacion(false)
+                    setRutaSeleccionada(null)
+                    setModoCercanos(false)
+                  }
+                }
+              />
             )}
 
           </div>

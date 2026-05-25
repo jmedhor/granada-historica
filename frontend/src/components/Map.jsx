@@ -624,14 +624,6 @@ function Mapa({
       return
     }
 
-    // --------------------------------
-    // CREAR RUTA DIRECTAMENTE
-    // YA CON FILTROS APLICADOS
-    // --------------------------------
-
-    await crearRutaDesdePuntosCercanos(
-      cercanos
-    )
   }
 
   // ---------------------------------------------------

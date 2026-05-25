@@ -29,7 +29,7 @@ function DrawerBibliografia({ ruta, onVolver }) {
   // -----------------------------------------
 
   return (
-    <div className="menu-movil-seccion">
+    <div className="menu-movil-seccion-bib">
 
       <button
         className="menu-movil-btn"
