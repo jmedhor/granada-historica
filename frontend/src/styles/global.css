@@ -387,10 +387,10 @@ body{
 
 }
 
-/* ================================================== */
-/* BARRA DE NAVEGACION MOVIL                          */
-/* Fija en la parte inferior, solo visible en movil   */
-/* ================================================== */
+/* ------------------------------------------------ */
+/* BARRA DE NAVEGACION MOVIL                        */
+/* Fija en la parte inferior, solo visible en movil */
+/* ------------------------------------------------ */
 
 .nav-movil-barra {
   display: none;

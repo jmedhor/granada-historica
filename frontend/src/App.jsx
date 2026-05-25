@@ -40,10 +40,6 @@ import PanelCercanos from './components/PanelCercanos.jsx'
 // que cierran el drawer al seleccionar
 // ---------------------------------------------------
 
-import { useEffect as useEff, useState as useSt } from 'react'
-import { coloresRuta } from './utils/coloresRuta.js'
-import { getRutas as getRutasApi, getPuntosDeRuta as getPuntosApi } from './services/api.js'
-
 import DrawerRutas from './components/movil/DrawerRutas.jsx'
 import DrawerPuntos from './components/movil/DrawerPuntos.jsx'
 import DrawerBibliografia from './components/movil/DrawerBibliografia.jsx'
@@ -435,6 +431,7 @@ function App() {
                     setModoNavegacion(false)
                     setRutaSeleccionada(null)
                     setModoCercanos(false)
+                    setVistaDrawer("rutas")
                   }
                 }
                 onRutaCercanos={() => {
