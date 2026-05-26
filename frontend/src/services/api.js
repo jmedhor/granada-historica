@@ -13,8 +13,14 @@ const BASE_URL = "http://192.168.1.137:8000"
 // ---------------------------------------------------
 
 async function apiFetch(endpoint, options = {}) {
+
+  const token = sessionStorage.getItem('admin_token')
+
   const res = await fetch(`${BASE_URL}${endpoint}`, {
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` })
+    },
     ...options,
   })
 
@@ -23,11 +29,20 @@ async function apiFetch(endpoint, options = {}) {
     throw new Error(error.detail || `Error ${res.status}`)
   }
 
-  // 204 No Content no tiene body
   if (res.status === 204) return null
 
   return res.json()
 }
+
+// ---------------------------------------------------
+// LOGIN - ADMIN
+// ---------------------------------------------------
+
+export const loginAdmin = (password) =>
+  apiFetch('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ password })
+  })
 
 // ---------------------------------------------------
 // RUTAS - LECTURA

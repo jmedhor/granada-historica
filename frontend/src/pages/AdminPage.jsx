@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { getRutas } from "../services/api.js"
+import { getRutas, loginAdmin } from "../services/api.js"
 import RutasList from "../components/admin/RutasList.jsx"
 import PuntosList from "../components/admin/PuntosList.jsx"
 import PuntosDeRuta from "../components/admin/PuntosDeRuta.jsx"
-
-const PIN_SUPERADMIN  = "admin1234"
-const PIN_HISTORIADOR = "historia1234"
 
 // ---------------------------------------------------
 // PAGINA DE ADMINISTRACION
@@ -37,17 +34,19 @@ function AdminPage() {
   // Login
   // -----------------------------------------
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    if (pin === PIN_SUPERADMIN) {
-      setRol("superadmin")
-      setTab("rutas")
+
+    try {
+      const { token, rol } = await loginAdmin(pin)
+
+      sessionStorage.setItem('admin_token', token)
+      sessionStorage.setItem('admin_rol', rol)
+
+      setRol(rol)
       setErrorPin(false)
-    } else if (pin === PIN_HISTORIADOR) {
-      setRol("historiador")
-      setTab("rutas")
-      setErrorPin(false)
-    } else {
+
+    } catch (err) {
       setErrorPin(true)
     }
   }
@@ -139,8 +138,11 @@ function AdminPage() {
 
           <button
             className="btn-admin-cancelar"
-            onClick={() => setRol(null)}
-          >
+            onClick={() => {
+              sessionStorage.removeItem('admin_token')
+              sessionStorage.removeItem('admin_rol')
+              setRol(null)
+            }}          >
             ← Volver al login
           </button>
 
