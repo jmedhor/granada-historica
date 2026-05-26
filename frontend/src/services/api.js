@@ -1,3 +1,6 @@
+import { getCached, setCached } from './cache.js'
+import { invalidarCache, invalidarTodo } from './cache.js'
+
 // ---------------------------------------------------
 // CAPA DE SERVICIOS - LLAMADAS AL BACKEND
 // Centraliza todos los fetch al API de FastAPI
@@ -14,12 +17,15 @@ async function apiFetch(endpoint, options = {}) {
     headers: { "Content-Type": "application/json" },
     ...options,
   })
+
   if (!res.ok) {
     const error = await res.json().catch(() => ({}))
     throw new Error(error.detail || `Error ${res.status}`)
   }
+
   // 204 No Content no tiene body
   if (res.status === 204) return null
+
   return res.json()
 }
 
@@ -27,59 +33,145 @@ async function apiFetch(endpoint, options = {}) {
 // RUTAS - LECTURA
 // ---------------------------------------------------
 
-export const getRutas = () =>
-  apiFetch("/rutas")
+export const getRutas = async () => {
 
-export const getRuta = (id) =>
-  apiFetch(`/rutas/${id}`)
+  const cached = getCached('rutas')
+  if (cached) {
+    console.log("CACHE rutas")
+    return cached
+  }
+  const data = await apiFetch('/rutas')
+  console.log("FETCH rutas")
+  setCached('rutas', data)
+
+  return data
+}
+
+export const getRuta = async (id) => {
+
+  const key = `ruta_${id}`
+  const cached = getCached(key)
+  if (cached) return cached
+  const data = await apiFetch(`/rutas/${id}`)
+  setCached(key, data)
+
+  return data
+}
 
 // ---------------------------------------------------
 // RUTAS - ESCRITURA (SUPERADMIN)
 // ---------------------------------------------------
 
-export const createRuta = (datos) =>
-  apiFetch("/rutas", {
+export const createRuta = async (datos) => {
+
+  const result = await apiFetch("/rutas", {
     method: "POST",
     body: JSON.stringify(datos),
   })
+  invalidarCache('rutas')
 
-export const updateRuta = (id, datos) =>
-  apiFetch(`/rutas/${id}`, {
+  return result
+}
+
+export const updateRuta = async (id, datos) => {
+
+  const result = await apiFetch(`/rutas/${id}`, {
     method: "PATCH",
     body: JSON.stringify(datos),
   })
 
-export const deleteRuta = (id) =>
-  apiFetch(`/rutas/${id}`, { method: "DELETE" })
+  invalidarCache('rutas')
+  invalidarCache(`ruta_${id}`)
+  invalidarCache(`puntos_ruta_${id}`)
+
+  return result
+}
+
+export const deleteRuta = async (id) => {
+
+  const result = await apiFetch(`/rutas/${id}`, {
+    method: "DELETE",
+  })
+  invalidarTodo()
+
+  return result
+}
 
 // ---------------------------------------------------
 // PUNTOS - LECTURA
 // ---------------------------------------------------
 
-export const getTodosPuntos = () =>
-  apiFetch("/puntos")
+export const getTodosPuntos = async () => {
 
-export const getPuntosDeRuta = (rutaId) =>
-  apiFetch(`/rutas/${rutaId}/puntos`)
+  const cached = getCached('puntos')
+  if (cached)  {
+    console.log("CACHE puntos")
+    return cached
+  }
+  const data = await apiFetch('/puntos')
+  console.log("FETCH puntos")
+  setCached('puntos', data)
 
-export const getPunto = (id) =>
-  apiFetch(`/puntos/${id}`)
+  return data
+}
+
+export const getPuntosDeRuta = async (rutaId) => {
+
+  const key = `puntos_ruta_${rutaId}`
+  const cached = getCached(key)
+  if (cached) return cached
+  const data = await apiFetch(`/rutas/${rutaId}/puntos`)
+  setCached(key, data)
+
+  return data
+}
+
+export const getPunto = async (id) => {
+
+  const key = `punto_${id}`
+  const cached = getCached(key)
+  if (cached) return cached
+  const data = await apiFetch(`/puntos/${id}`)
+  setCached(key, data)
+
+  return data
+}
 
 // ---------------------------------------------------
 // PUNTOS - ESCRITURA (SUPERADMIN y ADMIN HISTORIADOR)
 // ---------------------------------------------------
 
-export const createPunto = (datos) =>
-  apiFetch("/puntos", {
+export const createPunto = async (datos) => {
+
+  const result = await apiFetch("/puntos", {
     method: "POST",
     body: JSON.stringify(datos),
   })
 
-export const updatePunto = (id, datos) =>
-  apiFetch(`/puntos/${id}`, {
+  invalidarTodo()
+
+  return result
+}
+
+export const updatePunto = async (id, datos) => {
+
+  const result = await apiFetch(`/puntos/${id}`, {
     method: "PATCH",
     body: JSON.stringify(datos),
   })
 
-export const deletePunto = (id) =>
-  apiFetch(`/puntos/${id}`, { method: "DELETE" })
+  invalidarTodo()
+
+  return result
+}
+
+export const deletePunto = async (id) => {
+
+  const result = await apiFetch(`/puntos/${id}`, {
+    method: "DELETE",
+  })
+
+  invalidarTodo()
+
+  return result
+}
