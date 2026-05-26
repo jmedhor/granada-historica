@@ -239,6 +239,21 @@ El panel de administración no está adaptado para móvil intencionadamente.
 
 ---
 
+## Optimización de rendimiento (caché)
+
+El frontend incluye un sistema de caché en memoria para evitar llamadas
+repetidas al backend en datos que cambian con poca frecuencia, como rutas
+y puntos turísticos.
+
+- Evita peticiones redundantes a la API
+- Reduce carga en el backend (FastAPI)
+- Mejora tiempos de respuesta en navegación
+- Incluye TTL de 5 minutos (expiración automática)
+- Invalida caché automáticamente tras operaciones de administración (CRUD)
+
+La caché se implementa en `src/services/cache.js` y se usa desde la capa
+de servicios (`api.js`).
+
 ## Estructura del proyecto
 
 ```text
