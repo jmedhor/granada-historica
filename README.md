@@ -22,6 +22,7 @@ administración completo para la gestión de contenidos.
 - [Requisitos previos](#requisitos-previos)
 - [Instalación y puesta en marcha](#instalación-y-puesta-en-marcha)
 - [Configuración de OSRM](#configuración-de-osrm)
+- [Configuracion de autenticacion](#configuracion-de-autenticacion)
 - [Backend](#backend)
 - [Frontend](#frontend)
 
@@ -191,6 +192,63 @@ independientemente de su ruta. Permite editar y borrar.
 
 La aplicación es completamente funcional en dispositivos móviles.
 El panel de administración no está adaptado para móvil intencionadamente.
+
+---
+
+## Autenticación y seguridad
+
+El sistema de administración está protegido mediante autenticación basada en JWT.
+
+### Funcionamiento
+
+- El login se realiza contra `/auth/login` enviando una contraseña.
+- El backend valida la contraseña mediante hashes bcrypt almacenados en variables de entorno (`.env`).
+- Si las credenciales son correctas, se genera un token JWT con el rol del usuario (`superadmin` o `historiador`).
+- Este token se guarda en el frontend (sessionStorage) y se envía automáticamente en las peticiones protegidas.
+
+### Roles
+
+- **superadmin** → acceso completo (crear, editar y eliminar rutas y puntos)
+- **historiador** → acceso limitado a edición de contenido descriptivo
+
+### Protección de endpoints
+
+Las rutas de escritura del backend están protegidas mediante JWT:
+
+- Sin token → acceso denegado (401)
+- Token inválido → acceso denegado (401)
+- Rol insuficiente → acceso prohibido (403)
+
+---
+
+## Autenticación y seguridad
+
+El sistema de administración está protegido mediante autenticación basada en JWT.
+
+### Funcionamiento
+
+- El login se realiza contra `/auth/login` enviando una contraseña.
+- El backend valida la contraseña mediante hashes bcrypt almacenados en variables de entorno (`.env`).
+- Si las credenciales son correctas, se genera un token JWT con el rol del usuario (`superadmin` o `historiador`).
+- Este token se guarda en el frontend (sessionStorage) y se envía automáticamente en las peticiones protegidas.
+
+### Roles
+
+- **superadmin** → acceso completo (crear, editar y eliminar rutas y puntos)
+- **historiador** → acceso limitado a edición de contenido descriptivo
+
+### Protección de endpoints
+
+Las rutas de escritura del backend están protegidas mediante JWT:
+
+- Sin token → acceso denegado (401)
+- Token inválido → acceso denegado (401)
+- Rol insuficiente → acceso prohibido (403)
+
+Para configurar la autenticación:
+
+Ver sección [Configuración de Autenticación](#configuracion-de-autenticacion).
+
 
 ---
 
@@ -364,8 +422,6 @@ uvicorn main:app --reload
 
 ### 4. Configurar y lanzar OSRM
 
-Ver sección [Configuración de OSRM](#configuración-de-osrm).
-
 ---
 
 ## Configuración de OSRM
@@ -411,6 +467,58 @@ Servidor expuesto en:
 ```bash
 curl "http://localhost:5001/route/v1/foot/-3.5986,37.1773;-3.5900,37.1800?overview=full&geometries=geojson"
 ```
+
+---
+
+## Configuración de autenticación
+
+Para que el sistema funcione, es necesario definir las siguientes variables en el archivo `.env` del backend:
+
+```env
+SECRET_KEY=clave_larga_aleatoria_segura
+HASH_SUPERADMIN=$2b$12$...
+HASH_HISTORIADOR=$2b$12$...
+```
+
+## Cómo generar nuevas contraseñas
+
+Para crear nuevas contraseñas seguras:
+
+---
+
+### 1. Instalar dependencias (si no están instaladas)
+
+```bash
+pip install passlib[bcrypt]
+```
+### 2. Crear un script temporal de generación (test.py)
+
+```text
+from passlib.context import CryptContext
+
+ctx = CryptContext(schemes=["bcrypt"])
+
+print(ctx.hash("tu_password_superadmin"))
+print(ctx.hash("tu_password_historiador"))
+```
+
+### 3. Ejecutarlo
+
+```bash
+python3 test.py
+```
+
+### 4. Guardar resultados
+
+El script devolverá algo como:
+
+```bash
+$2b$12$N1Qp...hash_superadmin...
+$2b$12$K9xZ...hash_historiador...
+```
+
+Copia esos valores y pégalos en el .env.
+
 
 ---
 
