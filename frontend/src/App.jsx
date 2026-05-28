@@ -377,13 +377,14 @@ function App() {
                 >
                   Comenzar ruta
                 </button>
-
-                <button
-                  className="menu-movil-btn"
-                  onClick={() => setVistaDrawer("bibliografia")}
-                >
-                  Ver bibliografia
-                </button>
+                {rutaSeleccionada?.id!=="cercanos" && (
+                  <button
+                    className="menu-movil-btn"
+                    onClick={() => setVistaDrawer("bibliografia")}
+                  >
+                    Ver bibliografia
+                  </button>
+                )}
 
                 <p className="menu-movil-titulo-seccion" style={{ marginTop: 12 }}>
                   Puntos de la ruta
@@ -706,7 +707,7 @@ function App() {
               )}
 
               {/* BOTON BIBLIOGRAFIA */}
-              {!modoNavegacion && !modoBibliografia && (
+              {!modoNavegacion && !modoBibliografia && rutaSeleccionada?.id !== "cercanos" && (
 
                 <button
                   className="btn-start-bib"
