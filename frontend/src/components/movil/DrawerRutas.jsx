@@ -11,6 +11,16 @@ import { getRutas } from '../../services/api.js'
 //   onCerrar            - cierra el drawer
 // ---------------------------------------------------
 
+function PinIcono({ color }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="14" height="21" style={{ flexShrink: 0 }}>
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 24 12 24S24 21 24 12C24 5.373 18.627 0 12 0z"
+        fill={color} stroke="white" strokeWidth="1.5"/>
+      <circle cx="12" cy="12" r="5" fill="white" opacity="0.85"/>
+    </svg>
+  )
+}
+
 function DrawerRutas({ setRutaSeleccionada, setModoCercanos, onCerrar }) {
 
   const [rutas, setRutas] = useState([])
@@ -39,7 +49,10 @@ function DrawerRutas({ setRutaSeleccionada, setModoCercanos, onCerrar }) {
             setRutaSeleccionada(ruta)
           }}
         >
-          {ruta.nombre}
+            <span className="paso-num" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none" }}>
+              <PinIcono color={ruta.color || "#e63946"} />
+            </span>
+            {ruta.nombre}
         </button>
       ))}
 
