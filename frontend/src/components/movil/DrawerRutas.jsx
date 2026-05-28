@@ -31,7 +31,7 @@ function DrawerRutas({ setRutaSeleccionada, setModoCercanos, onCerrar }) {
           key={ruta.id}
           className="menu-movil-btn"
           style={{
-            borderLeftColor: coloresRuta[ruta.id],
+            borderLeftColor: ruta.color || "#e63946",
             borderLeftWidth: 4
           }}
           onClick={() => {

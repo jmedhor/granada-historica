@@ -98,7 +98,7 @@ function PanelCercanos({
               onClick={() => irAPunto(punto)}
 
               style={{
-                background: coloresRuta[punto.ruta_id],
+                background: punto.ruta_color || '#e63946',
                 color: "white",
                 borderRadius: "10px",
                 marginBottom: "10px"

@@ -96,7 +96,7 @@ function DrawerCercanos({
           key={`${punto.id}-${punto.ruta_id}`}
           className="menu-movil-btn"
           style={{
-            borderLeftColor: coloresRuta[punto.ruta_id] || '#e63946',
+            borderLeftColor: punto.ruta_color || '#e63946',
             borderLeftWidth: 4
           }}
           onClick={() => irAPunto(punto)}

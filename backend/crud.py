@@ -63,6 +63,7 @@ def get_todos_puntos(db: Session):
             "ruta_id":     ruta.id if ruta else None,
             "ruta_nombre": ruta.nombre if ruta else None,
             "ruta_activa": ruta.activo if ruta else False,
+            "ruta_color":  ruta.color if ruta else None,
             "pago":        punto.pago,
             "url":         punto.url,
             "importancia": punto.importancia,

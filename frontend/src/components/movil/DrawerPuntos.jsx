@@ -68,7 +68,7 @@ function DrawerPuntos({
           key={punto.id}
           className="menu-movil-btn"
           style={{
-            borderLeftColor: coloresRuta[punto.ruta_id],
+            borderLeftColor: punto.ruta_color || ruta.color || "#e63946",
             borderLeftWidth: 4
           }}
           onClick={() => {

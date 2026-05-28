@@ -62,11 +62,7 @@ function MenuPuntos({
     <div className="menu-puntos">
 
       {/* Nombre de la ruta */}
-      <h3
-        style={{
-          color: coloresRuta[ruta.id]
-        }}
-      >
+      <h3 style={{ color: ruta.color || "#e63946" }}>
         {ruta.nombre}
       </h3>
 
@@ -80,9 +76,7 @@ function MenuPuntos({
 
             onClick={() => mapRef.current.centrarYAbrir(punto)}
 
-            style={{
-              borderLeftColor: coloresRuta[punto.ruta_id]
-            }}
+            style={{ borderLeftColor: punto.ruta_color || ruta.color || "#e63946" }}
           >
 
             {/* Numero de orden de visita */}

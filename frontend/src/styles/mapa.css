@@ -118,6 +118,30 @@
   background: linear-gradient(135deg, #A144E3, #4D107A);
 }
 
+.cluster-ruta-dinamica {
+  width: 34px;
+  height: 34px;
+  border-radius: 50px;
+
+  background: var(--cluster-color, #457b9d);
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+
+}
+
+.cluster-ruta-dinamica:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
 /* -------------- DURACION DE RUTA ----------- */
 
 .duracion-ruta-box {

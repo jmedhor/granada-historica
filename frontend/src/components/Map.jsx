@@ -36,14 +36,8 @@ import { coloresRuta } from '../utils/coloresRuta.js'
 
 import PopupInformacion from './PopupInformacion.jsx'
 
-import gpsRed from '../../assets/gps_red.png'
-import gpsBlue from '../../assets/gps_blue.png'
-import gpsOrange from '../../assets/gps_orange.png'
-import gpsGreen from '../../assets/gps_green.png'
-import gpsPink from '../../assets/gps_pink.png'
-import gpsBlack from '../../assets/gps_black.png'
-import gpsPurple from '../../assets/gps_purple.png'
 import gpsNuevos from '../../assets/nuevos.png'
+
 import userMarker from '../../assets/userMarker.png'
 
 
@@ -69,59 +63,21 @@ const iconosNuevos = new L.Icon({
   popupAnchor: [0, -40]
 })
 
-// Para puntos ya asignados alguna de las 7 rutas principales de Nazaroute
 
-const iconosRutas = {
 
-  1: new L.Icon({
-    iconUrl: gpsRed,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40]
-  }),
 
-  2: new L.Icon({
-    iconUrl: gpsBlue,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40]
-  }),
-
-  3: new L.Icon({
-    iconUrl: gpsOrange,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40]
-  }),
-
-  4: new L.Icon({
-    iconUrl: gpsGreen,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40]
-  }),
-
-  5: new L.Icon({
-    iconUrl: gpsPink,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40]
-  }),
-
-  6: new L.Icon({
-    iconUrl: gpsBlack,
-    iconSize: [30, 30],
-    iconAnchor: [15, 30],
-    popupAnchor: [0, -30]
-  }),
-
-  7: new L.Icon({
-    iconUrl: gpsPurple,
-    iconSize: [30, 30],
-    iconAnchor: [15, 30],
-    popupAnchor: [0, -30]
+function crearIconoRuta(color = "#e63946") {
+  return new L.DivIcon({
+    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="32" height="48">
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 24 12 24S24 21 24 12C24 5.373 18.627 0 12 0z"
+        fill="${color}" stroke="white" stroke-width="1.5"/>
+      <circle cx="12" cy="12" r="5" fill="white" opacity="0.85"/>
+    </svg>`,
+    className: "",
+    iconSize: [32, 48],
+    iconAnchor: [16, 48],
+    popupAnchor: [0, -48],
   })
-
 }
 
   // ---------------------------------------------------
@@ -134,17 +90,17 @@ const iconosRutas = {
 // CREAR ICONO CLUSTER
 // ---------------------------------------------------
 
-const crearClusterPorRuta = (colorClass) => (cluster) => {
+const crearClusterPorRuta = (color) => (cluster) => {
   const cantidad = cluster.getChildCount()
 
   return L.divIcon({
     html: `
-      <div class="cluster-wrapper ${colorClass}">
-        <div class="cluster-core">${cantidad}</div>
+      <div class="cluster-ruta-dinamica" style="--cluster-color: ${color}">
+        ${cantidad}
       </div>
     `,
     className: "",
-    iconSize: L.point(50, 50, true)
+    iconSize: L.point(40, 40, true)
   })
 }
 
@@ -1110,9 +1066,72 @@ function Mapa({
 
   ])
 
+
+  // ---------------------------------------------------
+  // HELPER: icono para un punto (usa color de su ruta)
+  // ---------------------------------------------------
+
+  const iconoPunto = (punto) =>
+    crearIconoRuta(punto.ruta_color || punto.color_ruta || "#888888")
+
+
+
+  // ---------------------------------------------------
+  // HELPER: renderiza Popup de un marker
+  // ---------------------------------------------------
+
+  const renderPopup = (punto) => (
+    <Popup>
+      {modoPopup === "ruta" && (
+        <PopupRuta
+          punto={punto}
+          ruta={{ id: punto.ruta_id, nombre: punto.ruta_nombre }}
+          rutaSeleccionada={rutaSeleccionada}
+          setRutaSeleccionada={setRutaSeleccionada}
+          setModoPopup={setModoPopup}
+          abrirInformacion={abrirInformacion}
+        />
+      )}
+      {modoPopup === "info" && (
+        <PopupInformacion
+          punto={punto}
+          ruta={{ id: punto.ruta_id, nombre: punto.ruta_nombre }}
+          modoHistoriador={modoHistoriador}
+          setModoHistoriador={setModoHistoriador}
+          setModoPopup={setModoPopup}
+          volverARuta={volverARuta}
+        />
+      )}
+    </Popup>
+  )
+
+
+  // ---------------------------------------------------
+  // HELPER: renderiza un Marker con ref
+  // ---------------------------------------------------
+
+  const renderMarker = (punto) => (
+    <Marker
+      key={`${punto.id}-${punto.ruta_id}`}
+      position={[punto.latitud, punto.longitud]}
+      icon={iconoPunto(punto)}
+      ref={(el) => { if (el) markersRef.current[punto.id] = el }}
+    >
+      {renderPopup(punto)}
+    </Marker>
+  )
+
   // ---------------------------------------------------
   // RENDER DEL MAPA
   // ---------------------------------------------------
+
+
+  // Obtener IDs de rutas únicas presentes en los puntos
+  const rutasUnicas = [...new Set(
+    puntosOrdenados
+      .filter(p => p.ruta_id != null)
+      .map(p => p.ruta_id)
+  )]
 
   return (
 
@@ -1227,13 +1246,8 @@ function Mapa({
 
             <Polyline
               key={index}
-              positions={coords.map(
-                ([lon, lat]) => [lat, lon]
-              )}
-              color={
-                coloresRuta[rutaSeleccionada?.id]
-                || "#e63946"
-              }
+              positions={coords.map(([lon, lat]) => [lat, lon])}
+              color={rutaSeleccionada?.color || "#e63946"}
               weight={6}
               opacity={0.8}
             />
@@ -1263,68 +1277,28 @@ function Mapa({
       {/* ------------------------------------------------ */}
 
       {!rutaSeleccionada && !modoCercanos &&
-        Object.keys(iconosRutas).map((rutaId) => {
-
-          const id = Number(rutaId)
+        rutasUnicas.map((rutaId) => {
 
           const puntosDeRuta = puntosOrdenados.filter(
             p =>
-              p.ruta_id === id &&
+              p.ruta_id === rutaId &&
               (!evitarPago || !p.pago)
           )
 
           if (puntosDeRuta.length === 0) return null
 
-          const colorClass = `cluster-ruta-${id}`
+          // Tomar el color del primer punto de esta ruta
+          const colorRuta = puntosDeRuta[0]?.ruta_color || puntosDeRuta[0]?.color_ruta || "#888888"
 
           return (
             <MarkerClusterGroup
-              key={id}
+              key={rutaId}
               chunkedLoading
               maxClusterRadius={75}
               showCoverageOnHover={false}
-              iconCreateFunction={crearClusterPorRuta(colorClass)}
+              iconCreateFunction={crearClusterPorRuta(colorRuta)}
             >
-              {puntosDeRuta.map(punto => (
-                <Marker
-                  key={`${punto.id}-${punto.ruta_id}`}
-                  position={[punto.latitud, punto.longitud]}
-                  icon={iconosRutas[punto.ruta_id] || iconosNuevos}
-                  ref={(el) => {
-                    if (el) markersRef.current[punto.id] = el
-                  }}
-                >
-                <Popup>
-                  {modoPopup === "ruta" && (
-                    <PopupRuta
-                      punto={punto}
-                      ruta={{
-                        id: punto.ruta_id,
-                        nombre: punto.ruta_nombre
-                      }}
-                      rutaSeleccionada={rutaSeleccionada}
-                      setRutaSeleccionada={setRutaSeleccionada}
-                      setModoPopup={setModoPopup}
-                      abrirInformacion={abrirInformacion}
-                    />
-                  )}
-
-                  {modoPopup === "info" && (
-                    <PopupInformacion
-                      punto={punto}
-                      ruta={{
-                        id: punto.ruta_id,
-                        nombre: punto.ruta_nombre
-                      }}
-                      modoHistoriador={modoHistoriador}
-                      setModoHistoriador={setModoHistoriador}
-                      setModoPopup={setModoPopup}
-                      volverARuta={volverARuta}
-                    />
-                  )}
-                </Popup>
-                </Marker>
-              ))}
+              {puntosDeRuta.map(punto => renderMarker(punto))}
             </MarkerClusterGroup>
           )
         })
@@ -1335,61 +1309,19 @@ function Mapa({
       {/* ------------------------------------------------ */}
 
       {!rutaSeleccionada && !modoCercanos && (() => {
-
         const puntosNuevos = puntosOrdenados.filter(
-          p =>
-            !iconosRutas[p.ruta_id] &&
-            (!evitarPago || !p.pago)
+          p => p.ruta_id == null && (!evitarPago || !p.pago)
         )
-
         if (puntosNuevos.length === 0) return null
-
         return (
           <MarkerClusterGroup
             key="nuevos"
             chunkedLoading
             maxClusterRadius={75}
             showCoverageOnHover={false}
-            iconCreateFunction={crearClusterPorRuta("cluster-ruta-nuevos")}
+            iconCreateFunction={crearClusterPorRuta("#888888")}
           >
-            {puntosNuevos.map(punto => (
-              <Marker
-                key={`${punto.id}-${punto.ruta_id}`}
-                position={[punto.latitud, punto.longitud]}
-                icon={iconosNuevos}
-                ref={(el) => {
-                  if (el) markersRef.current[punto.id] = el
-                }}
-              >
-              <Popup>
-                {modoPopup === "ruta" && (
-                  <PopupRuta
-                    punto={punto}
-                    ruta={{
-                      id: punto.ruta_id,
-                      nombre: punto.ruta_nombre
-                    }}
-                    rutaSeleccionada={rutaSeleccionada}
-                    setRutaSeleccionada={setRutaSeleccionada}
-                    setModoPopup={setModoPopup}
-                    abrirInformacion={abrirInformacion}
-                  />
-                )}
-                {modoPopup === "info" && punto && (
-                  <PopupInformacion
-                    punto={punto}
-                    ruta={{
-                      id: punto.ruta_id,
-                      nombre: punto.ruta_nombre
-                    }}
-                    modoHistoriador={modoHistoriador}
-                    setModoHistoriador={setModoHistoriador}
-                    volverARuta={volverARuta}
-                  />
-                )}
-              </Popup>
-              </Marker>
-            ))}
+            {puntosNuevos.map(punto => renderMarker(punto))}
           </MarkerClusterGroup>
         )
       })()}
@@ -1406,61 +1338,7 @@ function Mapa({
             punto => !evitarPago || !punto.pago
           )
 
-          .map(punto => (
-
-            <Marker
-              key={`${punto.id}-${punto.ruta_id}`}
-              position={[
-                punto.latitud,
-                punto.longitud
-              ]}
-              icon={
-                iconosRutas[punto.ruta_id]
-                || iconosNuevos
-              }
-              ref={(el) => {
-
-                if (el) {
-                  markersRef.current[punto.id] = el
-                }
-
-              }}
-            >
-
-            <Popup>
-              {modoPopup === "ruta" && (
-                <PopupRuta
-                  punto={punto}
-                  ruta={{
-                    id: punto.ruta_id,
-                    nombre: punto.ruta_nombre
-                  }}
-                  rutaSeleccionada={rutaSeleccionada}
-                  setRutaSeleccionada={setRutaSeleccionada}
-                  setModoPopup={setModoPopup}
-                  abrirInformacion={abrirInformacion}
-                />
-              )}
-
-              {modoPopup === "info" && punto && (
-                <PopupInformacion
-                  punto={punto}
-                  ruta={{
-                    id: punto.ruta_id,
-                    nombre: punto.ruta_nombre
-                  }}
-                  modoHistoriador={modoHistoriador}
-                  setModoHistoriador={setModoHistoriador}
-                  setModoPopup={setModoPopup}
-                  volverARuta={volverARuta}
-
-                />
-              )}
-            </Popup>
-
-            </Marker>
-
-          ))
+          .map(punto => renderMarker(punto))
 
       )}
 
@@ -1476,62 +1354,7 @@ function Mapa({
             punto => !evitarPago || !punto.pago
           )
 
-          .map(punto => (
-
-            <Marker
-              key={`${punto.id}-${punto.ruta_id}`}
-              position={[
-                punto.latitud,
-                punto.longitud
-              ]}
-              icon={
-                iconosRutas[punto.ruta_id]
-                || iconosNuevos
-              }
-              ref={(el) => {
-
-                if (el) {
-                  markersRef.current[punto.id] = el
-                }
-
-              }}
-            >
-
-            <Popup>
-              {modoPopup === "ruta" && (
-                <PopupRuta
-                  punto={punto}
-                  ruta={{
-                    id: punto.ruta_id,
-                    nombre: punto.ruta_nombre
-                  }}
-                  rutaSeleccionada={rutaSeleccionada}
-                  setRutaSeleccionada={setRutaSeleccionada}
-                  setModoPopup={setModoPopup}
-                  abrirInformacion={abrirInformacion}
-                />
-              )}
-
-              {modoPopup === "info" && punto && (
-                <PopupInformacion
-                  punto={punto}
-                  ruta={{
-                    id: punto.ruta_id,
-                    nombre: punto.ruta_nombre
-                  }}
-                  modoHistoriador={modoHistoriador}
-                  setModoHistoriador={setModoHistoriador}
-                  setModoPopup={setModoPopup}
-                  volverARuta={volverARuta}
-
-                />
-              )}
-            </Popup>
-
-            </Marker>
-
-          ))
-
+          .map(punto => renderMarker(punto))
       )}
 
       {/* ------------------------------------------------ */}
