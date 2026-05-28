@@ -29,7 +29,6 @@ import {
 
 import { getTodosPuntos } from '../services/api.js'
 
-import FlechasRuta from './FlechasRuta.jsx'
 
 import PopupRuta from './Popup'
 
@@ -1217,15 +1216,6 @@ function Mapa({
               opacity={0.8}
             />
 
-            <FlechasRuta
-              positions={coords.map(
-                ([lon, lat]) => [lat, lon]
-              )}
-              color={
-                coloresRuta[rutaSeleccionada?.id]
-                || "#e63946"
-              }
-            />
 
           </>
 
