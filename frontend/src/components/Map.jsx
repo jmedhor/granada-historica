@@ -54,9 +54,10 @@ import userMarker from '../../assets/userMarker.png'
 
 const marcadorUser = new L.Icon({
   iconUrl: userMarker,
-  iconSize: [35, 35],
+  iconSize: [55, 55],
   iconAnchor: [17, 35],
-  popupAnchor: [0, -35]
+  popupAnchor: [0, -35],
+  className: "user-marker-icon"
 })
 
 // Para puntos creados desde el panel admin
@@ -375,7 +376,6 @@ function Mapa({
   // "ruta" | "info"
   const [modoPopup, setModoPopup] = useState("ruta")
 
-  const [puntoActivo, setPuntoActivo] = useState(null)
 
 
 
@@ -421,7 +421,6 @@ function Mapa({
   // ---------------------------------------------------
 
   const abrirInformacion = (punto) => {
-    setPuntoActivo(punto)
     setModoPopup("info")
 
     setTimeout(() => {
@@ -1283,17 +1282,16 @@ function Mapa({
                       rutaSeleccionada={rutaSeleccionada}
                       setRutaSeleccionada={setRutaSeleccionada}
                       setModoPopup={setModoPopup}
-                      setPuntoActivo={setPuntoActivo}
                       abrirInformacion={abrirInformacion}
                     />
                   )}
 
-                  {modoPopup === "info" && puntoActivo && (
+                  {modoPopup === "info" && (
                     <PopupInformacion
-                      punto={puntoActivo}
+                      punto={punto}
                       ruta={{
-                        id: puntoActivo.ruta_id,
-                        nombre: puntoActivo.ruta_nombre
+                        id: punto.ruta_id,
+                        nombre: punto.ruta_nombre
                       }}
                       modoHistoriador={modoHistoriador}
                       setModoHistoriador={setModoHistoriador}
@@ -1351,16 +1349,15 @@ function Mapa({
                     rutaSeleccionada={rutaSeleccionada}
                     setRutaSeleccionada={setRutaSeleccionada}
                     setModoPopup={setModoPopup}
-                    setPuntoActivo={setPuntoActivo}
                     abrirInformacion={abrirInformacion}
                   />
                 )}
-                {modoPopup === "info" && puntoActivo && (
+                {modoPopup === "info" && punto && (
                   <PopupInformacion
-                    punto={puntoActivo}
+                    punto={punto}
                     ruta={{
-                      id: puntoActivo.ruta_id,
-                      nombre: puntoActivo.ruta_nombre
+                      id: punto.ruta_id,
+                      nombre: punto.ruta_nombre
                     }}
                     modoHistoriador={modoHistoriador}
                     setModoHistoriador={setModoHistoriador}
@@ -1418,17 +1415,16 @@ function Mapa({
                   rutaSeleccionada={rutaSeleccionada}
                   setRutaSeleccionada={setRutaSeleccionada}
                   setModoPopup={setModoPopup}
-                  setPuntoActivo={setPuntoActivo}
                   abrirInformacion={abrirInformacion}
                 />
               )}
 
-              {modoPopup === "info" && puntoActivo && (
+              {modoPopup === "info" && punto && (
                 <PopupInformacion
-                  punto={puntoActivo}
+                  punto={punto}
                   ruta={{
-                    id: puntoActivo.ruta_id,
-                    nombre: puntoActivo.ruta_nombre
+                    id: punto.ruta_id,
+                    nombre: punto.ruta_nombre
                   }}
                   modoHistoriador={modoHistoriador}
                   setModoHistoriador={setModoHistoriador}
@@ -1489,17 +1485,16 @@ function Mapa({
                   rutaSeleccionada={rutaSeleccionada}
                   setRutaSeleccionada={setRutaSeleccionada}
                   setModoPopup={setModoPopup}
-                  setPuntoActivo={setPuntoActivo}
                   abrirInformacion={abrirInformacion}
                 />
               )}
 
-              {modoPopup === "info" && puntoActivo && (
+              {modoPopup === "info" && punto && (
                 <PopupInformacion
-                  punto={puntoActivo}
+                  punto={punto}
                   ruta={{
-                    id: puntoActivo.ruta_id,
-                    nombre: puntoActivo.ruta_nombre
+                    id: punto.ruta_id,
+                    nombre: punto.ruta_nombre
                   }}
                   modoHistoriador={modoHistoriador}
                   setModoHistoriador={setModoHistoriador}

@@ -4,7 +4,6 @@ function PopupRuta({
   rutaSeleccionada,
   setRutaSeleccionada,
   setModoPopup,
-  setPuntoActivo,
   abrirInformacion
 }) {
 

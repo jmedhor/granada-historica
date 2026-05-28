@@ -32,9 +32,16 @@ function PopupInformacion({
       )}
 
       {/* Descripcion historica (controlada por historiador) */}
-      {modoHistoriador && punto.descripcion && (
+      {punto.descripcion && (
         <p className="popup-descripcion">
           {punto.descripcion}
+        </p>
+      )}
+
+      {/* Descripcion extendida  */}
+      {modoHistoriador && punto.descripcionextensa && (
+        <p className="popup-descripcion">
+          {punto.descripcionextensa}
         </p>
       )}
 
@@ -42,15 +49,20 @@ function PopupInformacion({
       <div className="popup-info-extra">
 
         <p>
-          <strong>Importe:</strong>{" "}
+          <strong>Cuesta:</strong>{" "}
           {punto.pago
             ? `${punto.importe || "Consultar precio"} €`
             : "Entrada gratuita"}
         </p>
 
         <p>
-          <strong>Horarios:</strong>{" "}
+          <strong>Abre durante:</strong>{" "}
           {punto.horario || "Consultar en la página web"}
+        </p>
+
+        <p>
+          <strong>Informacion sobre accesibilidad:</strong>{" "}
+          {punto.accesible || "Consultar en la página web"}
         </p>
 
       </div>
@@ -63,7 +75,7 @@ function PopupInformacion({
             target="_blank"
             rel="noopener noreferrer"
           >
-            Mas informacion
+            Visitar sitio web
           </a>
         </p>
       )}
