@@ -36,6 +36,7 @@ function SelectorCoordenadas({ posicion, onSeleccionar }) {
 //   rutas        - lista de rutas para el selector ruta_id
 //   onGuardar    - callback con los datos del formulario
 //   onCancelar   - callback para cerrar el formulario
+//   rol          - para permisos entre superadmin y admin historiador
 // ---------------------------------------------------
 
 function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
@@ -46,13 +47,19 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
   const [form, setForm] = useState({
     nombre: "",
     descripcion: "",
+    descripcion_extensa: "",
     latitud: "",
     longitud: "",
     pago: false,
+    importe: 0,
     url: "",
     importancia: 5,
     activo: true,
     ruta_id: "",
+    imagen: "",
+    horarios: "",
+    tiempo_visita: "",
+    info_accesible: false,
   })
 
   // Controla si el mini mapa está visible
@@ -68,15 +75,21 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
   useEffect(() => {
     if (puntoInicial) {
       setForm({
-        nombre:      puntoInicial.nombre      || "",
-        descripcion: puntoInicial.descripcion || "",
-        latitud:     puntoInicial.latitud     ?? "",
-        longitud:    puntoInicial.longitud    ?? "",
-        pago:        puntoInicial.pago        ?? false,
-        url:         puntoInicial.url         || "",
-        importancia: puntoInicial.importancia ?? 5,
-        activo:      puntoInicial.activo      ?? true,
-        ruta_id:     puntoInicial.ruta_id     || "",
+        nombre:              puntoInicial.nombre              || "",
+        descripcion:         puntoInicial.descripcion         || "",
+        descripcion_extensa: puntoInicial.descripcion_extensa || "",
+        latitud:             puntoInicial.latitud             ?? "",
+        longitud:            puntoInicial.longitud            ?? "",
+        pago:                puntoInicial.pago                ?? false,
+        importe:             puntoInicial.importe             ?? 0,
+        url:                 puntoInicial.url                 || "",
+        importancia:         puntoInicial.importancia         ?? 5,
+        activo:              puntoInicial.activo              ?? true,
+        ruta_id:             puntoInicial.ruta_id             || "",
+        imagen:              puntoInicial.imagen              || "",
+        horarios:            puntoInicial.horarios            || "",
+        tiempo_visita:       puntoInicial.tiempo_visita       ?? "",
+        info_accesible:      puntoInicial.info_accesible      ?? false,
       })
       // Si ya tiene coordenadas, mostrar marcador en el mapa
       if (puntoInicial.latitud && puntoInicial.longitud) {
@@ -93,10 +106,7 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
     }))
   }
 
-  // -----------------------------------------
   // Al clicar en el mapa: actualiza form y marcador
-  // -----------------------------------------
-
   const handleSeleccionarCoordenadas = ({ lat, lng }) => {
     setPosicionMapa([lat, lng])
     setForm(prev => ({
@@ -110,10 +120,12 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
     e.preventDefault()
     onGuardar({
       ...form,
-      latitud:    parseFloat(form.latitud),
-      longitud:   parseFloat(form.longitud),
-      importancia: parseInt(form.importancia),
-      ruta_id:    form.ruta_id ? parseInt(form.ruta_id) : null,
+      latitud:      parseFloat(form.latitud),
+      longitud:     parseFloat(form.longitud),
+      importancia:  parseInt(form.importancia),
+      importe:      parseFloat(form.importe) || 0,
+      tiempo_visita: form.tiempo_visita !== "" ? parseInt(form.tiempo_visita) : null,
+      ruta_id:      form.ruta_id ? parseInt(form.ruta_id) : null,
     })
   }
 
@@ -152,6 +164,64 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
             onChange={handleChange}
             rows={3}
           />
+
+          {/* DESCRIPCION EXTENSA - solo superadmin */}
+          {!esHistoriador && (
+            <>
+              <label className="admin-label">Descripción extensa</label>
+              <textarea
+                className="admin-textarea"
+                name="descripcion_extensa"
+                value={form.descripcion_extensa}
+                onChange={handleChange}
+                rows={5}
+              />
+            </>
+          )}
+
+          {/* IMAGEN - solo superadmin */}
+          {!esHistoriador && (
+            <>
+              <label className="admin-label">URL de imagen</label>
+              <input
+                className="admin-input"
+                name="imagen"
+                value={form.imagen}
+                onChange={handleChange}
+                placeholder="https://..."
+              />
+            </>
+          )}
+
+          {/* HORARIOS - solo superadmin */}
+          {!esHistoriador && (
+            <>
+              <label className="admin-label">Horarios</label>
+              <input
+                className="admin-input"
+                name="horarios"
+                value={form.horarios}
+                onChange={handleChange}
+                placeholder="Ej: Lun-Vie 9:00-18:00"
+              />
+            </>
+          )}
+
+          {/* TIEMPO VISITA - solo superadmin */}
+          {!esHistoriador && (
+            <>
+              <label className="admin-label">Tiempo medio de visita (minutos)</label>
+              <input
+                className="admin-input"
+                name="tiempo_visita"
+                type="number"
+                min={0}
+                value={form.tiempo_visita}
+                onChange={handleChange}
+                placeholder="Ej: 30"
+              />
+            </>
+          )}
 
           {/* COORDENADAS + BOTON MAPA - oculto para historiador */}
           {!esHistoriador && <div className="admin-coords-header">
@@ -265,6 +335,37 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
               />
               Acceso de pago
             </label>
+
+            {/* IMPORTE - solo superadmin, solo si pago=true */}
+            {!esHistoriador && form.pago && (
+              <>
+                <label className="admin-label">Importe (€)</label>
+                <input
+                  className="admin-input"
+                  name="importe"
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  value={form.importe}
+                  onChange={handleChange}
+                  placeholder="0.00"
+                />
+              </>
+            )}
+
+            {/* INFO ACCESIBLE - solo superadmin */}
+            {!esHistoriador && (
+              <label className="admin-label-check">
+                <input
+                  type="checkbox"
+                  name="info_accesible"
+                  checked={form.info_accesible}
+                  onChange={handleChange}
+                />
+                Accesible (adaptado)
+              </label>
+            )}
+
             {/* Activo: solo superadmin */}
             {!esHistoriador && (
               <label className="admin-label-check">

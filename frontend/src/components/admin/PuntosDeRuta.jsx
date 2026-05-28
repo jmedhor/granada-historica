@@ -1,19 +1,5 @@
 import { useState, useEffect } from "react"
 import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core"
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import {
   getPuntosDeRuta,
   getTodosPuntos,
   updatePunto,
@@ -23,39 +9,12 @@ import PuntoForm from "./PuntoForm.jsx"
 import ConfirmModal from "./ConfirmModal.jsx"
 
 // ---------------------------------------------------
-// FILA SORTABLE - fila de tabla con drag handle
+// FILAS
 // ---------------------------------------------------
 
 function FilaPunto({ punto, onEditar, onQuitar }) {
-
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: punto.id })
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    background: isDragging ? "#fdf5f5" : undefined,
-  }
-
   return (
-    <tr ref={setNodeRef} style={style}>
-
-      {/* HANDLE DE DRAG */}
-      <td
-        {...attributes}
-        {...listeners}
-        className="drag-handle"
-        title="Arrastrar para reordenar"
-      >
-        ⠿
-      </td>
+    <tr>
 
       <td>{punto.id}</td>
       <td>{punto.nombre}</td>
@@ -107,14 +66,6 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
   const [modoAnadir, setModoAnadir] = useState(false)
   const [puntoExistenteId, setPuntoExistenteId] = useState("")
 
-  // Sensores dnd-kit - requiere 8px de movimiento para activar
-  // evita conflictos con clicks en botones
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 },
-    })
-  )
-
   useEffect(() => { cargarDatos() }, [ruta.id])
 
   const cargarDatos = async () => {
@@ -131,23 +82,6 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
     } finally {
       setCargando(false)
     }
-  }
-
-  // -----------------------------------------
-  // Drag end - reordena el array local
-  // IMPORTANTE: el orden visual es local, el backend
-  // no tiene campo "orden" actualmente.
-  // Si se quiere escalar habria que añadir
-  // un campo "orden" al modelo Punto.
-  // -----------------------------------------
-
-  const handleDragEnd = ({ active, over }) => {
-    if (!over || active.id === over.id) return
-    setPuntos(prev => {
-      const oldIdx = prev.findIndex(p => p.id === active.id)
-      const newIdx = prev.findIndex(p => p.id === over.id)
-      return arrayMove(prev, oldIdx, newIdx)
-    })
   }
 
   const idsEnRuta = new Set(puntos.map(p => p.id))
@@ -256,14 +190,13 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
         </div>
       )}
 
-      {/* TABLA CON DRAG & DROP */}
+      {/* TABLA SIN DRAG & DROP */}
       {puntos.length === 0 ? (
         <p className="admin-info">Esta ruta no tiene puntos todavía.</p>
       ) : (
         <table className="admin-tabla">
           <thead>
             <tr>
-              <th style={{ width: "36px" }}></th>
               <th>ID</th>
               <th>Nombre</th>
               <th>Pago</th>
@@ -273,25 +206,14 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
             </tr>
           </thead>
           <tbody>
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={puntos.map(p => p.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {puntos.map(punto => (
-                  <FilaPunto
-                    key={punto.id}
-                    punto={punto}
-                    onEditar={setFormPunto}
-                    onQuitar={setPuntoAQuitar}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
+            {puntos.map(punto => (
+              <FilaPunto
+                key={punto.id}
+                punto={punto}
+                onEditar={setFormPunto}
+                onQuitar={setPuntoAQuitar}
+              />
+            ))}
           </tbody>
         </table>
       )}

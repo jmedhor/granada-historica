@@ -43,6 +43,12 @@ def get_todos_puntos(db: Session):
             "url":         punto.url,
             "importancia": punto.importancia,
             "activo":      punto.activo,
+            "imagen":              punto.imagen,
+            "descripcion_extensa": punto.descripcion_extensa,
+            "importe":             punto.importe,
+            "horarios":            punto.horarios,
+            "tiempo_visita":       punto.tiempo_visita,
+            "info_accesible":      punto.info_accesible,
         })
 
     return resultado
@@ -123,6 +129,12 @@ def create_punto(db: Session, datos: PuntoCreate):
         url=datos.url,
         importancia=datos.importancia,
         activo=datos.activo,
+        imagen=datos.imagen,
+        descripcion_extensa=datos.descripcion_extensa,
+        importe=datos.importe,
+        horarios=datos.horarios,
+        tiempo_visita=datos.tiempo_visita,
+        info_accesible=datos.info_accesible,
     )
     db.add(nuevo_punto)
     db.flush()  # Necesario para obtener el id antes del commit

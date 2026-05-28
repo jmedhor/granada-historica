@@ -14,6 +14,12 @@ class PuntoBase(BaseModel):
     url: Optional[str] = None
     importancia: int = 5
     activo: bool = True
+    imagen:              Optional[str]   = None
+    descripcion_extensa: Optional[str]   = None
+    importe:             float           = 0.0
+    horarios:            Optional[str]   = None
+    tiempo_visita:       Optional[int]   = None
+    info_accesible:      bool            = False
 
 class PuntoOut(PuntoBase):
     id: int
@@ -42,6 +48,12 @@ class PuntoUpdate(BaseModel):
     url: Optional[str] = None
     importancia: Optional[int] = None
     activo: Optional[bool] = None
+    imagen:              Optional[str]   = None
+    descripcion_extensa: Optional[str]   = None
+    importe:             Optional[float] = None
+    horarios:            Optional[str]   = None
+    tiempo_visita:       Optional[int]   = None
+    info_accesible:      Optional[bool]  = None
     ruta_id: Optional[int] = None
 
     class Config:
@@ -56,6 +68,7 @@ class RutaBase(BaseModel):
     descripcion: str = ""
     bibliografia: Optional[str] = "Información procedente de la facultad de historia por la Universidad de Granada"
     activo: bool = True
+    color: str = "#000000"
 
 class RutaOut(RutaBase):
     id: int
@@ -79,6 +92,7 @@ class RutaUpdate(BaseModel):
     descripcion: Optional[str] = None
     bibliografia: Optional[str] = None
     activo: Optional[bool] = None
+    color: Optional[str] = None
 
     class Config:
         from_attributes = True

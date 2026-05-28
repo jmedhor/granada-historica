@@ -24,7 +24,7 @@ function PopupInformacion({
         {ruta.nombre}
       </p>
 
-      {/* Imagen (espacio reservado) */}
+      {/* Imagen  */}
       {punto.imagen && (
         <div className="popup-imagen">
           <img src={punto.imagen} alt={punto.nombre} />
@@ -39,7 +39,7 @@ function PopupInformacion({
       )}
 
       {/* Descripcion extendida  */}
-      {modoHistoriador && punto.descripcionextensa && (
+      {modoHistoriador && punto.descripcion_extensa && (
         <p className="popup-descripcion">
           {punto.descripcionextensa}
         </p>
@@ -60,10 +60,19 @@ function PopupInformacion({
           {punto.horario || "Consultar en la página web"}
         </p>
 
+
         <p>
-          <strong>Informacion sobre accesibilidad:</strong>{" "}
-          {punto.accesible || "Consultar en la página web"}
+          <strong>Tiempo aproximado de visita:</strong>{" "}
+          {punto.tiempo_visita || "Consultar en la página web"}
         </p>
+
+
+        {punto.info_accesible && (
+          <p className="accesible">
+            Es accesible (adaptado)
+          </p>
+        )}
+
 
       </div>
 

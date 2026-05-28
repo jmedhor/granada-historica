@@ -23,6 +23,13 @@ class Punto(Base):
     importancia = Column(Integer, default=5)
     activo = Column(Boolean, default=True)
 
+    imagen             = Column(String,  nullable=True)
+    descripcion_extensa = Column(String, nullable=True)
+    importe            = Column(Float,   default=0.0)
+    horarios           = Column(String,  nullable=True)
+    tiempo_visita      = Column(Integer, nullable=True)   # minutos
+    info_accesible     = Column(Boolean, default=False)
+
 
     rutas = relationship("Ruta", secondary=ruta_punto, back_populates="puntos")
 
@@ -39,5 +46,7 @@ class Ruta(Base):
         default="Información procedente de la facultad de historia por la Universidad de Granada"
     )
     activo = Column(Boolean, default=True)
+
+    color = Column(String(7), default="#000000")
 
     puntos = relationship("Punto", secondary=ruta_punto, back_populates="rutas")

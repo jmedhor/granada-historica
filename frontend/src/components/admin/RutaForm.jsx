@@ -37,6 +37,7 @@ function RutaForm({ rutaInicial, onGuardar, onCancelar, rol }) {
         descripcion: rutaInicial.descripcion || "",
         bibliografia: rutaInicial.bibliografia || "",
         activo: rutaInicial.activo ?? true,
+        color:        rutaInicial.color        || "#1E88E5",
       })
     }
   }, [rutaInicial])
@@ -115,6 +116,33 @@ function RutaForm({ rutaInicial, onGuardar, onCancelar, rol }) {
             onChange={handleChange}
             rows={5}
           />
+
+
+          {/* COLOR - solo superadmin */}
+          {esSuperadmin && (
+            <>
+              <label className="admin-label">Color de la ruta</label>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <input
+                  type="color"
+                  name="color"
+                  value={form.color}
+                  onChange={handleChange}
+                  style={{ width: "40px", height: "36px", padding: "2px", cursor: "pointer", border: "0.5px solid #ccc", borderRadius: "6px", background: "none" }}
+                />
+                <input
+                  className="admin-input"
+                  name="color"
+                  value={form.color}
+                  onChange={handleChange}
+                  maxLength={7}
+                  style={{ width: "100px", fontFamily: "monospace" }}
+                  placeholder="#000000"
+                />
+                <div style={{ flex: 1, height: "8px", borderRadius: "4px", background: form.color }} />
+              </div>
+            </>
+          )}
 
           {/* ACTIVO - solo superadmin */}
           {esSuperadmin && (
