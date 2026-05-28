@@ -54,7 +54,7 @@ import userMarker from '../../assets/userMarker.png'
 
 const marcadorUser = new L.Icon({
   iconUrl: userMarker,
-  iconSize: [55, 55],
+  iconSize: [50, 50],
   iconAnchor: [17, 35],
   popupAnchor: [0, -35],
   className: "user-marker-icon"

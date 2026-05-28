@@ -28,7 +28,7 @@ class Punto(Base):
     importe            = Column(Float,   default=0.0)
     horarios           = Column(String,  nullable=True)
     tiempo_visita      = Column(Integer, nullable=True)   # minutos
-    info_accesible     = Column(Boolean, default=False)
+    info_accesible     = Column(String, nullable=True)
 
 
     rutas = relationship("Ruta", secondary=ruta_punto, back_populates="puntos")

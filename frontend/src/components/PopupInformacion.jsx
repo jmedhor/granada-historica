@@ -62,16 +62,15 @@ function PopupInformacion({
 
 
         <p>
-          <strong>Tiempo aproximado de visita:</strong>
+          <strong>Tiempo aproximado de visita: </strong>
           {punto.tiempo_visita || " Consultar en la página web"} {punto.tiempo_visita && " minutos"}
         </p>
 
 
-        {punto.info_accesible && (
-          <p className="accesible">
-            Es accesible (adaptado)
-          </p>
-        )}
+        <p>
+          <strong>Acerca de la accesibilidad: </strong>
+          {punto.info_accesible || " Consultar en la página web"}
+        </p>
 
 
       </div>

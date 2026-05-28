@@ -19,7 +19,7 @@ class PuntoBase(BaseModel):
     importe:             float           = 0.0
     horarios:            Optional[str]   = None
     tiempo_visita:       Optional[int]   = None
-    info_accesible:      bool            = False
+    info_accesible:      Optional[str]   = None
 
 class PuntoOut(PuntoBase):
     id: int
