@@ -56,7 +56,8 @@ function PopupRuta({
 
             setRutaSeleccionada({
               id: punto.ruta_id,
-              nombre: punto.ruta_nombre
+              nombre: punto.ruta_nombre,
+              color: punto.ruta_color
             })
 
           }}
