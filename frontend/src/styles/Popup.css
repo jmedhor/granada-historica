@@ -1,3 +1,25 @@
+/* ----------- TITULO POPUP ---------- */
+
+.popup-titulo {
+  font-size: 1.1rem;
+}
+
+/* ----------- SUBTITULO RUTA ---------- */
+
+.popup-subtitulo {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+/* ----------- ENTRADA GRATUITA ---------- */
+
+.popup-gratis {
+  color: green;
+  font-weight: 700;
+}
+
+
 /* ----------- POPUP TOGGLE ---------- */
 
 .popup-toggle {
@@ -8,7 +30,7 @@
   cursor: pointer;
   margin-top: 8px;
   border-top: 1px solid #eee;
-  padding-top: 6px;
+  padding: 12px 6px;
   color: #7b1e1e;
   font-weight: 600;
 }
@@ -86,21 +108,25 @@
   letter-spacing: 0.3px;
 }
 
-/* pequeño efecto de “badge” */
-.info-punto::before {
-  content: "📍";
-}
 
 
-/* ================================================== */
+/* ------------------------------------------------ */
 /* RESPONSIVE POPUP                                   */
-/* ================================================== */
+/* ------------------------------------------------ */
 
 @media (max-width: 768px) {
 
   .popup-contenido {
     max-width: 200px;
     font-size: 13px;
+  }
+
+  .popup-titulo {
+    font-size: 1.3rem;
+  }
+
+  .popup-subtitulo {
+    font-size: 0.85rem;
   }
 
   .btn-popup-ruta {

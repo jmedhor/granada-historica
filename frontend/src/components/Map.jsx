@@ -35,6 +35,8 @@ import PopupRuta from './Popup'
 
 import { coloresRuta } from '../utils/coloresRuta.js'
 
+import PopupInformacion from './PopupInformacion.jsx'
+
 import gpsRed from '../../assets/gps_red.png'
 import gpsBlue from '../../assets/gps_blue.png'
 import gpsOrange from '../../assets/gps_orange.png'
@@ -366,6 +368,18 @@ function Mapa({
   // Mensaje para cuando no hay tiempo para hacer la ruta
   const [mensajeTiempo, setMensajeTiempo] = useState(null)
 
+  // Indicadores para si vemos "Mas informacion" en un Popup
+  const [mostrarInfo, setMostrarInfo] = useState(false)
+  const [puntoInfo, setPuntoInfo] = useState(null)
+
+  // Indicadores para ver el modo de popup actual
+  // "ruta" | "info"
+  const [modoPopup, setModoPopup] = useState("ruta")
+
+  const [puntoActivo, setPuntoActivo] = useState(null)
+
+
+
   // Referencias a markers para abrir popups
   const markersRef = useRef({})
 
@@ -400,6 +414,42 @@ function Mapa({
     if (marker) {
       marker.openPopup()
     }
+  }
+
+
+  // ---------------------------------------------------
+  // FUNCION PARA ABRIR POPUPS Y VARIAR ENTRE MODOS
+  // ---------------------------------------------------
+
+  const abrirInformacion = (punto) => {
+    setPuntoActivo(punto)
+    setModoPopup("info")
+
+    setTimeout(() => {
+      const marker = markersRef.current[punto.id]
+
+      if (marker) {
+        marker.closePopup()
+        marker.openPopup()
+      }
+    }, 0)
+  }
+
+  // ---------------------------------------------------
+  // FUNCION PARA CERRAR POPUPS Y VARIAR ENTRE MODOS
+  // ---------------------------------------------------
+
+
+  const volverARuta = (punto) => {
+    setModoPopup("ruta")
+
+    setTimeout(() => {
+      const marker = markersRef.current[punto.id]
+      if (marker) {
+        marker.closePopup()
+        marker.openPopup()
+      }
+    }, 0)
   }
 
   // ---------------------------------------------------
@@ -514,7 +564,7 @@ function Mapa({
 
         return {
           id: "cercanos",
-          nombre: "Ruta de puntos cercanos"
+          nombre: "Ruta personalizada"
         }
 
       })
@@ -1232,19 +1282,36 @@ function Mapa({
                     if (el) markersRef.current[punto.id] = el
                   }}
                 >
-                  <Popup>
+                <Popup>
+                  {modoPopup === "ruta" && (
                     <PopupRuta
                       punto={punto}
                       ruta={{
                         id: punto.ruta_id,
                         nombre: punto.ruta_nombre
                       }}
-                      modoHistoriador={modoHistoriador}
-                      setModoHistoriador={setModoHistoriador}
                       rutaSeleccionada={rutaSeleccionada}
                       setRutaSeleccionada={setRutaSeleccionada}
+                      setModoPopup={setModoPopup}
+                      setPuntoActivo={setPuntoActivo}
+                      abrirInformacion={abrirInformacion}
                     />
-                  </Popup>
+                  )}
+
+                  {modoPopup === "info" && puntoActivo && (
+                    <PopupInformacion
+                      punto={puntoActivo}
+                      ruta={{
+                        id: puntoActivo.ruta_id,
+                        nombre: puntoActivo.ruta_nombre
+                      }}
+                      modoHistoriador={modoHistoriador}
+                      setModoHistoriador={setModoHistoriador}
+                      setModoPopup={setModoPopup}
+                      volverARuta={volverARuta}
+                    />
+                  )}
+                </Popup>
                 </Marker>
               ))}
             </MarkerClusterGroup>
@@ -1283,16 +1350,34 @@ function Mapa({
                   if (el) markersRef.current[punto.id] = el
                 }}
               >
-                <Popup>
+              <Popup>
+                {modoPopup === "ruta" && (
                   <PopupRuta
                     punto={punto}
-                    ruta={{ id: punto.ruta_id, nombre: punto.ruta_nombre }}
-                    modoHistoriador={modoHistoriador}
-                    setModoHistoriador={setModoHistoriador}
+                    ruta={{
+                      id: punto.ruta_id,
+                      nombre: punto.ruta_nombre
+                    }}
                     rutaSeleccionada={rutaSeleccionada}
                     setRutaSeleccionada={setRutaSeleccionada}
+                    setModoPopup={setModoPopup}
+                    setPuntoActivo={setPuntoActivo}
+                    abrirInformacion={abrirInformacion}
                   />
-                </Popup>
+                )}
+                {modoPopup === "info" && puntoActivo && (
+                  <PopupInformacion
+                    punto={puntoActivo}
+                    ruta={{
+                      id: puntoActivo.ruta_id,
+                      nombre: puntoActivo.ruta_nombre
+                    }}
+                    modoHistoriador={modoHistoriador}
+                    setModoHistoriador={setModoHistoriador}
+                    volverARuta={volverARuta}
+                  />
+                )}
+              </Popup>
               </Marker>
             ))}
           </MarkerClusterGroup>
@@ -1332,21 +1417,37 @@ function Mapa({
               }}
             >
 
-              <Popup>
-
+            <Popup>
+              {modoPopup === "ruta" && (
                 <PopupRuta
                   punto={punto}
                   ruta={{
                     id: punto.ruta_id,
                     nombre: punto.ruta_nombre
                   }}
-                  modoHistoriador={modoHistoriador}
-                  setModoHistoriador={setModoHistoriador}
                   rutaSeleccionada={rutaSeleccionada}
                   setRutaSeleccionada={setRutaSeleccionada}
+                  setModoPopup={setModoPopup}
+                  setPuntoActivo={setPuntoActivo}
+                  abrirInformacion={abrirInformacion}
                 />
+              )}
 
-              </Popup>
+              {modoPopup === "info" && puntoActivo && (
+                <PopupInformacion
+                  punto={puntoActivo}
+                  ruta={{
+                    id: puntoActivo.ruta_id,
+                    nombre: puntoActivo.ruta_nombre
+                  }}
+                  modoHistoriador={modoHistoriador}
+                  setModoHistoriador={setModoHistoriador}
+                  setModoPopup={setModoPopup}
+                  volverARuta={volverARuta}
+
+                />
+              )}
+            </Popup>
 
             </Marker>
 
@@ -1387,21 +1488,37 @@ function Mapa({
               }}
             >
 
-              <Popup>
-
+            <Popup>
+              {modoPopup === "ruta" && (
                 <PopupRuta
                   punto={punto}
                   ruta={{
                     id: punto.ruta_id,
                     nombre: punto.ruta_nombre
                   }}
-                  modoHistoriador={modoHistoriador}
-                  setModoHistoriador={setModoHistoriador}
                   rutaSeleccionada={rutaSeleccionada}
                   setRutaSeleccionada={setRutaSeleccionada}
+                  setModoPopup={setModoPopup}
+                  setPuntoActivo={setPuntoActivo}
+                  abrirInformacion={abrirInformacion}
                 />
+              )}
 
-              </Popup>
+              {modoPopup === "info" && puntoActivo && (
+                <PopupInformacion
+                  punto={puntoActivo}
+                  ruta={{
+                    id: puntoActivo.ruta_id,
+                    nombre: puntoActivo.ruta_nombre
+                  }}
+                  modoHistoriador={modoHistoriador}
+                  setModoHistoriador={setModoHistoriador}
+                  setModoPopup={setModoPopup}
+                  volverARuta={volverARuta}
+
+                />
+              )}
+            </Popup>
 
             </Marker>
 

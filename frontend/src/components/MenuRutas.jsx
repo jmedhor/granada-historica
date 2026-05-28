@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { coloresRuta } from '../utils/coloresRuta.js'
-import { getRutas} from '../services/api.js'
+import { getRutas } from '../services/api.js'
 
 function MenuRutas({
   rutaSeleccionada,
@@ -70,11 +70,7 @@ function MenuRutas({
             }
 
             style={{
-              background: coloresRuta[ruta.id],
-              color: "white",
-              borderRadius: "10px",
-              marginBottom: "10px",
-              fontWeight: "600"
+              borderLeftColor: coloresRuta[ruta.id]
             }}
           >
 

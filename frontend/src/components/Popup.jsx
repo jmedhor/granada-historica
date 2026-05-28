@@ -1,10 +1,11 @@
 function PopupRuta({
   punto,
   ruta,
-  modoHistoriador,
-  setModoHistoriador,
   rutaSeleccionada,
-  setRutaSeleccionada
+  setRutaSeleccionada,
+  setModoPopup,
+  setPuntoActivo,
+  abrirInformacion
 }) {
 
   // -----------------------------------------
@@ -16,73 +17,37 @@ function PopupRuta({
     <div className="popup-contenido">
 
       {/* Nombre del punto turistico */}
-      <h3>{punto.nombre}</h3>
+      <h2 className="popup-titulo">
+        {punto.nombre}
+      </h2>
+
+      {/* Subtitulo con el nombre de la ruta */}
+      <p className="popup-subtitulo">
+        {ruta.nombre}
+      </p>
 
       {/* Descripcion historica */}
-      {modoHistoriador && punto.descripcion && (
+      {punto.descripcion && (
         <p>{punto.descripcion}</p>
       )}
 
-      {/* Nombre de la ruta */}
-      <p>
-        <b>Ruta:</b> {ruta.nombre}
-      </p>
-
-      {/* Estado de acceso del lugar */}
-      <p>
-
-        <strong>Acceso:</strong>{" "}
-
-        <span
-          style={{
-            color: punto.pago ? "red" : "green"
-          }}
-        >
-          {punto.pago
-            ? "De pago"
-            : "Gratis"}
-        </span>
-
-      </p>
-
-      {/* Enlace externo con mas informacion */}
-      {punto.url && (
-
-        <p>
-
-          <a
-            href={punto.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: "#0077cc",
-              textDecoration: "underline"
-            }}
-          >
-            Mas informacion
-          </a>
-
+      {/* Mostrar solo si la entrada es gratuita */}
+      {!punto.pago && (
+        <p className="popup-gratis">
+          Entrada gratuita
         </p>
-
       )}
 
+      {/* Boton que lleva a viñeta informativa */}
+      <button
+        className="popup-btn-info"
+        onClick={() => {
+          abrirInformacion(punto)
+        }}
+      >
+        Mas informacion
+      </button>
 
-
-      {/* Activar o desactivar modo historiador */}
-      <label className="popup-toggle">
-
-        Modo Historiador
-
-        <input
-          type="checkbox"
-          checked={modoHistoriador}
-
-          onChange={() =>
-            setModoHistoriador(!modoHistoriador)
-          }
-        />
-
-      </label>
 
       {/* BOTON PARA INICIAR RUTA */}
       {!rutaSeleccionada && (

@@ -69,6 +69,7 @@ function MenuPuntos({
       >
         {ruta.nombre}
       </h3>
+
       {/* Lista de puntos */}
       <ul>
 
@@ -80,10 +81,7 @@ function MenuPuntos({
             onClick={() => mapRef.current.centrarYAbrir(punto)}
 
             style={{
-              background: coloresRuta[punto.ruta_id],
-              color: "white",
-              borderRadius: "10px",
-              marginBottom: "10px"
+              borderLeftColor: coloresRuta[punto.ruta_id]
             }}
           >
 

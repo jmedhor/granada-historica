@@ -79,7 +79,7 @@ function PanelCercanos({
 
             }}
           >
-            Hacer ruta por puntos cercanos
+            Ruta personalizada
           </button>
 
           {/* SEPARADOR VISUAL */}

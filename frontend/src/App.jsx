@@ -14,6 +14,7 @@ import "./styles/PanelBibliografia.css"
 import "./styles/PanelCercanos.css"
 import "./styles/PanelRuta.css"
 import "./styles/Popup.css"
+import "./styles/PopupInformacion.css"
 
 // Admin
 
@@ -248,17 +249,10 @@ function App() {
                 </button>
 
                 <button
-                  className={modoRuta === "historica" ? "toggle active" : "toggle"}
-                  onClick={() => setModoRuta("historica")}
-                >
-                  Ruta historica (UGR)
-                </button>
-
-                <button
-                  className={evitarPago ? "toggle danger active" : "toggle danger"}
+                  className={evitarPago ? "toggle pago active" : "toggle danger"}
                   onClick={() => setEvitarPago(!evitarPago)}
                 >
-                  Evitar lugares de pago
+                  Sitios gratuitos
                 </button>
 
                 <div className="toggle-group">
@@ -479,22 +473,16 @@ function App() {
                 Ruta mas corta
               </button>
 
-              <button
-                className={modoRuta === "historica" ? "menu-movil-btn activo" : "menu-movil-btn"}
-                onClick={() => setModoRuta("historica")}
-              >
-                Ruta historica (UGR)
-              </button>
             </div>
 
             <div className="menu-movil-seccion">
               <p className="menu-movil-titulo-seccion">Filtros</p>
 
               <button
-                className={evitarPago ? "menu-movil-btn activo peligro" : "menu-movil-btn"}
+                className={evitarPago ? "menu-movil-btn activo pago" : "menu-movil-btn"}
                 onClick={() => setEvitarPago(!evitarPago)}
               >
-                {evitarPago ? "Evitando lugares de pago" : "Evitar lugares de pago"}
+                {evitarPago ? "Mostrando sitios gratuitos" : "Sitios gratuitos"}
               </button>
 
               <button

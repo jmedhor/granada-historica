@@ -151,6 +151,12 @@ body{
   border-color: #e63946;
 }
 
+.toggle.pago.active {
+  background: green;
+  color: white;
+  border-color: #e63946;
+}
+
 .toggle:active {
   transform: scale(0.95);
 }

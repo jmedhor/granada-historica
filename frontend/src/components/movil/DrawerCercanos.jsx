@@ -81,7 +81,7 @@ function DrawerCercanos({
               onRutaCercanos()
             }}
           >
-            Hacer ruta por puntos cercanos
+            Ruta personalizada
           </button>
 
           <p className="menu-movil-titulo-seccion" style={{ marginTop: 12 }}>
