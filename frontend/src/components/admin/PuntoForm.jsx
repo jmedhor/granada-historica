@@ -59,7 +59,7 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
     imagen: "",
     horarios: "",
     tiempo_visita: "",
-    info_accesible: false,
+    info_accesible: "",
   })
 
   // Controla si el mini mapa está visible
@@ -89,7 +89,7 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
         imagen:              puntoInicial.imagen              || "",
         horarios:            puntoInicial.horarios            || "",
         tiempo_visita:       puntoInicial.tiempo_visita       ?? "",
-        info_accesible:      puntoInicial.info_accesible      ?? false,
+        info_accesible:      puntoInicial.info_accesible      ?? "",
       })
       // Si ya tiene coordenadas, mostrar marcador en el mapa
       if (puntoInicial.latitud && puntoInicial.longitud) {
@@ -299,6 +299,23 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
             onChange={handleChange}
           />
 
+          {/* INFO ACCESIBLE - solo superadmin */}
+          {!esHistoriador && (
+            <div>
+              <label className="admin-label">
+                Información sobre accesibilidad
+              </label>
+
+              <textarea
+                className="admin-textarea"
+                name="info_accesible"
+                value={form.info_accesible}
+                placeholder="Acceso con silla de ruedas, carricoches..."
+                onChange={handleChange}
+              />
+            </div>
+          )}
+
           {/* IMPORTANCIA */}
           <label className="admin-label">
             Importancia: {form.importancia}
@@ -356,18 +373,6 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
               </>
             )}
 
-            {/* INFO ACCESIBLE - solo superadmin */}
-            {!esHistoriador && (
-              <label className="admin-label-check">
-                <input
-                  type="checkbox"
-                  name="info_accesible"
-                  checked={form.info_accesible}
-                  onChange={handleChange}
-                />
-                Accesible (adaptado)
-              </label>
-            )}
 
             {/* Activo: solo superadmin */}
             {!esHistoriador && (

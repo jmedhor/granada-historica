@@ -55,7 +55,7 @@ class PuntoUpdate(BaseModel):
     importe:             Optional[float] = None
     horarios:            Optional[str]   = None
     tiempo_visita:       Optional[int]   = None
-    info_accesible:      Optional[bool]  = None
+    info_accesible:      Optional[str]  = None
     ruta_id: Optional[int] = None
 
     class Config:

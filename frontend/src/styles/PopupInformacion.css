@@ -1,7 +1,8 @@
 .popup-informacion .popup-imagen img {
   width: 55%;
   border-radius: 10px;
-  margin: 10px 0;
+  margin: 10px auto;
+  display: block;
   object-fit: cover;
 }
 

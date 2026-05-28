@@ -189,31 +189,44 @@ function MapController({ setMapRef }) {
 // CALCULA EL TEXTO DE DURACION DE RUTA
 // ---------------------------------------------------
 
+  // ---------------------------------
+  // Tiempo aproximado de visita
+  // Se obtiene el tiempo aproximado de cada punto
+  // desde la BD
+  //
+  // Aquellas que no tienen tiempo asignado se dejan en
+  // 15 minutos por punto turistico
+  // ------------------------------
+
 function calcularDuracionRuta(legs, puntosOrdenados) {
 
-  // Suma todos los segundos de trayecto
+  // ---------------------------------
+  // TIEMPO DE DESPLAZAMIENTO (OSRM)
+  // ---------------------------------
   const segundosRuta = legs.reduce(
-    (acc, leg) => acc + leg.duration,
+    (acc, leg) => acc + (leg.duration || 0),
     0
   )
 
-  // Tiempo aproximado de visita
-  // 15 minutos por punto turistico
-  const segundosVisita =
-    puntosOrdenados.length * 15 * 60
+  // ---------------------------------
+  // TIEMPO DE VISITA REAL POR PUNTO
+  // ---------------------------------
+  const segundosVisita = puntosOrdenados.reduce((acc, punto) => {
 
-  // Tiempo total
-  const segundosTotales =
-    segundosRuta + segundosVisita
+    const minutos = punto.tiempo_visita ?? 15
+    return acc + (minutos * 60)
 
-  // Conversion a horas y minutos
+  }, 0)
+
+  // ---------------------------------
+  // TOTAL
+  // ---------------------------------
+  const segundosTotales = segundosRuta + segundosVisita
+
   const horas = Math.floor(segundosTotales / 3600)
 
-  const minutos = Math.floor(
-    (segundosTotales % 3600) / 60
-  )
+  const minutos = Math.floor((segundosTotales % 3600) / 60)
 
-  // Texto final
   if (horas > 0) {
     return `${horas} h ${minutos} min`
   }
@@ -266,32 +279,29 @@ function filtrarPuntosPorTiempo(
   let acumulado = 0
   const resultado = []
 
-  // --------------------------------
-  // RECORRER PUNTOS EN ORDEN
-  // --------------------------------
-
   for (let i = 0; i < puntosOrdenados.length; i++) {
 
     const punto = puntosOrdenados[i]
 
     // --------------------------------
-    // TIEMPO VISITA (15 MIN)
+    // TIEMPO DE VISITA REAL
+    // fallback: 15 min si no existe
     // --------------------------------
+    const tiempoVisitaSegundos =
+      (punto.tiempo_visita ?? 15) * 60
 
-    acumulado += 15 * 60
+    acumulado += tiempoVisitaSegundos
 
     // --------------------------------
-    // TIEMPO TRAYECTO
+    // TIEMPO DE TRAYECTO (OSRM)
     // --------------------------------
-
     if (legs[i]) {
       acumulado += legs[i].duration
     }
 
     // --------------------------------
-    // SI SUPERA TIEMPO -> STOP
+    // SI SE PASA DEL TIEMPO → STOP
     // --------------------------------
-
     if (acumulado > maxSegundos) {
       break
     }
@@ -598,7 +608,7 @@ function Mapa({
     // RADIO MAXIMO
     // --------------------------------
 
-    const RADIO_METROS = 350
+    const RADIO_METROS = 500
 
     // --------------------------------
     // FILTRAR PUNTOS CERCANOS
@@ -685,7 +695,7 @@ function Mapa({
     if (!modoCercanos) return
     if (todosPuntos.length === 0) return
 
-    const RADIO_METROS = 350
+    const RADIO_METROS = 500
 
     const cercanos = todosPuntos.filter((punto) => {
 
@@ -715,6 +725,13 @@ function Mapa({
   // ---------------------------------------------------
 
   useEffect(() => {
+
+
+    // No recalculamos la ruta si estamos en modo navegacion
+
+    if(modoNavegacion){
+      return
+    }
 
     // --------------------------------
     // SOLO SI EXISTE RUTA DE CERCANOS
@@ -888,6 +905,12 @@ function Mapa({
 
   useEffect(() => {
 
+    // No recalculamos la ruta si estamos en modo navegacion
+
+    if(modoNavegacion){
+      return
+    }
+
     const cargarRuta = async () => {
 
       // Seguridad
@@ -1054,14 +1077,14 @@ function Mapa({
 
     // Punto destino del tramo actual
     const siguientePunto =
-      puntosVisibles[segmentoActual]
+      ordenPuntos?.[segmentoActual]
 
     if (!siguientePunto) return
 
     // Centra mapa
 
-    centrarYAbrir(siguientePunto);
-    /*
+    //centrarYAbrir(siguientePunto);
+
     mapRef.current.flyTo(
 
       [
@@ -1076,14 +1099,14 @@ function Mapa({
       }
 
     )
-  */
+
 
 
   }, [
 
     modoNavegacion,
     segmentoActual,
-    puntosVisibles
+    ordenPuntos
 
   ])
 
