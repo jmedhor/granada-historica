@@ -14,9 +14,33 @@ def get_ruta(db: Session, ruta_id: int):
 
 def get_puntos_de_ruta(db: Session, ruta_id: int):
     ruta = get_ruta(db, ruta_id)
-    if ruta:
-        return ruta.puntos
-    return None
+    if not ruta:
+        return None
+
+    resultado = []
+
+    for punto in ruta.puntos:
+        resultado.append({
+            "id": punto.id,
+            "nombre": punto.nombre,
+            "descripcion": punto.descripcion,
+            "latitud": punto.latitud,
+            "longitud": punto.longitud,
+            "ruta_id": ruta.id,
+            "ruta_nombre": ruta.nombre,
+            "pago": punto.pago,
+            "url": punto.url,
+            "importancia": punto.importancia,
+            "activo": punto.activo,
+            "imagen":              punto.imagen,
+            "descripcion_extensa": punto.descripcion_extensa,
+            "importe":             punto.importe,
+            "horarios":            punto.horarios,
+            "tiempo_visita":       punto.tiempo_visita,
+            "info_accesible":      punto.info_accesible,
+        })
+
+    return resultado
 
 def get_todos_puntos(db: Session):
     """

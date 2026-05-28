@@ -23,6 +23,8 @@ class PuntoBase(BaseModel):
 
 class PuntoOut(PuntoBase):
     id: int
+    ruta_id: Optional[int] = None
+    ruta_nombre: Optional[str] = None
 
     class Config:
         from_attributes = True

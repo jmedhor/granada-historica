@@ -65,6 +65,7 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
   const [puntoAQuitar, setPuntoAQuitar] = useState(null)
   const [modoAnadir, setModoAnadir] = useState(false)
   const [puntoExistenteId, setPuntoExistenteId] = useState("")
+  const [soloActivos, setSoloActivos] = useState(false)
 
   useEffect(() => { cargarDatos() }, [ruta.id])
 
@@ -85,7 +86,12 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
   }
 
   const idsEnRuta = new Set(puntos.map(p => p.id))
+
   const puntosDisponibles = todosPuntos.filter(p => !idsEnRuta.has(p.id))
+
+  const puntosFiltrados = soloActivos
+    ? puntos.filter(p => p.activo)
+    : puntos
 
   const handleGuardar = async (datos) => {
     try {
@@ -142,6 +148,14 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
         </div>
 
         <div style={{ display: "flex", gap: "8px" }}>
+          <label className="label-activos" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <input
+              type="checkbox"
+              checked={soloActivos}
+              onChange={(e) => setSoloActivos(e.target.checked)}
+            />
+            Mostrar solo puntos activos
+          </label>
           <button
             className="btn-admin-secundario"
             onClick={() => setModoAnadir(!modoAnadir)}
@@ -154,6 +168,8 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
           >
             + Crear nuevo punto
           </button>
+
+
         </div>
 
       </div>
@@ -206,7 +222,7 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
             </tr>
           </thead>
           <tbody>
-            {puntos.map(punto => (
+            {puntosFiltrados.map(punto => (
               <FilaPunto
                 key={punto.id}
                 punto={punto}

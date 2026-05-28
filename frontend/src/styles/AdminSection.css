@@ -211,19 +211,14 @@
   font-style: italic;
 }
 
-/* -------------------------------------------------- */
-/* DRAG HANDLE                                        */
-/* -------------------------------------------------- */
-
-.drag-handle {
-  cursor: grab;
-  color: #aaa;
-  font-size: 18px;
-  text-align: center;
-  user-select: none;
-  padding: 10px 8px;
-}
-
-.drag-handle:active {
-  cursor: grabbing;
+.label-activos {
+  padding: 5px 12px;
+  background: linear-gradient(135deg, #5c8db1, #27496d);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }

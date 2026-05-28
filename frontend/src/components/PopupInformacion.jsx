@@ -41,7 +41,7 @@ function PopupInformacion({
       {/* Descripcion extendida  */}
       {modoHistoriador && punto.descripcion_extensa && (
         <p className="popup-descripcion">
-          {punto.descripcionextensa}
+          {punto.descripcion_extensa}
         </p>
       )}
 
@@ -62,8 +62,8 @@ function PopupInformacion({
 
 
         <p>
-          <strong>Tiempo aproximado de visita:</strong>{" "}
-          {punto.tiempo_visita || "Consultar en la página web"}
+          <strong>Tiempo aproximado de visita:</strong>
+          {punto.tiempo_visita || " Consultar en la página web"} {punto.tiempo_visita && " minutos"}
         </p>
 
 

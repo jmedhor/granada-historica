@@ -135,6 +135,9 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
       ? [parseFloat(form.latitud), parseFloat(form.longitud)]
       : centroInicial
 
+  console.log("EDITANDO: ")
+  console.log(puntoInicial)
+
   return (
     <div className="admin-form-overlay">
       <div className="admin-form-box">
