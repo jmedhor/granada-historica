@@ -795,7 +795,10 @@ function Mapa({
           puntosArray.filter(
             punto =>
               punto.activo === true &&
-              punto.ruta_activa === true
+              (
+                punto.ruta_activa === true ||
+                punto.ruta_id == null
+              )
           )
         )
       })
@@ -1072,7 +1075,7 @@ function Mapa({
   // ---------------------------------------------------
 
   const iconoPunto = (punto) =>
-    crearIconoRuta(punto.ruta_color || punto.color_ruta || "#888888")
+    crearIconoRuta(punto.ruta_color || punto.color_ruta || "#383838")
 
 
 
@@ -1288,7 +1291,7 @@ function Mapa({
           if (puntosDeRuta.length === 0) return null
 
           // Tomar el color del primer punto de esta ruta
-          const colorRuta = puntosDeRuta[0]?.ruta_color || puntosDeRuta[0]?.color_ruta || "#888888"
+          const colorRuta = puntosDeRuta[0]?.ruta_color || puntosDeRuta[0]?.color_ruta || "#383838"
 
           return (
             <MarkerClusterGroup

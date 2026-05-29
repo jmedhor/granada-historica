@@ -22,7 +22,7 @@ function PopupRuta({
 
       {/* Subtitulo con el nombre de la ruta */}
       <p className="popup-subtitulo">
-        {ruta.nombre}
+        {ruta.nombre || "Punto sin ruta asignada"}
       </p>
 
       {/* Descripcion historica */}
@@ -49,7 +49,7 @@ function PopupRuta({
 
 
       {/* BOTON PARA INICIAR RUTA */}
-      {!rutaSeleccionada && (
+      {punto.ruta_id && !rutaSeleccionada && (
         <button
           className="btn-popup-ruta"
           onClick={() => {
