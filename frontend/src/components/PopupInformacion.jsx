@@ -24,6 +24,7 @@ function PopupInformacion({
         {ruta.nombre}
       </p>
 
+
       {/* Imagen  */}
       {punto.imagen && (
         <div className="popup-imagen">
@@ -71,6 +72,17 @@ function PopupInformacion({
           <strong>Acerca de la accesibilidad: </strong>
           {punto.info_accesible || " Consultar en la página web"}
         </p>
+
+        {/* Restaurantes y bares cercanos */}
+        <a
+          href={`https://www.google.com/maps/search/restaurantes+y+bares/@${punto.latitud},${punto.longitud},16z`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="popup-link-mapa"
+        >
+          <span style={{ fontSize: "20px" }}>🍽️</span>
+          <span>Restaurantes y bares cercanos</span>
+        </a>
 
 
       </div>

@@ -65,7 +65,7 @@ function DrawerCercanos({
       {/* SIN PUNTOS CERCANOS */}
       {puntosCercanos.length === 0 && (
         <p style={{ fontSize: 13, color: '#999', margin: '10px 0' }}>
-          No hay puntos cercanos en un radio de 350m
+          No hay puntos cercanos en un radio de 500m
         </p>
       )}
 
@@ -85,7 +85,7 @@ function DrawerCercanos({
           </button>
 
           <p className="menu-movil-titulo-seccion" style={{ marginTop: 12 }}>
-            Puntos cercanos (aprox. 350m)
+            Puntos cercanos (aprox. 500m)
           </p>
         </>
       )}

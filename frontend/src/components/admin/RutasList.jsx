@@ -20,6 +20,9 @@ function RutasList({ rol, onGestionarPuntos }) {
   const [error, setError] = useState(null)
   const [formRuta, setFormRuta] = useState(null)
   const [rutaABorrar, setRutaABorrar] = useState(null)
+  const [soloActivas, setSoloActivas] = useState(false)
+  const [busqueda, setBusqueda] = useState("")
+
 
   useEffect(() => { cargarRutas() }, [])
 
@@ -61,16 +64,38 @@ function RutasList({ rol, onGestionarPuntos }) {
   if (cargando) return <p className="admin-info">Cargando rutas...</p>
   if (error)    return <p className="admin-error">{error}</p>
 
+  const rutasFiltradas = rutas
+    .filter(r => !soloActivas || r.activo)
+    .filter(r => r.nombre.toLowerCase().includes(busqueda.toLowerCase()))
+
+
   return (
     <div className="admin-seccion">
 
       <div className="admin-seccion-header">
-        <h2>🗺️ Rutas</h2>
+        <h2>Rutas</h2>
         {esSuperadmin && (
           <button className="btn-admin-nuevo" onClick={() => setFormRuta({})}>
             + Nueva ruta
           </button>
         )}
+      </div>
+
+      <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "12px" }}>
+        <input
+          className="admin-buscador"
+          placeholder="Buscar ruta por nombre..."
+          value={busqueda}
+          onChange={e => setBusqueda(e.target.value)}
+        />
+        <label className="label-activos" style={{ display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}>
+          <input
+            type="checkbox"
+            checked={soloActivas}
+            onChange={e => setSoloActivas(e.target.checked)}
+          />
+          Solo activas
+        </label>
       </div>
 
       <table className="admin-tabla">
@@ -84,7 +109,7 @@ function RutasList({ rol, onGestionarPuntos }) {
           </tr>
         </thead>
         <tbody>
-          {rutas.map(ruta => (
+          {rutasFiltradas.map(ruta => (
             <tr key={ruta.id}>
               <td>{ruta.id}</td>
               <td>{ruta.nombre}</td>

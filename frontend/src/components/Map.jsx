@@ -1084,7 +1084,7 @@ function Mapa({
   // ---------------------------------------------------
 
   const renderPopup = (punto) => (
-    <Popup>
+    <Popup maxHeight={500}>
       {modoPopup === "ruta" && (
         <PopupRuta
           punto={punto}

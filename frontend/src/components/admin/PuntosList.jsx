@@ -34,6 +34,9 @@ function PuntosList({ rol }) {
   // Punto a borrar (null = modal cerrado)
   const [puntoABorrar, setPuntoABorrar] = useState(null)
 
+  const [soloActivos, setSoloActivos] = useState(false)
+
+
   const esSuperadmin = rol === "superadmin"
 
   // -----------------------------------------
@@ -96,9 +99,10 @@ function PuntosList({ rol }) {
   // Filtro de busqueda por nombre
   // -----------------------------------------
 
-  const puntosFiltrados = puntos.filter(p =>
-    p.nombre.toLowerCase().includes(busqueda.toLowerCase())
-  )
+  const puntosFiltrados = puntos
+    .filter(p => !soloActivos || p.activo)
+    .filter(p => p.nombre.toLowerCase().includes(busqueda.toLowerCase()))
+
 
   // -----------------------------------------
   // Render
@@ -124,12 +128,23 @@ function PuntosList({ rol }) {
       </div>
 
       {/* BUSCADOR */}
-      <input
-        className="admin-buscador"
-        placeholder="Buscar punto por nombre..."
-        value={busqueda}
-        onChange={e => setBusqueda(e.target.value)}
-      />
+      <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "12px" }}>
+        <input
+          className="admin-buscador"
+          placeholder="Buscar punto por nombre..."
+          value={busqueda}
+          onChange={e => setBusqueda(e.target.value)}
+          style={{ flex: 1 }}
+        />
+        <label className="label-activos" style={{ display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}>
+          <input
+            type="checkbox"
+            checked={soloActivos}
+            onChange={e => setSoloActivos(e.target.checked)}
+          />
+          Solo activos
+        </label>
+      </div>
 
       {/* TABLA */}
       <table className="admin-tabla">

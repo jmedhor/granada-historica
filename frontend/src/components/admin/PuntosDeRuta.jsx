@@ -66,6 +66,8 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
   const [modoAnadir, setModoAnadir] = useState(false)
   const [puntoExistenteId, setPuntoExistenteId] = useState("")
   const [soloActivos, setSoloActivos] = useState(false)
+  const [busqueda, setBusqueda] = useState("")
+
 
   useEffect(() => { cargarDatos() }, [ruta.id])
 
@@ -92,6 +94,10 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
   const puntosFiltrados = soloActivos
     ? puntos.filter(p => p.activo)
     : puntos
+
+  const puntosFinales = puntosFiltrados
+    .filter(p => p.nombre.toLowerCase().includes(busqueda.toLowerCase()))
+
 
   const handleGuardar = async (datos) => {
     try {
@@ -206,6 +212,13 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
         </div>
       )}
 
+      <input
+        className="admin-buscador"
+        placeholder="Buscar punto por nombre..."
+        value={busqueda}
+        onChange={e => setBusqueda(e.target.value)}
+      />
+
       {/* TABLA SIN DRAG & DROP */}
       {puntos.length === 0 ? (
         <p className="admin-info">Esta ruta no tiene puntos todavía.</p>
@@ -222,7 +235,7 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
             </tr>
           </thead>
           <tbody>
-            {puntosFiltrados.map(punto => (
+            {puntosFinales.map(punto => (
               <FilaPunto
                 key={punto.id}
                 punto={punto}
