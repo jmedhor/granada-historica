@@ -342,14 +342,13 @@ function Mapa({
   // "ruta" | "info"
   const [modoPopup, setModoPopup] = useState("ruta")
 
-
-
-
   // Referencias a markers para abrir popups
   const markersRef = useRef({})
 
   // Referencia a userLocation actualizada en todo momento
   const userLocationRef = useRef(userLocation)
+
+
 
   useEffect(() => {
     userLocationRef.current = userLocation
@@ -1083,8 +1082,10 @@ function Mapa({
   // HELPER: renderiza Popup de un marker
   // ---------------------------------------------------
 
+  const esMobil = window.innerWidth < 768
+
   const renderPopup = (punto) => (
-    <Popup maxHeight={500}>
+    <Popup maxHeight={esMobil ? 500 : 350}>
       {modoPopup === "ruta" && (
         <PopupRuta
           punto={punto}
