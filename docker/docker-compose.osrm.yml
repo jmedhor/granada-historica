@@ -7,3 +7,15 @@ services:
       - ../osrm/walking:/data:ro
     ports:
       - "5001:5000"
+
+  nginx:
+    image: nginx:alpine
+    container_name: nazaroute-nginx
+    ports:
+      - "5443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /home/jose/Descargas/Varios/4TO/2cuatri/TFG/rutas-historicas/192.168.1.137.pem:/etc/ssl/cert.pem:ro
+      - /home/jose/Descargas/Varios/4TO/2cuatri/TFG/rutas-historicas/192.168.1.137-key.pem:/etc/ssl/key.pem:ro
+    depends_on:
+      - osrm-walking

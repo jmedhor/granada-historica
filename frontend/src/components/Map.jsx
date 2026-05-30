@@ -759,27 +759,47 @@ function Mapa({
   // DETECTA CLICK EN EL MAPA
   // ---------------------------------------------------
 
-  function MapaClickHandler() {
+  const GPS_ACTIVO = true // Cambiar a FALSE para testing en ordenador
 
+  // En MapaClickHandler, añade la condición:
+  function MapaClickHandler() {
     useMapEvents({
       click(e) {
-
-        // ignorar clics de botones para "puntos cercanos"
+        if (GPS_ACTIVO) return  // ignora clicks si GPS activo
         const target = e.originalEvent?.target
-
-        if (target && target.closest('button')) {
-          return
-        }
-
-        setUserLocation({
-          lat: e.latlng.lat,
-          lon: e.latlng.lng
-        })
+        if (target && target.closest('button')) return
+        setUserLocation({ lat: e.latlng.lat, lon: e.latlng.lng })
       }
     })
-
     return null
   }
+
+  // ---------------------------------------------------
+  // Obtiene la posicion del usuario en funcion del GPS (cada 5 segundos)
+  // ---------------------------------------------------
+
+
+  useEffect(() => {
+    if (!navigator.geolocation) return
+
+    const obtenerPosicion = () => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setUserLocation({
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+          })
+        },
+        (err) => console.error("GPS error:", err),
+        { enableHighAccuracy: true, maximumAge: 0 }
+      )
+    }
+
+    obtenerPosicion() // llamada inmediata
+    const intervalo = setInterval(obtenerPosicion, 5000)
+
+  return () => clearInterval(intervalo)
+}, [])
 
   // ---------------------------------------------------
   // CARGA TODOS LOS PUNTOS DESDE BACKEND
