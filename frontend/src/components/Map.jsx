@@ -36,7 +36,6 @@ import { coloresRuta } from '../utils/coloresRuta.js'
 
 import PopupInformacion from './PopupInformacion.jsx'
 
-import gpsNuevos from '../../assets/nuevos.png'
 
 import userMarker from '../../assets/userMarker.png'
 
@@ -54,14 +53,6 @@ const marcadorUser = new L.Icon({
   className: "user-marker-icon"
 })
 
-// Para puntos creados desde el panel admin
-
-const iconosNuevos = new L.Icon({
-  iconUrl: gpsNuevos,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-  popupAnchor: [0, -40]
-})
 
 
 
@@ -796,7 +787,7 @@ function Mapa({
     }
 
     obtenerPosicion() // llamada inmediata
-    const intervalo = setInterval(obtenerPosicion, 5000)
+    const intervalo = setInterval(obtenerPosicion, 10000)
 
   return () => clearInterval(intervalo)
 }, [])

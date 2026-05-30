@@ -122,6 +122,9 @@ function App() {
   // "rutas" | "puntos" | "bibliografia" | "navegacion"
   const [vistaDrawer, setVistaDrawer] = useState("rutas")
 
+  // Controla si el usuario ha cerrado el mensaje de duracion de ruta
+  const [duracionCerrada, setDuracionCerrada] = useState(false)
+
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
   // ---------------------------------------------------
@@ -184,6 +187,14 @@ function App() {
     }
 
   }, [modoCercanos])
+
+  // ---------------------------------------------------
+  // Resetar la lógica de mensaje de duración al cambiar la ruta
+  // ---------------------------------------------------
+
+  useEffect(() => {
+    setDuracionCerrada(false)
+  }, [rutaSeleccionada])
 
   // ---------------------------------------------------
   // RENDER PRINCIPAL
@@ -539,25 +550,17 @@ function App() {
           {/* DURACION APROXIMADA */}
           {/* -------------------------------- */}
 
-          {!cargandoRuta && duracionRuta && rutaSeleccionada && (
-
+          {!cargandoRuta && duracionRuta && rutaSeleccionada && !duracionCerrada && (
             <div className="duracion-ruta-box">
-
               Duracion aproximada de la ruta:
-
-              <strong>
-                {duracionRuta}
-              </strong>
-
+              <strong>{duracionRuta}</strong>
               <button
                 className="cerrar-duracion"
-                onClick={() => setDuracionRuta(null)}
+                onClick={() => setDuracionCerrada(true)}  // ← antes era setDuracionRuta(null)
               >
                 X
               </button>
-
             </div>
-
           )}
 
           {/* -------------------------------- */}
