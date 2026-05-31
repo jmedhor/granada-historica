@@ -53,6 +53,63 @@
 }
 
 /* ------------------------------------------------ */
+/* BOTON RECALCULAR POSICION
+/* ------------------------------------------------ */
+
+.btn-recalcular {
+
+  display: none;
+
+  position: absolute;
+
+  top: 75px;
+  right: 20px;
+
+  z-index: 2000;
+
+  padding: 12px 18px;
+
+  border: none;
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #B82828,
+      #D42020
+    );
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.22);
+
+  transition: all 0.25s ease;
+
+  backdrop-filter: blur(6px);
+}
+
+.btn-recalcular:hover {
+
+  transform:
+    translateY(-2px)
+    scale(1.02);
+
+  background:
+    linear-gradient(
+      135deg,
+      #B82828,
+      #D42020
+    );
+}
+
+
+/* ------------------------------------------------ */
 /* PANEL PUNTOS CERCANOS */
 /* ------------------------------------------------ */
 
@@ -255,9 +312,20 @@
 
   .btn-cercanos {
     top: 10px;
-    left: 100px;
+    left: 105px;
     padding: 9px 13px;
     font-size: 16px;
   }
+
+  .btn-recalcular {
+    display: block;
+    top: 10px;
+    right: 10px;
+    padding: 9px 13px;
+    font-size: 13px;
+  }
+
+
+
 
 }

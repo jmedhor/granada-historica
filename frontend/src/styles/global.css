@@ -339,6 +339,9 @@ body{
   right: 20px;
 }
 
+
+
+
 /* ================================================== */
 /* RESPONSIVE - MOVIL                                 */
 /* Breakpoint principal: 768px                        */
@@ -401,6 +404,13 @@ body{
 
   .btn-toggle-panel.oculto {
     right: 10px;
+  }
+
+  .btn-toggle-recalcular {
+    top: 60px;
+    right: 150px;
+    padding: 10px 14px;
+    font-size: 13px;
   }
 
 }

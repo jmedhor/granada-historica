@@ -521,6 +521,17 @@ function App() {
               )}
             </div>
 
+            {/* BOTON RECALCULAR - solo movil */}
+            <div className="menu-movil-seccion">
+              <p className="menu-movil-titulo-seccion">GPS</p>
+              <button
+                className="menu-movil-btn"
+                onClick={() => mapRef.current?.recalcularPosicion?.()}
+              >
+                Recalcular posición
+              </button>
+            </div>
+
             <div className="menu-movil-seccion-admin">
               <button
                 className="menu-movil-btn"
@@ -621,6 +632,7 @@ function App() {
             : "Mostrar panel"}
 
         </button>
+
 
         {/* --------------------------------------------------- */}
         {/* PANEL DERECHO */}

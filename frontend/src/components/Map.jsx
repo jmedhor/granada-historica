@@ -750,7 +750,7 @@ function Mapa({
   // DETECTA CLICK EN EL MAPA
   // ---------------------------------------------------
 
-  const GPS_ACTIVO = true // Cambiar a FALSE para testing en ordenador
+  const GPS_ACTIVO = window.innerWidth <= 768
 
   // En MapaClickHandler, añade la condición:
   function MapaClickHandler() {
@@ -766,12 +766,9 @@ function Mapa({
   }
 
   // ---------------------------------------------------
-  // Obtiene la posicion del usuario en funcion del GPS (cada 5 segundos)
+  // Obtiene la posicion del usuario en funcion del GPS (cada 15 segundos)
   // ---------------------------------------------------
 
-
-  useEffect(() => {
-    if (!navigator.geolocation) return
 
     const obtenerPosicion = () => {
       navigator.geolocation.getCurrentPosition(
@@ -786,11 +783,13 @@ function Mapa({
       )
     }
 
-    obtenerPosicion() // llamada inmediata
-    const intervalo = setInterval(obtenerPosicion, 10000)
+  useEffect(() => {
+    if (!navigator.geolocation || !GPS_ACTIVO) return
 
-  return () => clearInterval(intervalo)
-}, [])
+    obtenerPosicion()
+    const intervalo = setInterval(obtenerPosicion, 15000)
+    return () => clearInterval(intervalo)
+  }, [])
 
   // ---------------------------------------------------
   // CARGA TODOS LOS PUNTOS DESDE BACKEND
@@ -1176,6 +1175,7 @@ function Mapa({
 
           map.crearRutaDesdeCercanos =
             crearRutaDesdePuntosCercanos
+          map.recalcularPosicion = obtenerPosicion  // ← añadir
 
         }}
       />
@@ -1224,6 +1224,7 @@ function Mapa({
         </button>
 
       )}
+
 
       {/* ------------------------------------------------ */}
       {/* POLYLINES DE LA RUTA */}
