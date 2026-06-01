@@ -285,15 +285,6 @@
 
   }
 
-  /* Boton cercanos reposicionado */
-  .btn-cercanos {
-    top: 10px;
-    left: 10px;
-    padding: 10px 14px;
-    font-size: 13px;
-    transition: all 0.3s ease;
-
-  }
 
   /* Duracion ruta - ajuste de ancho */
   .duracion-ruta-box {

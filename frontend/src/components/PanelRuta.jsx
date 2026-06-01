@@ -151,13 +151,6 @@ function PanelRuta({
         Punto {segmentoActual} → {segmentoActual + 1} de {rutasSegmentos.length}
       </div>
 
-      {/* ------------------------------------------------- */}
-      {/* INDICADOR DE PROGRESO */}
-      {/* ------------------------------------------------- */}
-
-      <div className="progreso-ruta">
-        Tramo {segmentoActual + 1} de {rutasSegmentos.length}
-      </div>
 
       {/* ------------------------------------------------- */}
       {/* PASOS DEL SEGMENTO ACTUAL */}

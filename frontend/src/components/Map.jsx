@@ -36,7 +36,6 @@ import { coloresRuta } from '../utils/coloresRuta.js'
 
 import PopupInformacion from './PopupInformacion.jsx'
 
-import gpsNuevos from '../../assets/nuevos.png'
 
 import userMarker from '../../assets/userMarker.png'
 
@@ -54,14 +53,6 @@ const marcadorUser = new L.Icon({
   className: "user-marker-icon"
 })
 
-// Para puntos creados desde el panel admin
-
-const iconosNuevos = new L.Icon({
-  iconUrl: gpsNuevos,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-  popupAnchor: [0, -40]
-})
 
 
 
@@ -759,27 +750,47 @@ function Mapa({
   // DETECTA CLICK EN EL MAPA
   // ---------------------------------------------------
 
-  function MapaClickHandler() {
+  const GPS_ACTIVO = window.innerWidth <= 768
+  //const GPS_ACTIVO = false
 
+  // En MapaClickHandler, añade la condición:
+  function MapaClickHandler() {
     useMapEvents({
       click(e) {
-
-        // ignorar clics de botones para "puntos cercanos"
+        if (GPS_ACTIVO) return  // ignora clicks si GPS activo
         const target = e.originalEvent?.target
-
-        if (target && target.closest('button')) {
-          return
-        }
-
-        setUserLocation({
-          lat: e.latlng.lat,
-          lon: e.latlng.lng
-        })
+        if (target && target.closest('button')) return
+        setUserLocation({ lat: e.latlng.lat, lon: e.latlng.lng })
       }
     })
-
     return null
   }
+
+  // ---------------------------------------------------
+  // Obtiene la posicion del usuario en funcion del GPS (cada 15 segundos)
+  // ---------------------------------------------------
+
+
+    const obtenerPosicion = () => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setUserLocation({
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+          })
+        },
+        (err) => console.error("GPS error:", err),
+        { enableHighAccuracy: true, maximumAge: 0 }
+      )
+    }
+
+  useEffect(() => {
+    if (!navigator.geolocation || !GPS_ACTIVO) return
+
+    obtenerPosicion()
+    const intervalo = setInterval(obtenerPosicion, 15000)
+    return () => clearInterval(intervalo)
+  }, [])
 
   // ---------------------------------------------------
   // CARGA TODOS LOS PUNTOS DESDE BACKEND
@@ -1165,6 +1176,7 @@ function Mapa({
 
           map.crearRutaDesdeCercanos =
             crearRutaDesdePuntosCercanos
+          map.recalcularPosicion = obtenerPosicion  // ← añadir
 
         }}
       />
@@ -1213,6 +1225,7 @@ function Mapa({
         </button>
 
       )}
+
 
       {/* ------------------------------------------------ */}
       {/* POLYLINES DE LA RUTA */}

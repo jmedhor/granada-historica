@@ -122,6 +122,9 @@ function App() {
   // "rutas" | "puntos" | "bibliografia" | "navegacion"
   const [vistaDrawer, setVistaDrawer] = useState("rutas")
 
+  // Controla si el usuario ha cerrado el mensaje de duracion de ruta
+  const [duracionCerrada, setDuracionCerrada] = useState(false)
+
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
   // ---------------------------------------------------
@@ -186,6 +189,14 @@ function App() {
   }, [modoCercanos])
 
   // ---------------------------------------------------
+  // Resetar la lógica de mensaje de duración al cambiar la ruta
+  // ---------------------------------------------------
+
+  useEffect(() => {
+    setDuracionCerrada(false)
+  }, [rutaSeleccionada])
+
+  // ---------------------------------------------------
   // RENDER PRINCIPAL
   // ---------------------------------------------------
 
@@ -211,7 +222,7 @@ function App() {
           </button>
 
           <div className="header-left">
-            <h1 className="titulo-app">NazaRoute</h1>
+            <h1 className="titulo-app">Granada Histórica</h1>
             <span className="subtitulo-app">
               Rutas historicas por la ciudad de Granada
             </span>
@@ -510,6 +521,17 @@ function App() {
               )}
             </div>
 
+            {/* BOTON RECALCULAR - solo movil */}
+            <div className="menu-movil-seccion">
+              <p className="menu-movil-titulo-seccion">GPS</p>
+              <button
+                className="menu-movil-btn"
+                onClick={() => mapRef.current?.recalcularPosicion?.()}
+              >
+                Recalcular posición
+              </button>
+            </div>
+
             <div className="menu-movil-seccion-admin">
               <button
                 className="menu-movil-btn"
@@ -539,25 +561,17 @@ function App() {
           {/* DURACION APROXIMADA */}
           {/* -------------------------------- */}
 
-          {!cargandoRuta && duracionRuta && rutaSeleccionada && (
-
+          {!cargandoRuta && duracionRuta && rutaSeleccionada && !duracionCerrada && (
             <div className="duracion-ruta-box">
-
               Duracion aproximada de la ruta:
-
-              <strong>
-                {duracionRuta}
-              </strong>
-
+              <strong>{duracionRuta}</strong>
               <button
                 className="cerrar-duracion"
-                onClick={() => setDuracionRuta(null)}
+                onClick={() => setDuracionCerrada(true)}  // ← antes era setDuracionRuta(null)
               >
                 X
               </button>
-
             </div>
-
           )}
 
           {/* -------------------------------- */}
@@ -618,6 +632,7 @@ function App() {
             : "Mostrar panel"}
 
         </button>
+
 
         {/* --------------------------------------------------- */}
         {/* PANEL DERECHO */}

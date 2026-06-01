@@ -31,5 +31,8 @@ fastapi/__pycache__/
 .env
 
 #archivos osrm
-.osrm
-.osm.pbf
+*.osrm
+*.osm.pbf
+
+#certificados
+*.pem
