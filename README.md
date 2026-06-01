@@ -1,6 +1,6 @@
-# NazaRoute
+# Granada Histórica
 
-NazaRoute es una aplicación web de rutas turísticas históricas por la ciudad
+Granada Histórica es una aplicación web de rutas turísticas históricas por la ciudad
 de Granada. Permite al usuario explorar puntos de interés cultural e histórico
 siguiendo rutas diseñadas con rigor académico, con información aportada por la
 Universidad de Granada (UGR).
@@ -32,7 +32,7 @@ administración completo para la gestión de contenidos.
 
 # Descripción general
 
-NazaRoute ofrece al usuario distintas rutas turísticas peatonales por Granada,
+Granada Histórica ofrece al usuario distintas rutas turísticas peatonales por Granada,
 con un fuerte enfoque en el contexto histórico de la ciudad.
 
 Cada punto de interés incluye:
@@ -298,7 +298,7 @@ de servicios (`api.js`).
 ## Estructura del proyecto
 
 ```text
-nazaroute/
+granada-historica/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -393,8 +393,8 @@ nazaroute/
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/nazaroute.git
-cd nazaroute
+git clone https://github.com/tu-usuario/granada-historica.git
+cd granada-historica
 ```
 
 ### 2. Instalar dependencias del frontend
@@ -512,7 +512,7 @@ const BASE_URL = "https://192.168.1.X:8000"
 
 ## Configuración de OSRM
 
-NazaRoute utiliza OSRM para calcular rutas reales a pie respetando aceras,
+Granada histórica utiliza OSRM para calcular rutas reales a pie respetando aceras,
 zonas peatonales y restricciones de acceso.
 
 ### Descargar el dataset

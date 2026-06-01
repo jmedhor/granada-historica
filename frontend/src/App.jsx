@@ -222,7 +222,7 @@ function App() {
           </button>
 
           <div className="header-left">
-            <h1 className="titulo-app">NazaRoute</h1>
+            <h1 className="titulo-app">Granada Histórica</h1>
             <span className="subtitulo-app">
               Rutas historicas por la ciudad de Granada
             </span>
