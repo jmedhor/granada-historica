@@ -1,5 +1,20 @@
 import { coloresRuta } from "../utils/coloresRuta.js"
 
+
+function PinIcono({ color }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="16" height="24" style={{ flexShrink: 0 }}>
+      <path
+        d="M12 0C5.373 0 0 5.373 0 12c0 9 12 24 12 24S24 21 24 12C24 5.373 18.627 0 12 0z"
+        fill={color}
+        stroke="white"
+        strokeWidth="1.5"
+      />
+      <circle cx="12" cy="12" r="5" fill="white" opacity="0.85" />
+    </svg>
+  )
+}
+
 function PanelCercanos({
 
   puntosCercanos,
@@ -93,29 +108,16 @@ function PanelCercanos({
 
         {puntosCercanos.map((punto) => (
 
-            <li
-              key={`${punto.id}-${punto.ruta_id}`}
-              onClick={() => irAPunto(punto)}
-
-              style={{
-                background: punto.ruta_color || '#e63946',
-                color: "white",
-                borderRadius: "10px",
-                marginBottom: "10px"
-              }}
-            >
-
-            <span
-              className="paso-num"
-            >
-              -
-            </span>
-
-            <span className="paso-texto2">
-              {punto.nombre}
-            </span>
-
-          </li>
+        <li
+          key={`${punto.id}-${punto.ruta_id}`}
+          onClick={() => irAPunto(punto)}
+          style={{ borderLeftColor: punto.ruta_color || '#e63946' }}
+        >
+          <span className="paso-num" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none" }}>
+            <PinIcono color={punto.ruta_color || '#e63946'} />
+          </span>
+          <span className="paso-texto3">{punto.nombre}</span>
+        </li>
 
         ))}
 

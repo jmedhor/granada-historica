@@ -751,6 +751,7 @@ function Mapa({
   // ---------------------------------------------------
 
   const GPS_ACTIVO = window.innerWidth <= 768
+  //const GPS_ACTIVO = false
 
   // En MapaClickHandler, añade la condición:
   function MapaClickHandler() {
