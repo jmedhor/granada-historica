@@ -8,8 +8,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     https: {
-      cert: fs.readFileSync('../192.168.1.137.pem'),
-      key: fs.readFileSync('../192.168.1.137-key.pem'),
+      cert: fs.readFileSync('../192.168.14.89.pem'),
+      key: fs.readFileSync('../192.168.14.89-key.pem'),
     }
   }
 })

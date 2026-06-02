@@ -6,7 +6,7 @@ import { invalidarCache, invalidarTodo } from './cache.js'
 // Centraliza todos los fetch al API de FastAPI
 // ---------------------------------------------------
 
-const BASE_URL = "https://192.168.1.137:8000"
+const BASE_URL = "https://192.168.14.89:8000"
 
 // ---------------------------------------------------
 // HELPER - fetch con manejo de errores
