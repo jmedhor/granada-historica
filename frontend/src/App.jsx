@@ -69,6 +69,12 @@ function App() {
   // Para react router
   const navigate = useNavigate()
 
+  // Localizacion del usuario
+  const [userLocation, setUserLocation] = useState({
+    lat: 37.1773,
+    lon: -3.5986
+  })
+
   // Estado para activar informacion historica extra
   const [modoHistoriador, setModoHistoriador] = useState(false)
 
@@ -617,6 +623,8 @@ function App() {
           {/* -------------------------------- */}
 
           <Mapa
+            userLocation={userLocation}
+            setUserLocation={setUserLocation}
             rutaSeleccionada={rutaSeleccionada}
             setRutaSeleccionada={setRutaSeleccionada}
 
@@ -860,6 +868,7 @@ function App() {
           segmentoActual={segmentoActual}
           setSegmentoActual={setSegmentoActual}
           setModoNavegacion={setModoNavegacion}
+          userLocation={userLocation}
         />
       )}
 
