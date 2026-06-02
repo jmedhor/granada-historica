@@ -264,6 +264,9 @@ function filtrarPuntosPorTiempo(
 
 function Mapa({
 
+  userLocation,
+  setUserLocation,
+
   rutaSeleccionada,
   setRutaSeleccionada,
   mapRef,
@@ -313,12 +316,6 @@ function Mapa({
 
   // Segmentos de la ruta mostrados en el mapa
   const [rutasSegmentosLocal, setRutasSegmentosLocal] = useState([])
-
-  // Posicion inicial del usuario
-  const [userLocation, setUserLocation] = useState({
-    lat: 37.1773,
-    lon: -3.5986
-  })
 
   // Datos bases para ruta dinamica por puntos cercanos
   const [rutaCercanosBase, setRutaCercanosBase] = useState(null)
@@ -749,8 +746,8 @@ function Mapa({
   // DETECTA CLICK EN EL MAPA
   // ---------------------------------------------------
 
-  const GPS_ACTIVO = window.innerWidth <= 768
-  //const GPS_ACTIVO = false
+  //const GPS_ACTIVO = window.innerWidth <= 768
+  const GPS_ACTIVO = false
 
   // En MapaClickHandler, añade la condición:
   function MapaClickHandler() {
