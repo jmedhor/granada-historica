@@ -529,19 +529,33 @@ function App() {
               </button>
 
               {usarFiltroTiempo && (
-                <select
-                  className="menu-movil-select"
-                  value={horasDisponibles}
-                  onChange={(e) => setHorasDisponibles(Number(e.target.value))}
-                >
-                  <option value={1}>1 hora</option>
-                  <option value={2}>2 horas</option>
-                  <option value={3}>3 horas</option>
-                  <option value={4}>4 horas</option>
-                  <option value={5}>5 horas</option>
-                  <option value={6}>6 horas</option>
-                  <option value={7}>7 horas</option>
-                </select>
+                <div className="menu-movil-slider-grupo">
+                  <div className="menu-movil-slider-labels">
+                    <span>1h</span>
+                    <span className="menu-movil-slider-valor">{horasDisponibles}h</span>
+                    <span>7h</span>
+                  </div>
+                  <input
+                    type="range"
+                    className="menu-movil-slider"
+                    min={1}
+                    max={7}
+                    step={1}
+                    value={horasDisponibles}
+                    onChange={e => setHorasDisponibles(Number(e.target.value))}
+                  />
+                  <div className="menu-movil-slider-ticks">
+                    {[1,2,3,4,5,6,7].map(h => (
+                      <span
+                        key={h}
+                        className={horasDisponibles === h ? "tick activo" : "tick"}
+                        onClick={() => setHorasDisponibles(h)}
+                      >
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
 

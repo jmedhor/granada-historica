@@ -281,6 +281,54 @@
 
 }
 
+.menu-movil-slider-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 4px 4px;
+}
+
+.menu-movil-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.menu-movil-slider-valor {
+  font-size: 15px;
+  font-weight: 800;
+  color: #B82828;
+}
+
+.menu-movil-slider {
+  width: 100%;
+  accent-color: #B82828;
+  cursor: pointer;
+  height: 4px;
+}
+
+.menu-movil-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+
+.menu-movil-slider-ticks .tick {
+  font-size: 11px;
+  color: #bbb;
+  cursor: pointer;
+  width: 20px;
+  text-align: center;
+  transition: color 0.2s, font-weight 0.2s;
+}
+
+.menu-movil-slider-ticks .tick.activo {
+  color: #B82828;
+  font-weight: 800;
+}
+
 /* animacion drawer izquierda */
 @keyframes slideInLeft {
   from {
