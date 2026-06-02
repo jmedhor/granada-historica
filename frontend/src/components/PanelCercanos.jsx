@@ -20,7 +20,8 @@ function PanelCercanos({
   puntosCercanos,
   mapRef,
   setModoCercanos,
-  setPuntosCercanos
+  setPuntosCercanos,
+  radioMetros
 
 }) {
 
@@ -63,7 +64,7 @@ function PanelCercanos({
         ← Volver
         </button>
       <h3>
-        Puntos cercanos (Aprox. 500m)
+        Puntos cercanos (Aprox. {radioMetros ?? 500}m)
       </h3>
 
       {puntosCercanos.length === 0 && (

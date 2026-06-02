@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+from sqlalchemy import text
 
 import models
 import crud
@@ -214,3 +215,36 @@ def eliminar_punto(
     eliminado = crud.delete_punto(db, punto_id)
     if not eliminado:
         raise HTTPException(status_code=404, detail="Punto no encontrado")
+
+
+
+# ---------------------------------------------------
+# CONFIGURACION
+# ---------------------------------------------------
+
+@app.get("/configuracion/{clave}")
+def get_config(clave: str, db: Session = Depends(get_db)):
+    resultado = db.execute(
+        text("SELECT valor FROM configuracion WHERE clave = :clave"),
+        {"clave": clave}
+    ).fetchone()
+    if not resultado:
+        raise HTTPException(status_code=404, detail="Clave no encontrada")
+    return {"clave": clave, "valor": resultado[0]}
+
+
+@app.patch("/configuracion/{clave}")
+def update_config(
+    clave: str,
+    datos: dict,
+    db: Session = Depends(get_db),
+    rol: str = Depends(get_current_role)
+):
+    if rol != "superadmin":
+        raise HTTPException(status_code=403, detail="No autorizado")
+    db.execute(
+        text("UPDATE configuracion SET valor = :valor WHERE clave = :clave"),
+        {"valor": datos["valor"], "clave": clave}
+    )
+    db.commit()
+    return {"clave": clave, "valor": datos["valor"]}

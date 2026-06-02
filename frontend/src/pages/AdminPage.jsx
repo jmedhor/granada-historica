@@ -4,6 +4,7 @@ import { getRutas, loginAdmin } from "../services/api.js"
 import RutasList from "../components/admin/RutasList.jsx"
 import PuntosList from "../components/admin/PuntosList.jsx"
 import PuntosDeRuta from "../components/admin/PuntosDeRuta.jsx"
+import ConfiguracionGeneral from "../components/admin/ConfiguracionGeneral.jsx"
 
 // ---------------------------------------------------
 // PAGINA DE ADMINISTRACION
@@ -101,8 +102,9 @@ function AdminPage() {
 
   // Tabs
   const tabsAdmin = [
-    { id: "rutas",  label: "Rutas" },
-    { id: "puntos", label: "Todos los puntos" },
+    { id: "rutas",         label: "Rutas" },
+    { id: "puntos",        label: "Todos los puntos" },
+    { id: "configuracion", label: "Configuración general" },  // ← nuevo
   ]
 
 
@@ -172,6 +174,11 @@ function AdminPage() {
         {/* ---- SUPERADMIN: todos los puntos ---- */}
         {rol === "superadmin" && !rutaGestionando && tab === "puntos" && (
           <PuntosList rol="superadmin" />
+        )}
+
+        {/* ---- SUPERADMIN: configuracion general ---- */}
+        {rol === "superadmin" && !rutaGestionando && tab === "configuracion" && (
+          <ConfiguracionGeneral />
         )}
 
         {/* ---- HISTORIADOR: bibliografia de rutas ---- */}

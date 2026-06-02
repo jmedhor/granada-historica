@@ -36,7 +36,6 @@ import { coloresRuta } from '../utils/coloresRuta.js'
 
 import PopupInformacion from './PopupInformacion.jsx'
 
-
 import userMarker from '../../assets/userMarker.png'
 
 
@@ -298,7 +297,9 @@ function Mapa({
   mostrarPanel,
 
   usarFiltroTiempo,
-  horasDisponibles
+  horasDisponibles,
+
+  radioMetros
 
 
 }) {
@@ -344,8 +345,6 @@ function Mapa({
   useEffect(() => {
     userLocationRef.current = userLocation
   }, [userLocation])
-
-
 
 
 
@@ -554,7 +553,7 @@ function Mapa({
     // RADIO MAXIMO
     // --------------------------------
 
-    const RADIO_METROS = 500
+    const RADIO_METROS = radioMetros
 
     // --------------------------------
     // FILTRAR PUNTOS CERCANOS
@@ -641,7 +640,7 @@ function Mapa({
     if (!modoCercanos) return
     if (todosPuntos.length === 0) return
 
-    const RADIO_METROS = 500
+    const RADIO_METROS = radioMetros
 
     const cercanos = todosPuntos.filter((punto) => {
 

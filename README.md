@@ -565,7 +565,7 @@ services:
 
   osrm-walking:
     image: osrm/osrm-backend:latest
-    container_name: nazaroute-osrm-walking
+    container_name: granada-historica-osrm-walking
     command: osrm-routed --algorithm mld /data/granada-foot.osrm
     volumes:
       - ../osrm/walking:/data:ro
@@ -574,7 +574,7 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: nazaroute-nginx
+    container_name: granada-historica-nginx
     ports:
       - "5443:443"
     volumes:

@@ -190,3 +190,19 @@ export const deletePunto = async (id) => {
 
   return result
 }
+
+// ---------------------------------------------------
+// CONFIGURACION GLOBAL
+// ---------------------------------------------------
+
+export const getConfiguracion = async (clave) => {
+  const data = await apiFetch(`/configuracion/${clave}`)
+  return data.valor
+}
+
+export const updateConfiguracion = async (clave, valor) => {
+  return apiFetch(`/configuracion/${clave}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ valor: String(valor) })
+  })
+}

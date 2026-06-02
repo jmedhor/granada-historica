@@ -2,6 +2,12 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 // ----------------------------
 
+// unica llamada a API desde app.jsx para obtener configuracion general
+
+import { getConfiguracion } from './services/api.js'
+
+
+
 // Estilos para la aplicacion seccionados
 // ANTIGUO: import './styles/App.css'
 
@@ -22,6 +28,7 @@ import "./styles/AdminButton-other.css"
 import "./styles/AdminPage.css"
 import "./styles/AdminSection.css"
 import "./styles/ConfirmModal.css"
+import "./styles/ConfiguracionGeneral.css"
 
 // ----------------------------
 
@@ -125,6 +132,10 @@ function App() {
   // Controla si el usuario ha cerrado el mensaje de duracion de ruta
   const [duracionCerrada, setDuracionCerrada] = useState(false)
 
+  // radio de metros para puntos cercanos
+  const [radioMetros, setRadioMetros] = useState(500)
+
+
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
   // ---------------------------------------------------
@@ -144,6 +155,18 @@ function App() {
       }
     )
   }
+
+  // ---------------------------------------------------
+  // OBTENER RADIO METROS PARA PUNTOS CERCANOS
+  // ---------------------------------------------------
+
+  useEffect(() => {
+    getConfiguracion('radio_cercanos')
+      .then(valor => setRadioMetros(Number(valor)))
+      .catch(() => setRadioMetros(500)) // fallback si falla
+  }, [])
+
+
 
 
   // ---------------------------------------------------
@@ -445,6 +468,7 @@ function App() {
                     setVistaDrawer("puntos")
                   }
                 }
+                radioMetros={radioMetros}
               />
             )}
 
@@ -614,6 +638,8 @@ function App() {
             usarFiltroTiempo={usarFiltroTiempo}
             horasDisponibles={horasDisponibles}
 
+            radioMetros={radioMetros}
+
           />
 
         </div>
@@ -653,6 +679,7 @@ function App() {
                 mapRef={mapRef}
                 setModoCercanos={setModoCercanos}
                 setPuntosCercanos={setPuntosCercanos}
+                radioMetros={radioMetros}
               />
 
             )}
