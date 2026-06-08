@@ -615,7 +615,7 @@ function App() {
             <div className="duracion-ruta-box">
               Duración aproximada: <strong>{duracionRuta}</strong>
               {distanciaRuta && (
-                <> - Distancia: <strong>{distanciaRuta} km</strong></>
+                <> Distancia: <strong>{distanciaRuta} km</strong></>
               )}
               <button
                 className="cerrar-duracion"
