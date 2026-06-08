@@ -40,6 +40,15 @@ import userMarker from '../../assets/userMarker.png'
 
 
 // ---------------------------------------------------
+// GPS-ACTIVO
+// ---------------------------------------------------
+
+
+const GPS_ACTIVO = window.innerWidth <= 768
+//const GPS_ACTIVO = false
+
+
+// ---------------------------------------------------
 // ICONOS DE MARCADORES POR RUTA
 // ---------------------------------------------------
 
@@ -333,6 +342,9 @@ function Mapa({
   // Todos los puntos cargados desde backend
   const [todosPuntos, setTodosPuntos] = useState([])
 
+  // User location basado en watchposition
+  const [userLocationRuta, setUserLocationRuta] = useState(userLocation)
+
   // Segmentos de la ruta mostrados en el mapa
   const [rutasSegmentosLocal, setRutasSegmentosLocal] = useState([])
 
@@ -358,11 +370,49 @@ function Mapa({
 
   // Umbral para no recalcular ruta si la localizacion gps cambia muy poco
   const lastRecalcLocationRef = useRef(null)
-  const UMBRAL_RECALCULO_METROS = 5
 
+  // Umbral para actualizar posición visual
+  const UMBRAL_POSICION_METROS = 5
+
+  // Umbral para recalcular rutas
+  const UMBRAL_RUTA_METROS = 15
+
+  const lastRouteLocationRef = useRef(null)
 
   useEffect(() => {
     userLocationRef.current = userLocation
+  }, [userLocation])
+
+  useEffect(() => {
+
+    if (!userLocation) return
+
+    if (!lastRouteLocationRef.current) {
+
+      lastRouteLocationRef.current = userLocation
+      setUserLocationRuta(userLocation)
+
+      return
+    }
+
+    const distancia =
+      calcularDistanciaMetros(
+
+        lastRouteLocationRef.current.lat,
+        lastRouteLocationRef.current.lon,
+
+        userLocation.lat,
+        userLocation.lon
+      )
+
+    if (distancia >= UMBRAL_RUTA_METROS) {
+
+      lastRouteLocationRef.current = userLocation
+
+      setUserLocationRuta(userLocation)
+
+    }
+
   }, [userLocation])
 
 
@@ -683,7 +733,7 @@ function Mapa({
 
     setPuntosCercanos(cercanos)
 
-  }, [userLocation, todosPuntos, modoCercanos, evitarPago])
+  }, [userLocationRuta, todosPuntos, modoCercanos, evitarPago])
 
 
   // ---------------------------------------------------
@@ -735,7 +785,7 @@ function Mapa({
     evitarPago,
     usarFiltroTiempo,
     horasDisponibles,
-    userLocation
+    userLocationRuta
 
   ])
 
@@ -771,8 +821,7 @@ function Mapa({
   // DETECTA CLICK EN EL MAPA
   // ---------------------------------------------------
 
-  //const GPS_ACTIVO = window.innerWidth <= 768
-  const GPS_ACTIVO = false
+
 
   // En MapaClickHandler, añade la condición:
   function MapaClickHandler() {
@@ -789,6 +838,8 @@ function Mapa({
 
   // ---------------------------------------------------
   // Obtiene la posicion del usuario en funcion del GPS (cada 15 segundos)
+  // DEPRECATED
+  // SE CAMBIA SU USO POR WATCHPOSITION
   // ---------------------------------------------------
 
 
@@ -806,6 +857,7 @@ function Mapa({
       )
     }
 */
+/*
     const obtenerPosicion = () => {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -834,6 +886,71 @@ function Mapa({
         { enableHighAccuracy: true, maximumAge: 0 }
       )
     }
+*/
+
+
+
+  // ---------------------------------------------------
+  // Obtiene y actualiza la posicion del usuario
+  // ---------------------------------------------------
+
+  useEffect(() => {
+
+    if (!navigator.geolocation || !GPS_ACTIVO) return
+
+    const watchId =
+      navigator.geolocation.watchPosition(
+
+        (pos) => {
+
+          const nuevaPos = {
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+          }
+
+          // Evita ruido GPS
+
+          if (lastRecalcLocationRef.current) {
+
+            const distancia =
+              calcularDistanciaMetros(
+
+                lastRecalcLocationRef.current.lat,
+                lastRecalcLocationRef.current.lon,
+
+                nuevaPos.lat,
+                nuevaPos.lon
+              )
+
+            if (distancia < UMBRAL_POSICION_METROS) {
+              return
+            }
+          }
+
+          lastRecalcLocationRef.current = nuevaPos
+
+          setUserLocation(nuevaPos)
+
+        },
+
+        (err) => {
+          console.error("GPS error:", err)
+        },
+
+        {
+          enableHighAccuracy: true,
+          maximumAge: 0
+        }
+
+      )
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId)
+    }
+
+  }, [])
+
+/*
 
   useEffect(() => {
     if (!navigator.geolocation || !GPS_ACTIVO) return
@@ -842,7 +959,7 @@ function Mapa({
     const intervalo = setInterval(obtenerPosicion, 15000)
     return () => clearInterval(intervalo)
   }, [])
-
+*/
   // ---------------------------------------------------
   // CARGA TODOS LOS PUNTOS DESDE BACKEND
   // ---------------------------------------------------
@@ -1082,7 +1199,7 @@ function Mapa({
     rutaSeleccionada,
     todosPuntos,
     modoRuta,
-    userLocation,
+    userLocationRuta,
     evitarPago,
     usarFiltroTiempo,
     horasDisponibles,
@@ -1230,7 +1347,7 @@ function Mapa({
 
           map.crearRutaDesdeCercanos =
             crearRutaDesdePuntosCercanos
-          map.recalcularPosicion = obtenerPosicion  // ← añadir
+          //map.recalcularPosicion = obtenerPosicion  // ← añadir
 
         }}
       />
