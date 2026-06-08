@@ -356,6 +356,9 @@ function Mapa({
   // Referencia a userLocation actualizada en todo momento
   const userLocationRef = useRef(userLocation)
 
+  // Umbral para no recalcular ruta si la localizacion gps cambia muy poco
+  const lastRecalcLocationRef = useRef(null)
+  const UMBRAL_RECALCULO_METROS = 5
 
 
   useEffect(() => {
@@ -789,6 +792,7 @@ function Mapa({
   // ---------------------------------------------------
 
 
+/*
     const obtenerPosicion = () => {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -796,6 +800,35 @@ function Mapa({
             lat: pos.coords.latitude,
             lon: pos.coords.longitude,
           })
+        },
+        (err) => console.error("GPS error:", err),
+        { enableHighAccuracy: true, maximumAge: 0 }
+      )
+    }
+*/
+    const obtenerPosicion = () => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const nuevaPos = {
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+          }
+
+          // Comprobación de umbral
+          if (lastRecalcLocationRef.current) {
+            const distancia = calcularDistanciaMetros(
+              lastRecalcLocationRef.current.lat,
+              lastRecalcLocationRef.current.lon,
+              nuevaPos.lat,
+              nuevaPos.lon
+            )
+            if (distancia < UMBRAL_RECALCULO_METROS) {
+              return  // movimiento insuficiente, ignorar
+            }
+          }
+
+          lastRecalcLocationRef.current = nuevaPos
+          setUserLocation(nuevaPos)
         },
         (err) => console.error("GPS error:", err),
         { enableHighAccuracy: true, maximumAge: 0 }
