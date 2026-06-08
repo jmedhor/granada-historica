@@ -605,32 +605,17 @@ function App() {
 
         <div className="map-container" style={{ width: mostrarPanel ? "calc(100vw - 250px)" : "100vw" }}>
 
-          {/* -------------------------------- */}
-          {/* DURACION APROXIMADA */}
-          {/* -------------------------------- */}
 
-          {!cargandoRuta && duracionRuta && rutaSeleccionada && !duracionCerrada && (
-            <div className="duracion-ruta-box">
-              Duracion aproximada de la ruta:
-              <strong>{duracionRuta}</strong>
-              <button
-                className="cerrar-duracion"
-                onClick={() => setDuracionCerrada(true)}  // ← antes era setDuracionRuta(null)
-              >
-                X
-              </button>
-            </div>
-          )}
 
           {/* -------------------------------- */}
-          {/* DISTANCIA DE LA RUTA             */}
+          {/* DURACION Y DISTANCIA DE LA RUTA  */}
           {/* -------------------------------- */}
 
           {!cargandoRuta && duracionRuta && rutaSeleccionada && !duracionCerrada && (
             <div className="duracion-ruta-box">
               Duración aproximada: <strong>{duracionRuta}</strong>
               {distanciaRuta && (
-                <> &nbsp;·&nbsp; Distancia: <strong>{distanciaRuta} km</strong></>
+                <> - Distancia: <strong>{distanciaRuta} km</strong></>
               )}
               <button
                 className="cerrar-duracion"
