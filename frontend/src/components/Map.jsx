@@ -181,6 +181,23 @@ function calcularDuracionRuta(legs, puntosOrdenados) {
 }
 
 // ---------------------------------------------------
+// CALCULA EL TEXTO DE DISTANCIA DE RUTA
+// ---------------------------------------------------
+
+  // ---------------------------------
+  // Distancia en kilometros de la ruta generada
+  // ------------------------------
+
+
+function calcularDistanciaRuta(legs) {
+  const metros = legs.reduce(
+    (acc, leg) => acc + (leg.distance || 0),
+    0
+  )
+  return (metros / 1000).toFixed(2) // "1.34"
+}
+
+// ---------------------------------------------------
 // CALCULA TIEMPO TOTAL DE RUTA EN SEGUNDOS
 // DEPRECATED
 // ---------------------------------------------------
@@ -302,7 +319,9 @@ function Mapa({
   usarFiltroTiempo,
   horasDisponibles,
 
-  radioMetros
+  radioMetros,
+
+  setDistanciaRuta
 
 
 }) {
@@ -462,7 +481,7 @@ function Mapa({
           setRutasSegmentos([])
           setRutasSegmentosLocal([])
           setDuracionRuta(null)
-
+          setDistanciaRuta(null)
           return
         }
 
@@ -501,6 +520,9 @@ function Mapa({
       )
 
       setDuracionRuta(tiempoTexto)
+
+      const distanciaTexto = calcularDistanciaRuta(legsFinales)
+      setDistanciaRuta(distanciaTexto)
 
       // --------------------------------
       // ACTIVA RUTA VIRTUAL DE CERCANOS
@@ -826,7 +848,7 @@ function Mapa({
       setOrdenPuntos([])
 
       setDuracionRuta(null)
-
+      setDistanciaRuta(null)
     }
 
   }, [rutaSeleccionada])
@@ -946,6 +968,7 @@ function Mapa({
             setRutasSegmentos([])
             setRutasSegmentosLocal([])
             setDuracionRuta(null)
+            setDistanciaRuta(null)
 
             return
           }
@@ -999,6 +1022,8 @@ function Mapa({
         )
 
         setDuracionRuta(tiempoTexto)
+        const distanciaTexto = calcularDistanciaRuta(legsFinales)
+        setDistanciaRuta(distanciaTexto)
 
       }
 

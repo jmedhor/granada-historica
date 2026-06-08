@@ -141,6 +141,9 @@ function App() {
   // radio de metros para puntos cercanos
   const [radioMetros, setRadioMetros] = useState(500)
 
+  // Texto con la distancia de la ruta
+  const [distanciaRuta, setDistanciaRuta] = useState(null)
+
 
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
@@ -223,6 +226,7 @@ function App() {
 
   useEffect(() => {
     setDuracionCerrada(false)
+    setDistanciaRuta(null)
   }, [rutaSeleccionada])
 
   // ---------------------------------------------------
@@ -619,6 +623,25 @@ function App() {
           )}
 
           {/* -------------------------------- */}
+          {/* DISTANCIA DE LA RUTA             */}
+          {/* -------------------------------- */}
+
+          {!cargandoRuta && duracionRuta && rutaSeleccionada && !duracionCerrada && (
+            <div className="duracion-ruta-box">
+              Duración aproximada: <strong>{duracionRuta}</strong>
+              {distanciaRuta && (
+                <> &nbsp;·&nbsp; Distancia: <strong>{distanciaRuta} km</strong></>
+              )}
+              <button
+                className="cerrar-duracion"
+                onClick={() => setDuracionCerrada(true)}
+              >
+                X
+              </button>
+            </div>
+          )}
+
+          {/* -------------------------------- */}
           {/* COMPONENTE MAPA */}
           {/* -------------------------------- */}
 
@@ -661,6 +684,9 @@ function App() {
             horasDisponibles={horasDisponibles}
 
             radioMetros={radioMetros}
+
+            setDistanciaRuta={setDistanciaRuta}
+
 
           />
 
