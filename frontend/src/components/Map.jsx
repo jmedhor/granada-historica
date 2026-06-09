@@ -422,11 +422,14 @@ function Mapa({
 
     if (distancia >= UMBRAL_RUTA_METROS) {
 
+      console.log(`[RUTA] Recálculo de ruta disparado: ${distancia.toFixed(1)}m (umbral ruta: ${UMBRAL_RUTA_METROS}m)`)
       lastRouteLocationRef.current = userLocation
 
       setUserLocationRuta(userLocation)
 
-    }
+      } else {
+        console.log(`[RUTA] Recálculo omitido: solo ${distancia.toFixed(1)}m (umbral ruta: ${UMBRAL_RUTA_METROS}m)`)
+      }
 
   }, [userLocation])
 
@@ -929,35 +932,31 @@ function Mapa({
       navigator.geolocation.watchPosition(
 
         (pos) => {
-
           const nuevaPos = {
             lat: pos.coords.latitude,
             lon: pos.coords.longitude,
           }
 
-          // Evita ruido GPS
-
           if (lastRecalcLocationRef.current) {
-
-            const distancia =
-              calcularDistanciaMetros(
-
-                lastRecalcLocationRef.current.lat,
-                lastRecalcLocationRef.current.lon,
-
-                nuevaPos.lat,
-                nuevaPos.lon
-              )
+            const distancia = calcularDistanciaMetros(
+              lastRecalcLocationRef.current.lat,
+              lastRecalcLocationRef.current.lon,
+              nuevaPos.lat,
+              nuevaPos.lon
+            )
 
             if (distancia < UMBRAL_POSICION_METROS) {
+              console.log(`[GPS] Posición omitida: solo ${distancia.toFixed(1)}m (umbral visual: ${UMBRAL_POSICION_METROS}m)`)
               return
             }
+
+            console.log(`[GPS] Posición actualizada: ${distancia.toFixed(1)}m desde la última`)
+          } else {
+            console.log("[GPS] Primera posición GPS recibida")
           }
 
           lastRecalcLocationRef.current = nuevaPos
-
           setUserLocation(nuevaPos)
-
         },
 
         (err) => {
