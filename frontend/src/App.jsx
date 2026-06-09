@@ -144,6 +144,9 @@ function App() {
   // Texto con la distancia de la ruta
   const [distanciaRuta, setDistanciaRuta] = useState(null)
 
+  // Aviso de que todos los puntos son de pago
+  const [mensajeTodosPago, setMensajeTodosPago] = useState(false)
+
 
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
@@ -627,6 +630,21 @@ function App() {
           )}
 
           {/* -------------------------------- */}
+          {/* AVISO TODOS LOS PUNTOS SON PAGO  */}
+          {/* -------------------------------- */}
+          {mensajeTodosPago && (
+            <div className="todospago-ruta-box">
+              Todos los puntos son de pago, manteniendo ruta original
+              <button
+                className="cerrar-todospago"
+                onClick={() => setMensajeTodosPago(false)}
+              >
+                X
+              </button>
+            </div>
+          )}
+
+          {/* -------------------------------- */}
           {/* COMPONENTE MAPA */}
           {/* -------------------------------- */}
 
@@ -644,6 +662,7 @@ function App() {
             modoRuta={modoRuta}
             setRutasSegmentos={setRutasSegmentos}
 
+            setEvitarPago={setEvitarPago}
             evitarPago={evitarPago}
 
             ordenPuntos={ordenPuntos}
@@ -672,6 +691,8 @@ function App() {
 
             setDistanciaRuta={setDistanciaRuta}
 
+            mensajeTodosPago={mensajeTodosPago}
+            setMensajeTodosPago={setMensajeTodosPago}
 
           />
 

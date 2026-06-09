@@ -10,6 +10,7 @@ const OSRM_BASE = "https://192.168.1.137:5443"
 // ---------------------------------------------------
 // RUTA HISTORICA
 //
+// DEPRECATED
 // Mantiene el orden original de los puntos
 // definido por la ruta historica
 // ---------------------------------------------------
@@ -146,8 +147,15 @@ export async function obtenerRutaOptima(
 
 function filtrarPuntosPago(puntos, evitarPago) {
 
-  return evitarPago
-    ? puntos.filter(punto => !punto.pago)
+  if (!evitarPago) {
+    return puntos
+  }
+
+  const puntosFiltrados =
+    puntos.filter(punto => !punto.pago)
+
+  return puntosFiltrados.length > 0
+    ? puntosFiltrados
     : puntos
 }
 

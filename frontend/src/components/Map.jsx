@@ -304,6 +304,7 @@ function Mapa({
 
   setRutasSegmentos,
 
+  setEvitarPago,
   evitarPago,
 
   ordenPuntos,
@@ -330,7 +331,11 @@ function Mapa({
 
   radioMetros,
 
-  setDistanciaRuta
+  setDistanciaRuta,
+
+  mensajeTodosPago,
+  setMensajeTodosPago
+
 
 
 }) {
@@ -353,6 +358,10 @@ function Mapa({
 
   // Mensaje para cuando no hay tiempo para hacer la ruta
   const [mensajeTiempo, setMensajeTiempo] = useState(null)
+
+  // Indicador de si todos los puntos son de pago
+  // Recibe la informacion de mensajeTodosPago
+  const [todosPuntosPago, setTodosPuntosPago] = useState(null)
 
   // Indicadores para si vemos "Mas informacion" en un Popup
   const [mostrarInfo, setMostrarInfo] = useState(false)
@@ -382,6 +391,12 @@ function Mapa({
   useEffect(() => {
     userLocationRef.current = userLocation
   }, [userLocation])
+
+  useEffect(() => {
+    if(mensajeTodosPago){
+      setTodosPuntosPago(true)
+    }
+  }, [mensajeTodosPago])
 
   useEffect(() => {
 
@@ -493,6 +508,16 @@ function Mapa({
     // SOLO RUTA OPTIMA
     // --------------------------------
 
+    // --------------------------------
+    // AVISO SI TODOS LOS PUNTOS SON DE PAGO
+    // --------------------------------
+    const todossonPago = evitarPago && puntosSeleccionados.every(p => p.pago)
+    if (todossonPago) {
+      setMensajeTodosPago(true)
+    } else {
+      setMensajeTodosPago(false)
+    }
+
     try{
 
       let resultado = await obtenerRutaOptima(
@@ -500,6 +525,7 @@ function Mapa({
         userLocationRef.current,
         evitarPago
       )
+
 
       setRutaCercanosBase(puntosSeleccionados)
 
@@ -535,6 +561,7 @@ function Mapa({
           setRutasSegmentosLocal([])
           setDuracionRuta(null)
           setDistanciaRuta(null)
+          setMensajeTodosPago(false)
           return
         }
 
@@ -999,6 +1026,10 @@ function Mapa({
 
       setDuracionRuta(null)
       setDistanciaRuta(null)
+
+      setMensajeTodosPago(false)
+      setTodosPuntosPago(false);
+
     }
 
   }, [rutaSeleccionada])
@@ -1030,11 +1061,15 @@ function Mapa({
   // FILTRA PUNTOS DE PAGO SI ESTA ACTIVO
   // ---------------------------------------------------
 
-  const puntosVisibles = puntosOrdenados.filter(
+  const puntosVisibles = puntosOrdenados.filter((punto) => {
 
-    punto => !evitarPago || !punto.pago
+    if (todosPuntosPago) {
+      return true
+    }
 
-  )
+    return !evitarPago || !punto.pago
+
+  })
 
   // ---------------------------------------------------
   // CARGA LA RUTA DESDE OSRM
@@ -1059,9 +1094,22 @@ function Mapa({
 
       try {
 
+
+        // --------------------------------
+        // AVISO SI TODOS LOS PUNTOS SON DE PAGO
+        // --------------------------------
+        const todossonPago = evitarPago && puntos.every(p => p.pago)
+        if (todossonPago) {
+          setMensajeTodosPago(true)
+        } else {
+          setMensajeTodosPago(false)
+        }
+
+
         let resultado
 
         // --------------------------------
+        // DEPRECATED
         // RUTA HISTORICA
         // --------------------------------
 
@@ -1078,6 +1126,7 @@ function Mapa({
         // --------------------------------
         // RUTA OPTIMA
         // --------------------------------
+
 
         else {
 
@@ -1119,7 +1168,7 @@ function Mapa({
             setRutasSegmentosLocal([])
             setDuracionRuta(null)
             setDistanciaRuta(null)
-
+            setMensajeTodosPago(false)
             return
           }
 
@@ -1536,13 +1585,20 @@ function Mapa({
 
       {rutaSeleccionada && (
 
-        puntosOrdenados
+        todosPuntosPago
 
-          .filter(
-            punto => !evitarPago || !punto.pago
-          )
+          ? puntosOrdenados.map(
+              punto => renderMarker(punto)
+            )
 
-          .map(punto => renderMarker(punto))
+          : puntosOrdenados
+              .filter(
+                punto => !evitarPago || !punto.pago
+              )
+              .map(
+                punto => renderMarker(punto)
+              )
+
       )}
 
       {/* ------------------------------------------------ */}
