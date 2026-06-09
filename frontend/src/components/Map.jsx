@@ -39,14 +39,6 @@ import PopupInformacion from './PopupInformacion.jsx'
 import userMarker from '../../assets/userMarker.png'
 
 
-// ---------------------------------------------------
-// GPS-ACTIVO
-// ---------------------------------------------------
-
-
-const GPS_ACTIVO = window.innerWidth <= 768
-//const GPS_ACTIVO = false
-
 
 // ---------------------------------------------------
 // ICONOS DE MARCADORES POR RUTA
@@ -334,7 +326,10 @@ function Mapa({
   setDistanciaRuta,
 
   mensajeTodosPago,
-  setMensajeTodosPago
+  setMensajeTodosPago,
+
+  gpsDenegado,
+  setGpsDenegado
 
 
 
@@ -370,6 +365,11 @@ function Mapa({
   // Indicadores para ver el modo de popup actual
   // "ruta" | "info"
   const [modoPopup, setModoPopup] = useState("ruta")
+
+  // GPS activo: true si movil y no denegado por el usuario
+  const [gpsActivo, setGpsActivo] = useState(
+    window.innerWidth <= 768
+  )
 
   // Referencias a markers para abrir popups
   const markersRef = useRef({})
@@ -549,6 +549,8 @@ function Mapa({
           horasDisponibles
         )
 
+
+
         // --------------------------------
         // NO HAY TIEMPO PARA NINGUN PUNTO
         // --------------------------------
@@ -574,6 +576,8 @@ function Mapa({
 
         setMensajeTiempo(null)
 
+
+
         resultadoT = await obtenerRutaOptima(
           puntosFinales,
           userLocationRef.current,
@@ -592,7 +596,6 @@ function Mapa({
       setRutasSegmentos(legsFinales)
       setRutasSegmentosLocal(legsFinales)
 
-
       // --------------------------------
       // CALCULAR DURACION
       // --------------------------------
@@ -605,6 +608,8 @@ function Mapa({
       setDuracionRuta(tiempoTexto)
 
       const distanciaTexto = calcularDistanciaRuta(legsFinales)
+      console.log("la distancia es ")
+      console.log(distanciaTexto)
       setDistanciaRuta(distanciaTexto)
 
       // --------------------------------
@@ -851,13 +856,10 @@ function Mapa({
   // DETECTA CLICK EN EL MAPA
   // ---------------------------------------------------
 
-
-
-  // En MapaClickHandler, añade la condición:
   function MapaClickHandler() {
     useMapEvents({
       click(e) {
-        if (GPS_ACTIVO) return  // ignora clicks si GPS activo
+        if (gpsActivo) return
         const target = e.originalEvent?.target
         if (target && target.closest('button')) return
         setUserLocation({ lat: e.latlng.lat, lon: e.latlng.lng })
@@ -926,55 +928,66 @@ function Mapa({
 
   useEffect(() => {
 
-    if (!navigator.geolocation || !GPS_ACTIVO) return
+    if (!navigator.geolocation || !gpsActivo) return
 
-    const watchId =
-      navigator.geolocation.watchPosition(
+    const watchId = navigator.geolocation.watchPosition(
 
         (pos) => {
+
           const nuevaPos = {
             lat: pos.coords.latitude,
             lon: pos.coords.longitude,
           }
 
+          // Evita ruido GPS
+
           if (lastRecalcLocationRef.current) {
-            const distancia = calcularDistanciaMetros(
-              lastRecalcLocationRef.current.lat,
-              lastRecalcLocationRef.current.lon,
-              nuevaPos.lat,
-              nuevaPos.lon
-            )
+
+            const distancia =
+              calcularDistanciaMetros(
+
+                lastRecalcLocationRef.current.lat,
+                lastRecalcLocationRef.current.lon,
+
+                nuevaPos.lat,
+                nuevaPos.lon
+              )
 
             if (distancia < UMBRAL_POSICION_METROS) {
-              console.log(`[GPS] Posición omitida: solo ${distancia.toFixed(1)}m (umbral visual: ${UMBRAL_POSICION_METROS}m)`)
               return
             }
-
-            console.log(`[GPS] Posición actualizada: ${distancia.toFixed(1)}m desde la última`)
-          } else {
-            console.log("[GPS] Primera posición GPS recibida")
           }
 
           lastRecalcLocationRef.current = nuevaPos
+
           setUserLocation(nuevaPos)
+
         },
 
-        (err) => {
-          console.error("GPS error:", err)
-        },
+      (err) => {
+        console.error("GPS error:", err)
 
-        {
-          enableHighAccuracy: true,
-          maximumAge: 0
+        // --------------------------------
+        // GPS DENEGADO → MODO MANUAL
+        // --------------------------------
+        if (err.code === err.PERMISSION_DENIED) {
+          console.warn("[GPS] Permiso denegado, activando modo manual")
+          setGpsActivo(false)
+          setGpsDenegado(true)
         }
+      },
 
-      )
+      {
+        enableHighAccuracy: true,
+        maximumAge: 0
+      }
+    )
 
     return () => {
       navigator.geolocation.clearWatch(watchId)
     }
 
-  }, [])
+  }, [gpsActivo])
 
 /*
 

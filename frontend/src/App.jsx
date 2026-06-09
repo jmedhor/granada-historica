@@ -147,6 +147,9 @@ function App() {
   // Aviso de que todos los puntos son de pago
   const [mensajeTodosPago, setMensajeTodosPago] = useState(false)
 
+  // Aviso de GPS denegado y activación de modo manual
+  const [gpsDenegado, setGpsDenegado] = useState(false)
+
 
   // ---------------------------------------------------
   // FUNCIONES AUXILIARES
@@ -229,8 +232,9 @@ function App() {
 
   useEffect(() => {
     setDuracionCerrada(false)
-    setDistanciaRuta(null)
   }, [rutaSeleccionada])
+
+
 
   // ---------------------------------------------------
   // RENDER PRINCIPAL
@@ -614,6 +618,7 @@ function App() {
           {/* DURACION Y DISTANCIA DE LA RUTA  */}
           {/* -------------------------------- */}
 
+
           {!cargandoRuta && duracionRuta && rutaSeleccionada && !duracionCerrada && (
             <div className="duracion-ruta-box">
               Duración aproximada: <strong>{duracionRuta}</strong>
@@ -638,6 +643,21 @@ function App() {
               <button
                 className="cerrar-todospago"
                 onClick={() => setMensajeTodosPago(false)}
+              >
+                X
+              </button>
+            </div>
+          )}
+
+          {/* -------------------------------- */}
+          {/* AVISO GPS DENEGADO               */}
+          {/* -------------------------------- */}
+          {gpsDenegado && (
+            <div className="gps-ruta-box aviso-gps">
+              AVISO: No se ha permitido la localización GPS
+              <button
+                className="gps-duracion"
+                onClick={() => setGpsDenegado(false)}
               >
                 X
               </button>
@@ -693,6 +713,10 @@ function App() {
 
             mensajeTodosPago={mensajeTodosPago}
             setMensajeTodosPago={setMensajeTodosPago}
+
+            gpsDenegado={gpsDenegado}
+            setGpsDenegado={setGpsDenegado}
+
 
           />
 
