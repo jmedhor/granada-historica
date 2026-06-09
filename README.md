@@ -80,7 +80,7 @@ La aplicación obtiene la posición real del usuario mediante la API de
 geolocalización del navegador (`navigator.geolocation`).
 
 - La posición se actualiza automáticamente cada 5 segundos
-- Se usa `getCurrentPosition` en un intervalo para mayor control
+- Se usa `watchPosition` 
 - La posición actualizada dispara automáticamente el recálculo de rutas
   dinámicas y el filtrado de puntos cercanos
 - **Requiere origen seguro (HTTPS)** — ver sección
