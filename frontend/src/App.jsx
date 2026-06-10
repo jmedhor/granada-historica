@@ -577,6 +577,9 @@ function App() {
             </div>
 
             {/* BOTON RECALCULAR - solo movil */}
+            {/* DESACTIVADO AHORA MISMO POR WATCHPOSITION */}
+            {false &&
+              (
             <div className="menu-movil-seccion">
               <p className="menu-movil-titulo-seccion">GPS</p>
               <button
@@ -586,6 +589,7 @@ function App() {
                 Recalcular posición
               </button>
             </div>
+            )}
 
             <div className="menu-movil-seccion-admin">
               <button
@@ -595,6 +599,7 @@ function App() {
                 Panel de administracion
               </button>
             </div>
+
 
           </div>
         </>

@@ -61,7 +61,7 @@ function AdminPage() {
       <div className="admin-login-page">
         <div className="admin-login-box">
 
-          <h1 className="admin-login-titulo">NazaRoute Admin</h1>
+          <h1 className="admin-login-titulo">Granada Histórica Admin</h1>
           <p className="admin-login-sub">Introduce tu PIN de acceso</p>
 
           <form onSubmit={handleLogin}>
@@ -115,7 +115,7 @@ function AdminPage() {
       <header className="admin-header">
 
         <div className="admin-header-left">
-          <h1>NazaRoute Admin</h1>
+          <h1>Granada Histórica Admin</h1>
           <span className="admin-rol-badge">
             {rol === "superadmin" ? "Superadmin" : "Admin Historiador"}
           </span>
