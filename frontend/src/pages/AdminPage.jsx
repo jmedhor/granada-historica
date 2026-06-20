@@ -104,8 +104,8 @@ function AdminPage() {
   const tabsAdmin = [
     { id: "rutas",         label: "Rutas" },
     { id: "puntos",        label: "Todos los puntos" },
-    { id: "configuracion", label: "Configuración general" },  // ← nuevo
-  ]
+    { id: "configuracion", label: "Configuración general" },
+  ].filter(t => rol === "superadmin" || t.id !== "configuracion")
 
 
 

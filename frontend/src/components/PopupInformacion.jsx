@@ -58,7 +58,7 @@ function PopupInformacion({
 
         <p>
           <strong>Abre durante:</strong>{" "}
-          {punto.horario || "Consultar en la página web"}
+          {punto.horarios || "Consultar en la página web"}
         </p>
 
 
