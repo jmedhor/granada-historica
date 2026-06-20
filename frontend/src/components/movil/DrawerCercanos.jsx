@@ -37,12 +37,19 @@ function DrawerCercanos({
     )
 
     if (mapRef.current.centrarYAbrir) {
-      mapRef.current.centrarYAbrir(punto)
+      mapRef.current.centrarYAbrir(punto, punto.rutas?.[0])
     }
 
     onPincharPunto()
 
   }
+
+  // -----------------------------------------
+  // HELPER: color de la primera ruta asociada al punto
+  // -----------------------------------------
+
+  const colorPunto = (punto) =>
+    punto.rutas?.[0]?.color || '#383838'
 
   // -----------------------------------------
   // Render
@@ -94,10 +101,10 @@ function DrawerCercanos({
       {/* LISTA DE PUNTOS */}
       {puntosCercanos.map(punto => (
         <button
-          key={`${punto.id}-${punto.ruta_id}`}
+          key={punto.id}
           className="menu-movil-btn"
           style={{
-            borderLeftColor: punto.ruta_color || '#e63946',
+            borderLeftColor: colorPunto(punto),
             borderLeftWidth: 4
           }}
           onClick={() => irAPunto(punto)}

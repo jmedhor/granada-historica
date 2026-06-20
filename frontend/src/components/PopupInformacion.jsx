@@ -21,7 +21,7 @@ function PopupInformacion({
 
       {/* Subtitulo ruta */}
       <p className="popup-subtitulo">
-        {ruta.nombre}
+        {ruta?.nombre}
       </p>
 
 

@@ -58,32 +58,55 @@ function DrawerPuntos({
       : puntosFiltrados
 
   // -----------------------------------------
+  // Color de los puntos
+  // - Si es la ruta virtual "cercanos", cada
+  //   punto usa el color de la primera ruta
+  //   que tenga asignada (o gris por defecto).
+  // - Si es una ruta real, todos los puntos
+  //   comparten el color de esa ruta.
+  // -----------------------------------------
+
+  const esCercanos = ruta.id === "cercanos"
+
+  const colorPunto = (punto) =>
+    esCercanos
+      ? punto.rutas?.[0]?.color || "#383838"
+      : ruta.color || "#e63946"
+
+  // -----------------------------------------
   // Render
   // -----------------------------------------
 
   return (
     <>
-      {puntosFinales.map((punto, index) => (
-        <button
-          key={punto.id}
-          className="menu-movil-btn"
-          style={{
-            borderLeftColor: punto.ruta_color || ruta.color || "#e63946",
-            borderLeftWidth: 4
-          }}
-          onClick={() => {
-            if (mapRef.current?.centrarYAbrir) {
-              mapRef.current.centrarYAbrir(punto)
-            }
-            onCerrar()
-          }}
-        >
-          <span style={{ opacity: 0.6, marginRight: 8, fontSize: 12 }}>
-            {index + 1}.
-          </span>
-          {punto.nombre}
-        </button>
-      ))}
+      {puntosFinales.map((punto, index) => {
+
+        const rutaAsignada = esCercanos
+          ? punto.rutas?.[0]
+          : ruta
+
+        return (
+          <button
+            key={punto.id}
+            className="menu-movil-btn"
+            style={{
+              borderLeftColor: colorPunto(punto),
+              borderLeftWidth: 4
+            }}
+            onClick={() => {
+              if (mapRef.current?.centrarYAbrir) {
+                mapRef.current.centrarYAbrir(punto, rutaAsignada)
+              }
+              onCerrar()
+            }}
+          >
+            <span style={{ opacity: 0.6, marginRight: 8, fontSize: 12 }}>
+              {index + 1}.
+            </span>
+            {punto.nombre}
+          </button>
+        )
+      })}
     </>
   )
 }

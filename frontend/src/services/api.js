@@ -192,6 +192,22 @@ export const deletePunto = async (id) => {
 }
 
 // ---------------------------------------------------
+// PUNTOS - ASOCIACION INDIVIDUAL CON RUTAS (SUPERADMIN)
+// ---------------------------------------------------
+
+export const anadirPuntoARuta = async (rutaId, puntoId) => {
+  const result = await apiFetch(`/rutas/${rutaId}/puntos/${puntoId}`, { method: "POST" })
+  invalidarTodo()
+  return result
+}
+
+export const quitarPuntoDeRuta = async (rutaId, puntoId) => {
+  const result = await apiFetch(`/rutas/${rutaId}/puntos/${puntoId}`, { method: "DELETE" })
+  invalidarTodo()
+  return result
+}
+
+// ---------------------------------------------------
 // CONFIGURACION GLOBAL
 // ---------------------------------------------------
 

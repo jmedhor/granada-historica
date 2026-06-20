@@ -217,6 +217,30 @@ def eliminar_punto(
         raise HTTPException(status_code=404, detail="Punto no encontrado")
 
 
+@app.post("/rutas/{ruta_id}/puntos/{punto_id}", status_code=204)
+def anadir_punto(
+    ruta_id: int,
+    punto_id: int,
+    db: Session = Depends(get_db),
+    rol: str = Depends(get_current_role)
+):
+    if rol != "superadmin":
+        raise HTTPException(status_code=403, detail="No autorizado")
+    if not crud.anadir_punto_a_ruta(db, ruta_id, punto_id):
+        raise HTTPException(status_code=404, detail="Ruta o punto no encontrado")
+
+
+@app.delete("/rutas/{ruta_id}/puntos/{punto_id}", status_code=204)
+def quitar_punto(
+    ruta_id: int,
+    punto_id: int,
+    db: Session = Depends(get_db),
+    rol: str = Depends(get_current_role)
+):
+    if rol != "superadmin":
+        raise HTTPException(status_code=403, detail="No autorizado")
+    if not crud.quitar_punto_de_ruta(db, ruta_id, punto_id):
+        raise HTTPException(status_code=404, detail="Ruta o punto no encontrado")
 
 # ---------------------------------------------------
 # CONFIGURACION

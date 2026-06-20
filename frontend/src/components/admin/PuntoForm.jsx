@@ -55,7 +55,7 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
     url: "",
     importancia: 5,
     activo: true,
-    ruta_id: "",
+    ruta_ids: [],
     imagen: "",
     horarios: "",
     tiempo_visita: "",
@@ -64,6 +64,8 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
 
   // Controla si el mini mapa está visible
   const [mapaAbierto, setMapaAbierto] = useState(false)
+
+  const [rutaParaAnadir, setRutaParaAnadir] = useState("")
 
   // Posicion del marcador en el mini mapa
   const [posicionMapa, setPosicionMapa] = useState(null)
@@ -85,7 +87,7 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
         url:                 puntoInicial.url                 || "",
         importancia:         puntoInicial.importancia         ?? 5,
         activo:              puntoInicial.activo              ?? true,
-        ruta_id:             puntoInicial.ruta_id             || "",
+        ruta_ids:            puntoInicial.rutas?.map(r => r.id) || [],
         imagen:              puntoInicial.imagen              || "",
         horarios:            puntoInicial.horarios            || "",
         tiempo_visita:       puntoInicial.tiempo_visita       ?? "",
@@ -116,6 +118,21 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
     }))
   }
 
+  // ---------------------------------
+  // Rutas asociadas: añadir / quitar de la lista local
+  // ---------------------------------
+
+  const anadirRutaAsociada = () => {
+    if (!rutaParaAnadir) return
+    const id = parseInt(rutaParaAnadir)
+    setForm(prev => ({ ...prev, ruta_ids: [...prev.ruta_ids, id] }))
+    setRutaParaAnadir("")
+  }
+
+  const quitarRutaAsociada = (id) => {
+    setForm(prev => ({ ...prev, ruta_ids: prev.ruta_ids.filter(r => r !== id) }))
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     onGuardar({
@@ -125,7 +142,6 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
       importancia:  parseInt(form.importancia),
       importe:      parseFloat(form.importe) || 0,
       tiempo_visita: form.tiempo_visita !== "" ? parseInt(form.tiempo_visita) : null,
-      ruta_id:      form.ruta_id ? parseInt(form.ruta_id) : null,
     })
   }
 
@@ -134,9 +150,6 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
     form.latitud && form.longitud
       ? [parseFloat(form.latitud), parseFloat(form.longitud)]
       : centroInicial
-
-  console.log("EDITANDO: ")
-  console.log(puntoInicial)
 
   return (
     <div className="admin-form-overlay">
@@ -330,19 +343,32 @@ function PuntoForm({ puntoInicial, rutas, onGuardar, onCancelar, rol }) {
             onChange={handleChange}
           />
 
-          {/* RUTA ASOCIADA */}
-          <label className="admin-label">Ruta asociada</label>
-          <select
-            className="admin-input"
-            name="ruta_id"
-            value={form.ruta_id}
-            onChange={handleChange}
-          >
-            <option value="">— Sin ruta —</option>
-            {rutas.map(r => (
-              <option key={r.id} value={r.id}>{r.nombre}</option>
-            ))}
-          </select>
+          {/* RUTAS ASOCIADAS */}
+          <label className="admin-label">Rutas asociadas</label>
+
+          {form.ruta_ids.map(rid => {
+            const ruta = rutas.find(r => r.id === rid)
+            return (
+              <div key={rid} className="admin-fila-2" style={{ alignItems: "center" }}>
+                <span className="rutas-nombre-existentes">{ruta?.nombre || `Ruta #${rid}`}</span>
+                <button type="button" className="btn-nombre-existentes" onClick={() => quitarRutaAsociada(rid)}>
+                  Quitar
+                </button>
+              </div>
+            )
+          })}
+
+          <div className="admin-fila-2">
+            <select className="admin-input" value={rutaParaAnadir} onChange={e => setRutaParaAnadir(e.target.value)}>
+              <option value="">— Selecciona ruta —</option>
+              {rutas.filter(r => !form.ruta_ids.includes(r.id)).map(r => (
+                <option key={r.id} value={r.id}>{r.nombre}</option>
+              ))}
+            </select>
+            <button type="button" className="btn-admin-secundario" onClick={anadirRutaAsociada} disabled={!rutaParaAnadir}>
+              + Añadir ruta asociada
+            </button>
+          </div>
 
           {/* CHECKBOXES */}
           <div className="admin-checks">

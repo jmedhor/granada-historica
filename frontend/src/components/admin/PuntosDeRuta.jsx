@@ -4,6 +4,8 @@ import {
   getTodosPuntos,
   updatePunto,
   createPunto,
+  anadirPuntoARuta,
+  quitarPuntoDeRuta,
 } from "../../services/api.js"
 import PuntoForm from "./PuntoForm.jsx"
 import ConfirmModal from "./ConfirmModal.jsx"
@@ -104,7 +106,11 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
       if (formPunto?.id) {
         await updatePunto(formPunto.id, datos)
       } else {
-        await createPunto({ ...datos, ruta_id: ruta.id })
+        // Aseguramos que el punto nuevo quede asociado a esta ruta
+        const ruta_ids = datos.ruta_ids?.includes(ruta.id)
+          ? datos.ruta_ids
+          : [...(datos.ruta_ids || []), ruta.id]
+        await createPunto({ ...datos, ruta_ids })
       }
       setFormPunto(null)
       cargarDatos()
@@ -116,7 +122,7 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
   const handleAnadirExistente = async () => {
     if (!puntoExistenteId) return
     try {
-      await updatePunto(parseInt(puntoExistenteId), { ruta_id: ruta.id })
+      await anadirPuntoARuta(ruta.id, parseInt(puntoExistenteId))
       setPuntoExistenteId("")
       setModoAnadir(false)
       cargarDatos()
@@ -127,7 +133,7 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
 
   const handleQuitarDeLaRuta = async () => {
     try {
-      await updatePunto(puntoAQuitar.id, { ruta_id: null })
+      await quitarPuntoDeRuta(ruta.id, puntoAQuitar.id)
       setPuntoAQuitar(null)
       cargarDatos()
     } catch (e) {
@@ -192,7 +198,7 @@ function PuntosDeRuta({ ruta, rutas, onVolver }) {
             <option value="">— Selecciona un punto —</option>
             {puntosDisponibles.map(p => (
               <option key={p.id} value={p.id}>
-                {p.nombre} {p.ruta_nombre ? `(en: ${p.ruta_nombre})` : "(sin ruta)"}
+                {p.nombre} {p.rutas?.length ? `(en: ${p.rutas.map(r => r.nombre).join(", ")})` : "(sin ruta)"}
               </option>
             ))}
           </select>

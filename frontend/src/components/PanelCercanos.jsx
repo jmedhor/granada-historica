@@ -1,5 +1,3 @@
-import { coloresRuta } from "../utils/coloresRuta.js"
-
 
 function PinIcono({ color }) {
   return (
@@ -16,13 +14,11 @@ function PinIcono({ color }) {
 }
 
 function PanelCercanos({
-
   puntosCercanos,
   mapRef,
   setModoCercanos,
   setPuntosCercanos,
   radioMetros
-
 }) {
 
   // ---------------------------------------------------
@@ -30,9 +26,7 @@ function PanelCercanos({
   // ---------------------------------------------------
 
   const irAPunto = (punto) => {
-
     if (!mapRef.current) return
-
     mapRef.current.flyTo(
       [punto.latitud, punto.longitud],
       17,
@@ -40,20 +34,24 @@ function PanelCercanos({
         duration: 1.2
       }
     )
-
     if (mapRef.current.centrarYAbrir) {
-      mapRef.current.centrarYAbrir(punto)
+      mapRef.current.centrarYAbrir(punto,punto.rutas?.[0])
     }
   }
+
+  // ---------------------------------------------------
+  // HELPER: color de la primera ruta asociada al punto
+  // ---------------------------------------------------
+
+  const colorPunto = (punto) =>
+    punto.rutas?.[0]?.color || '#383838'
 
   // ---------------------------------------------------
   // RENDER
   // ---------------------------------------------------
 
   return (
-
     <div className="panel-cercanos">
-
         <button
         className="btn-volver"
         onClick={() => {
@@ -66,66 +64,47 @@ function PanelCercanos({
       <h3>
         Puntos cercanos (Aprox. {radioMetros ?? 500}m)
       </h3>
-
       {puntosCercanos.length === 0 && (
         <p className="no-cercanos">
           No hay puntos cercanos
         </p>
       )}
-
       {/* --------------------------------------------------- */}
       {/* BOTON CREAR RUTA DESDE CERCANOS */}
       {/* --------------------------------------------------- */}
-
       {puntosCercanos.length > 0 && (
-
         <div className="bloque-ruta-cercanos">
-
           <button
             className="btn-start"
             onClick={() => {
-
               if (mapRef.current?.crearRutaDesdeCercanos) {
-
                 mapRef.current.crearRutaDesdeCercanos(
                   puntosCercanos
                 )
-
               }
-
             }}
           >
             Ruta personalizada
           </button>
-
           {/* SEPARADOR VISUAL */}
           <div className="separador-cercanos"></div>
-
         </div>
-
       )}
-
       <ul>
-
         {puntosCercanos.map((punto) => (
-
         <li
-          key={`${punto.id}-${punto.ruta_id}`}
+          key={punto.id}
           onClick={() => irAPunto(punto)}
-          style={{ borderLeftColor: punto.ruta_color || '#e63946' }}
+          style={{ borderLeftColor: colorPunto(punto) }}
         >
           <span className="paso-num" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none" }}>
-            <PinIcono color={punto.ruta_color || '#e63946'} />
+            <PinIcono color={colorPunto(punto)} />
           </span>
           <span className="paso-texto3">{punto.nombre}</span>
         </li>
-
         ))}
-
       </ul>
-
     </div>
-
   )
 }
 

@@ -26,7 +26,7 @@ def get_puntos_de_ruta(db: Session, ruta_id: int):
             "descripcion": punto.descripcion,
             "latitud": punto.latitud,
             "longitud": punto.longitud,
-            "ruta_id": ruta.id,
+            "rutas": punto.rutas_info,
             "ruta_nombre": ruta.nombre,
             "pago": punto.pago,
             "url": punto.url,
@@ -60,7 +60,7 @@ def get_todos_puntos(db: Session):
             "descripcion": punto.descripcion,
             "latitud":     punto.latitud,
             "longitud":    punto.longitud,
-            "ruta_id":     ruta.id if ruta else None,
+            "rutas":       punto.rutas_info,
             "ruta_nombre": ruta.nombre if ruta else None,
             "ruta_activa": ruta.activo if ruta else False,
             "ruta_color":  ruta.color if ruta else None,
@@ -164,11 +164,12 @@ def create_punto(db: Session, datos: PuntoCreate):
     db.add(nuevo_punto)
     db.flush()  # Necesario para obtener el id antes del commit
 
-    # Asociar a la ruta si se indica
-    if datos.ruta_id:
-        ruta = get_ruta(db, datos.ruta_id)
-        if ruta:
-            ruta.puntos.append(nuevo_punto)
+    # Asociar a las rutas indicadas
+    if datos.ruta_ids:
+        for rid in datos.ruta_ids:
+            ruta = get_ruta(db, rid)
+            if ruta:
+                ruta.puntos.append(nuevo_punto)
 
     db.commit()
     db.refresh(nuevo_punto)
@@ -183,19 +184,20 @@ def update_punto(db: Session, punto_id: int, datos: PuntoUpdate):
 
     # Extraer ruta_id ANTES de iterar campos
     # "ruta_id" in campos indica que el cliente lo mandó explícitamente
-    ruta_id_enviada = "ruta_id" in campos
-    nueva_ruta_id = campos.pop("ruta_id", None)
+    ruta_ids_enviada = "ruta_ids" in campos
+    nuevos_ruta_ids = campos.pop("ruta_ids", None)
 
     for campo, valor in campos.items():
         setattr(punto, campo, valor)
 
     # Si el cliente mandó ruta_id (aunque sea null), actualizar relacion
-    if ruta_id_enviada:
+    if ruta_ids_enviada:
         punto.rutas.clear()
-        if nueva_ruta_id is not None:
-            nueva_ruta = get_ruta(db, nueva_ruta_id)
-            if nueva_ruta:
-                nueva_ruta.puntos.append(punto)
+        if nuevos_ruta_ids:
+            for rid in nuevos_ruta_ids:
+                nueva_ruta = get_ruta(db, rid)
+                if nueva_ruta:
+                    nueva_ruta.puntos.append(punto)
 
     db.commit()
     db.refresh(punto)
@@ -212,3 +214,30 @@ def delete_punto(db: Session, punto_id: int):
     db.delete(punto)
     db.commit()
     return True
+
+
+# ---------------------------------------------------
+# PUNTOS - ASOCIACION INDIVIDUAL CON UNA RUTA
+# A diferencia de update_punto, estas dos funciones tocan
+# UNA sola asociacion sin afectar al resto de rutas del punto
+# ---------------------------------------------------
+
+def anadir_punto_a_ruta(db: Session, ruta_id: int, punto_id: int):
+    ruta = get_ruta(db, ruta_id)
+    punto = get_punto(db, punto_id)
+    if not ruta or not punto:
+        return None
+    if punto not in ruta.puntos:
+        ruta.puntos.append(punto)
+        db.commit()
+    return punto
+
+def quitar_punto_de_ruta(db: Session, ruta_id: int, punto_id: int):
+    ruta = get_ruta(db, ruta_id)
+    punto = get_punto(db, punto_id)
+    if not ruta or not punto:
+        return None
+    if punto in ruta.puntos:
+        ruta.puntos.remove(punto)
+        db.commit()
+    return punto
