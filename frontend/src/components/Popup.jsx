@@ -22,7 +22,7 @@ function PopupRuta({
 
       {/* Subtitulo con el nombre de la ruta */}
       <p className="popup-subtitulo">
-        {ruta.nombre || "Punto sin ruta asignada"}
+        {ruta?.nombre || "Punto sin ruta asignada"}
       </p>
 
       {/* Descripcion historica */}
