@@ -33,6 +33,12 @@ class Punto(Base):
 
     rutas = relationship("Ruta", secondary=ruta_punto, back_populates="puntos")
 
+    @property
+    def rutas_info(self):
+        return [
+            {"id": r.id, "nombre": r.nombre, "color": r.color, "activo": r.activo}
+            for r in self.rutas
+        ]
 
 class Ruta(Base):
     __tablename__ = "rutas"

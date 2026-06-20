@@ -439,39 +439,25 @@ function Mapa({
   // FUNCION PARA CENTRAR Y ABRIR POPUP
   // ---------------------------------------------------
 
-  const centrarYAbrir = (punto) => {
-      const marker = markersRef.current[punto.id]
-      // Centra el mapa
-      if (mapRef.current) {
-
-      mapRef.current.flyTo(
-        [punto.latitud, punto.longitud],
-        16
-      )
-
+  const centrarYAbrir = (punto, ruta = null) => {
+    const marker = buscarMarker(punto.id, ruta?.id)
+    if (mapRef.current) {
+      mapRef.current.flyTo([punto.latitud, punto.longitud], 16)
     }
-
-    // Abre popup automaticamente
-    if (marker) {
-      marker.openPopup()
-    }
+    if (marker) marker.openPopup()
   }
+
 
 
   // ---------------------------------------------------
   // FUNCION PARA ABRIR POPUPS Y VARIAR ENTRE MODOS
   // ---------------------------------------------------
 
-  const abrirInformacion = (punto) => {
+  const abrirInformacion = (punto, ruta = null) => {
     setModoPopup("info")
-
     setTimeout(() => {
-      const marker = markersRef.current[punto.id]
-
-      if (marker) {
-        marker.closePopup()
-        marker.openPopup()
-      }
+      const marker = buscarMarker(punto.id, ruta?.id)
+      if (marker) { marker.closePopup(); marker.openPopup() }
     }, 0)
   }
 
@@ -480,15 +466,11 @@ function Mapa({
   // ---------------------------------------------------
 
 
-  const volverARuta = (punto) => {
+  const volverARuta = (punto, ruta = null) => {
     setModoPopup("ruta")
-
     setTimeout(() => {
-      const marker = markersRef.current[punto.id]
-      if (marker) {
-        marker.closePopup()
-        marker.openPopup()
-      }
+      const marker = buscarMarker(punto.id, ruta?.id)
+      if (marker) { marker.closePopup(); marker.openPopup() }
     }, 0)
   }
 
@@ -1009,14 +991,15 @@ function Mapa({
         const puntosArray = Array.isArray(data) ? data : []
 
         setTodosPuntos(
-          puntosArray.filter(
-            punto =>
+          puntosArray
+            .filter(punto =>
               punto.activo === true &&
-              (
-                punto.ruta_activa === true ||
-                punto.ruta_id == null
-              )
-          )
+              (punto.rutas.length === 0 || punto.rutas.some(r => r.activo))
+            )
+            .map(punto => ({
+              ...punto,
+              rutas: punto.rutas.filter(r => r.activo)
+            }))
         )
       })
       .catch(console.error)
@@ -1052,13 +1035,9 @@ function Mapa({
 
   const puntos = rutaSeleccionada
     ? todosPuntos.filter(
-        p =>
-          p.ruta_id === rutaSeleccionada.id &&
-          p.activo === true
+        p => p.rutas.some(r => r.id === rutaSeleccionada.id) && p.activo === true
       )
-    : todosPuntos.filter(
-        p => p.activo === true
-      )
+    : todosPuntos.filter(p => p.activo === true)
 
   // ---------------------------------------------------
   // USA EL ORDEN CALCULADO SI EXISTE
@@ -1313,12 +1292,25 @@ function Mapa({
 
 
   // ---------------------------------------------------
+  // HELPERS DE MARKERS: clave compuesta punto+ruta
+  // Permite que el mismo punto tenga varios markers,
+  // uno por cada ruta a la que pertenezca
+  // ---------------------------------------------------
+
+  const claveMarker = (puntoId, rutaId) => `${puntoId}-${rutaId ?? "base"}`
+
+  const buscarMarker = (puntoId, rutaId = null) => {
+    if (rutaId != null) return markersRef.current[claveMarker(puntoId, rutaId)]
+    const clave = Object.keys(markersRef.current).find(k => k.startsWith(`${puntoId}-`))
+    return clave ? markersRef.current[clave] : null
+  }
+
+
+  // ---------------------------------------------------
   // HELPER: icono para un punto (usa color de su ruta)
   // ---------------------------------------------------
 
-  const iconoPunto = (punto) =>
-    crearIconoRuta(punto.ruta_color || punto.color_ruta || "#383838")
-
+  const iconoPunto = (ruta) => crearIconoRuta(ruta?.color || "#383838")
 
 
   // ---------------------------------------------------
@@ -1327,26 +1319,26 @@ function Mapa({
 
   const esMobil = window.innerWidth < 768
 
-  const renderPopup = (punto) => (
+  const renderPopup = (punto, ruta) => (
     <Popup maxHeight={esMobil ? 500 : 350}>
       {modoPopup === "ruta" && (
         <PopupRuta
           punto={punto}
-          ruta={{ id: punto.ruta_id, nombre: punto.ruta_nombre }}
+          ruta={ruta}
           rutaSeleccionada={rutaSeleccionada}
           setRutaSeleccionada={setRutaSeleccionada}
           setModoPopup={setModoPopup}
-          abrirInformacion={abrirInformacion}
+          abrirInformacion={() => abrirInformacion(punto, ruta)}
         />
       )}
       {modoPopup === "info" && (
         <PopupInformacion
           punto={punto}
-          ruta={{ id: punto.ruta_id, nombre: punto.ruta_nombre }}
+          ruta={ruta}
           modoHistoriador={modoHistoriador}
           setModoHistoriador={setModoHistoriador}
           setModoPopup={setModoPopup}
-          volverARuta={volverARuta}
+          volverARuta={() => volverARuta(punto, ruta)}
         />
       )}
     </Popup>
@@ -1357,14 +1349,14 @@ function Mapa({
   // HELPER: renderiza un Marker con ref
   // ---------------------------------------------------
 
-  const renderMarker = (punto) => (
+  const renderMarker = (punto, ruta = null) => (
     <Marker
-      key={`${punto.id}-${punto.ruta_id}`}
+      key={claveMarker(punto.id, ruta?.id)}
       position={[punto.latitud, punto.longitud]}
-      icon={iconoPunto(punto)}
-      ref={(el) => { if (el) markersRef.current[punto.id] = el }}
+      icon={iconoPunto(ruta)}
+      ref={(el) => { if (el) markersRef.current[claveMarker(punto.id, ruta?.id)] = el }}
     >
-      {renderPopup(punto)}
+      {renderPopup(punto, ruta)}
     </Marker>
   )
 
@@ -1375,9 +1367,7 @@ function Mapa({
 
   // Obtener IDs de rutas únicas presentes en los puntos
   const rutasUnicas = [...new Set(
-    puntosOrdenados
-      .filter(p => p.ruta_id != null)
-      .map(p => p.ruta_id)
+    puntosOrdenados.flatMap(p => p.rutas.map(r => r.id))
   )]
 
   return (
@@ -1529,15 +1519,13 @@ function Mapa({
         rutasUnicas.map((rutaId) => {
 
           const puntosDeRuta = puntosOrdenados.filter(
-            p =>
-              p.ruta_id === rutaId &&
-              (!evitarPago || !p.pago)
+            p => p.rutas.some(r => r.id === rutaId) && (!evitarPago || !p.pago)
           )
 
           if (puntosDeRuta.length === 0) return null
 
-          // Tomar el color del primer punto de esta ruta
-          const colorRuta = puntosDeRuta[0]?.ruta_color || puntosDeRuta[0]?.color_ruta || "#383838"
+          const rutaInfo = puntosDeRuta[0].rutas.find(r => r.id === rutaId)
+          const colorRuta = rutaInfo?.color || "#383838"
 
           return (
             <MarkerClusterGroup
@@ -1547,7 +1535,9 @@ function Mapa({
               showCoverageOnHover={false}
               iconCreateFunction={crearClusterPorRuta(colorRuta)}
             >
-              {puntosDeRuta.map(punto => renderMarker(punto))}
+              {puntosDeRuta.map(punto =>
+                renderMarker(punto, punto.rutas.find(r => r.id === rutaId))
+              )}
             </MarkerClusterGroup>
           )
         })
@@ -1559,7 +1549,7 @@ function Mapa({
 
       {!rutaSeleccionada && !modoCercanos && (() => {
         const puntosNuevos = puntosOrdenados.filter(
-          p => p.ruta_id == null && (!evitarPago || !p.pago)
+          p => p.rutas.length === 0 && (!evitarPago || !p.pago)
         )
         if (puntosNuevos.length === 0) return null
         return (
@@ -1580,38 +1570,45 @@ function Mapa({
       {/* ------------------------------------------------ */}
 
       {!rutaSeleccionada && modoCercanos && (
-
         puntosCercanos
-
           .filter(
             punto => !evitarPago || !punto.pago
           )
-
-          .map(punto => renderMarker(punto))
-
+          .map(punto =>
+            renderMarker(punto, punto.rutas?.[0])
+          )
       )}
 
       {/* ------------------------------------------------ */}
       {/* MARKERS CUANDO HAY RUTA */}
       {/* ------------------------------------------------ */}
 
-      {rutaSeleccionada && (
+      {rutaSeleccionada && (() => {
 
-        todosPuntosPago
+        // --------------------------------
+        // HELPER: obtiene la ruta "visual" del punto
+        // - Si estamos en ruta "cercanos" (ruta virtual,
+        //   no existe como tal en punto.rutas), usamos
+        //   la primera ruta asignada al punto para pintarlo
+        //   con su color correspondiente.
+        // - En cualquier otro caso, buscamos la ruta real
+        //   por id como hasta ahora.
+        // --------------------------------
 
-          ? puntosOrdenados.map(
-              punto => renderMarker(punto)
-            )
+        const rutaDelPunto = (punto) =>
+          rutaSeleccionada.id === "cercanos"
+            ? punto.rutas?.[0]
+            : punto.rutas.find(r => r.id === rutaSeleccionada.id)
 
-          : puntosOrdenados
-              .filter(
-                punto => !evitarPago || !punto.pago
-              )
-              .map(
-                punto => renderMarker(punto)
-              )
+        const listaPuntos = todosPuntosPago
+          ? puntosOrdenados
+          : puntosOrdenados.filter(punto => !evitarPago || !punto.pago)
 
-      )}
+        return listaPuntos.map(punto =>
+          renderMarker(punto, rutaDelPunto(punto))
+        )
+
+      })()}
 
       {/* ------------------------------------------------ */}
       {/* NUMEROS DE ORDEN */}

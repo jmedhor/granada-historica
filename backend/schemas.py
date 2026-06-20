@@ -21,10 +21,24 @@ class PuntoBase(BaseModel):
     tiempo_visita:       Optional[int]   = None
     info_accesible:      Optional[str]   = None
 
+# ---------------------------------------------------
+# RUTA ASOCIADA - SCHEMA AUXILIAR
+# Representa una ruta tal como aparece colgada de un punto
+# ---------------------------------------------------
+
+class RutaAsociada(BaseModel):
+    id: int
+    nombre: str
+    color: str
+    activo: bool
+
+    class Config:
+        from_attributes = True
+
+
 class PuntoOut(PuntoBase):
     id: int
-    ruta_id: Optional[int] = None
-    ruta_nombre: Optional[str] = None
+    rutas: List[RutaAsociada] = []
 
     class Config:
         from_attributes = True
@@ -35,7 +49,7 @@ class PuntoCreate(PuntoBase):
     ruta_id es opcional; si se indica, el punto
     se asocia a esa ruta en ruta_punto.
     """
-    ruta_id: Optional[int] = None
+    ruta_ids: Optional[List[int]] = None
 
 class PuntoUpdate(BaseModel):
     """
@@ -56,7 +70,7 @@ class PuntoUpdate(BaseModel):
     horarios:            Optional[str]   = None
     tiempo_visita:       Optional[int]   = None
     info_accesible:      Optional[str]  = None
-    ruta_id: Optional[int] = None
+    ruta_ids: Optional[List[int]] = None
 
     class Config:
         from_attributes = True
@@ -98,3 +112,5 @@ class RutaUpdate(BaseModel):
 
     class Config:
         from_attributes = True
+
+

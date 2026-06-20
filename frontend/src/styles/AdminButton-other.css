@@ -208,5 +208,30 @@
 }
 
 
+/* -------------------------------------------------- */
+/* BOTONES EXTRA VARIAS RUTAS ASOCIADAS               */
+/* -------------------------------------------------- */
+
+.rutas-nombre-existentes{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  background: linear-gradient(135deg, #457b9d, #1d3557);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.btn-nombre-existentes{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  background: #e63946;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  border: 3px black;
+}
+
 
 

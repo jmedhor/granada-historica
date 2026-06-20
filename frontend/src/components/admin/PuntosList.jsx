@@ -160,10 +160,10 @@ function PuntosList({ rol }) {
         </thead>
         <tbody>
           {puntosFiltrados.map(punto => (
-            <tr key={`${punto.id}-${punto.ruta_id}`}>
+            <tr key={punto.id}>
               <td>{punto.id}</td>
               <td>{punto.nombre}</td>
-              <td>{punto.ruta_nombre || "—"}</td>
+              <td>{punto.rutas?.length ? punto.rutas.map(r => r.nombre).join(", ") : "—"}</td>
               <td>{punto.pago ? "Pago" : "Gratis"}</td>
               <td>{punto.activo ? "Si" : "No"}</td>
               <td className="admin-acciones">
