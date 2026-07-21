@@ -10,33 +10,13 @@ import {
 
 import { useEffect, useState, useRef } from 'react'
 
-import L from 'leaflet'
-
 import 'leaflet/dist/leaflet.css'
-
-import MarkerClusterGroup from 'react-leaflet-cluster'
 
 import 'leaflet-polylinedecorator'
 
-import {
-  obtenerRutaHistorica,
-  obtenerRutaOptima
-} from '../services/osrm.js'
-
-import {
-  calcularDistanciaMetros
-} from '../utils/distancia.js'
-
-import { getTodosPuntos } from '../services/api.js'
-
-
-import PopupRuta from './Popup'
-
 import { coloresRuta } from '../utils/coloresRuta.js'
 
-import PopupInformacion from './PopupInformacion.jsx'
-
-import { marcadorUser, crearIconoRuta, crearClusterPorRuta, crearIconoNumero } from '../utils/mapIcons.js'
+import { marcadorUser } from '../utils/mapIcons.js'
 
 import { calcularDuracionRuta, calcularDistanciaRuta, filtrarPuntosPorTiempo } from '../utils/rutaCalculos.js'
 
@@ -60,8 +40,15 @@ import MarkersDeRuta from './mapa/MarkersDeRuta.jsx'
 
 import NumerosOrden from './mapa/NumerosOrden.jsx'
 
+import { useTodosPuntos } from '../hooks/useTodosPuntos.js'
 
+import { useCentradoNavegacion } from '../hooks/useCentradoNavegacion.js'
 
+import { useEstadoRutaUI } from '../hooks/useEstadoRutaUI.js'
+
+import { useResizeMapa } from '../hooks/useResizeMapa.js'
+
+import MapaClickHandler from './mapa/MapaClickHandler.jsx'
 
 // ---------------------------------------------------
 // GUARDA LA REFERENCIA DEL MAPA
@@ -144,8 +131,8 @@ function Mapa({
   // ESTADOS
   // ---------------------------------------------------
 
-  // Todos los puntos cargados desde backend
-  const [todosPuntos, setTodosPuntos] = useState([])
+  // Todos los puntos cargados desde backend, ver en hooks/useTodosPuntos.js
+  const todosPuntos = useTodosPuntos()
 
   // User location basado en watchposition, ver en hooks/useUserLocationRuta.js
   const userLocationRuta = useUserLocationRuta(userLocation)
@@ -153,23 +140,25 @@ function Mapa({
   // Segmentos de la ruta mostrados en el mapa
   const [rutasSegmentosLocal, setRutasSegmentosLocal] = useState([])
 
-  // Mensaje para cuando no hay tiempo para hacer la ruta
-  const [mensajeTiempo, setMensajeTiempo] = useState(null)
-
-  // Indicador de si todos los puntos son de pago
-  // Recibe la informacion de mensajeTodosPago
-  const [todosPuntosPago, setTodosPuntosPago] = useState(null)
-
-  // Indicadores para si vemos "Mas informacion" en un Popup
-  const [mostrarInfo, setMostrarInfo] = useState(false)
-  const [puntoInfo, setPuntoInfo] = useState(null)
-
   // Indicador de si estamos usando GPS o no
   // En caso de que si controla la actualizacion mediante watchposition
   const { gpsActivo, setGpsActivo } = useGeolocation({ setUserLocation, setGpsDenegado })
 
   // Referencia a userLocation actualizada en todo momento
   const userLocationRef = useRef(userLocation)
+
+  // Mensajes de tiempo y "todos puntos pago" ver hooks/useEstadoRutaUI.js
+  const { mensajeTiempo, setMensajeTiempo, todosPuntosPago } = useEstadoRutaUI({
+    rutaSeleccionada,
+    usarFiltroTiempo,
+    mensajeTodosPago,
+    setMensajeTodosPago,
+    setRutasSegmentos,
+    setRutasSegmentosLocal,
+    setOrdenPuntos,
+    setDuracionRuta,
+    setDistanciaRuta,
+  })
 
   // Relacionado con puntos cercanos, uso en utils/usePuntosCercanos.js
   const { buscarPuntosCercanos, crearRutaDesdePuntosCercanos } = usePuntosCercanos({
@@ -227,6 +216,7 @@ function Mapa({
     setModoHistoriador,
     volverARuta,
   }
+
 
   // Actualizar user location
   useEffect(() => {
@@ -303,138 +293,17 @@ function Mapa({
 
 
   // ---------------------------------------------------
-  // LIMPIA MENSAJE DE TIEMPO
-  // ---------------------------------------------------
-
-  useEffect(() => {
-
-    // Si no hay ruta seleccionada
-    // o el filtro esta desactivado
-    if (!rutaSeleccionada || !usarFiltroTiempo) {
-
-      setMensajeTiempo(null)
-
-    }
-
-  }, [rutaSeleccionada, usarFiltroTiempo])
-
-  // ---------------------------------------------------
   // REDIMENSIONA EL MAPA AL OCULTAR/MOSTRAR PANEL
   // ---------------------------------------------------
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (mapRef.current) {
-        mapRef.current.invalidateSize()
-      }
-    }, 50)
-  }, [mostrarPanel])
-
-  // ---------------------------------------------------
-  // DETECTA CLICK EN EL MAPA
-  // ---------------------------------------------------
-
-  function MapaClickHandler() {
-    useMapEvents({
-      click(e) {
-        if (gpsActivo) return
-        const target = e.originalEvent?.target
-        if (target && target.closest('button')) return
-        setUserLocation({ lat: e.latlng.lat, lon: e.latlng.lng })
-      }
-    })
-    return null
-  }
-
-
-  // ---------------------------------------------------
-  // CARGA TODOS LOS PUNTOS DESDE BACKEND
-  // ---------------------------------------------------
-
-  useEffect(() => {
-    getTodosPuntos()
-      .then(data => {
-        const puntosArray = Array.isArray(data) ? data : []
-
-        setTodosPuntos(
-          puntosArray
-            .filter(punto =>
-              punto.activo === true &&
-              (punto.rutas.length === 0 || punto.rutas.some(r => r.activo))
-            )
-            .map(punto => ({
-              ...punto,
-              rutas: punto.rutas.filter(r => r.activo)
-            }))
-        )
-      })
-      .catch(console.error)
-  }, [])
-
-  // ---------------------------------------------------
-  // RESETEA DATOS CUANDO SE QUITA LA RUTA
-  // ---------------------------------------------------
-
-  useEffect(() => {
-
-    if (!rutaSeleccionada) {
-
-      setRutasSegmentos([])
-
-      setRutasSegmentosLocal([])
-
-      setOrdenPuntos([])
-
-      setDuracionRuta(null)
-      setDistanciaRuta(null)
-
-      setMensajeTodosPago(false)
-      setTodosPuntosPago(false);
-
-    }
-
-  }, [rutaSeleccionada])
-
+  useResizeMapa({ mapRef, mostrarPanel })
 
   // ---------------------------------------------------
   // CENTRA EL MAPA EN EL SIGUIENTE PUNTO
   // DURANTE LA NAVEGACION
   // ---------------------------------------------------
 
-  useEffect(() => {
-
-    // Seguridad
-    if (!modoNavegacion) return
-
-    // Punto destino del tramo actual
-    const siguientePunto =
-      ordenPuntos?.[segmentoActual]
-
-    if (!siguientePunto) return
-
-    // Centra mapa
-
-    //centrarYAbrir(siguientePunto);
-
-    mapRef.current.flyTo(
-      [
-        siguientePunto.latitud,
-        siguientePunto.longitud
-      ],
-      17,
-      {
-        duration: 1.2
-      }
-    )
-
-  }, [
-
-    modoNavegacion,
-    segmentoActual,
-    ordenPuntos
-
-  ])
-
+  useCentradoNavegacion({ mapRef, modoNavegacion, segmentoActual, ordenPuntos })
 
 
   // ---------------------------------------------------
@@ -460,6 +329,9 @@ function Mapa({
         mapRef.current = mapInstance
       }}
     >
+
+      {/* Detecta click en el mapa */}
+      <MapaClickHandler gpsActivo={gpsActivo} setUserLocation={setUserLocation} />
 
       {/* GUARDA REFERENCIA DEL MAPA */}
       <MapController
