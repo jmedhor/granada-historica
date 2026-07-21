@@ -2,10 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 // ----------------------------
 
-// unica llamada a API desde app.jsx para obtener configuracion general
-
-import { getConfiguracion } from './services/api.js'
-
 
 
 // Estilos para la aplicacion seccionados
@@ -48,11 +44,27 @@ import PanelCercanos from './components/PanelCercanos.jsx'
 // que cierran el drawer al seleccionar
 // ---------------------------------------------------
 
-import DrawerRutas from './components/movil/DrawerRutas.jsx'
-import DrawerPuntos from './components/movil/DrawerPuntos.jsx'
-import DrawerBibliografia from './components/movil/DrawerBibliografia.jsx'
 import DrawerNavegacion from './components/movil/DrawerNavegacion.jsx'
-import DrawerCercanos from './components/movil/DrawerCercanos.jsx'
+import DrawerLateralIzquierdo from './components/movil/DrawerLateralIzquierdo.jsx'
+import DrawerOpciones from './components/movil/DrawerOpciones.jsx'
+
+// ---------------------------------------------------
+// IMPORTS DE REFACTORIZACION
+// ---------------------------------------------------
+
+import { useRadioCercanos } from './hooks/useRadioCercanos.js'
+
+import { useVhMovil } from './hooks/useVhMovil.js'
+
+import { useAutoAbrirDrawerCercanos } from './hooks/useAutoAbrirDrawerCercanos.js'
+
+import { useDuracionCerrada } from './hooks/useDuracionCerrada.js'
+
+import Header from './components/app/Header.jsx'
+
+import AvisosRuta from './components/app/AvisosRuta.jsx'
+
+import PanelDerecho from './components/app/PanelDerecho.jsx'
 
 function App() {
 
@@ -136,10 +148,10 @@ function App() {
   const [vistaDrawer, setVistaDrawer] = useState("rutas")
 
   // Controla si el usuario ha cerrado el mensaje de duracion de ruta
-  const [duracionCerrada, setDuracionCerrada] = useState(false)
+  const [duracionCerrada, setDuracionCerrada] = useDuracionCerrada(rutaSeleccionada)
 
   // radio de metros para puntos cercanos
-  const [radioMetros, setRadioMetros] = useState(500)
+  const radioMetros = useRadioCercanos()
 
   // Texto con la distancia de la ruta
   const [distanciaRuta, setDistanciaRuta] = useState(null)
@@ -171,39 +183,14 @@ function App() {
     )
   }
 
-  // ---------------------------------------------------
-  // OBTENER RADIO METROS PARA PUNTOS CERCANOS
-  // ---------------------------------------------------
-
-  useEffect(() => {
-    getConfiguracion('radio_cercanos')
-      .then(valor => setRadioMetros(Number(valor)))
-      .catch(() => setRadioMetros(500)) // fallback si falla
-  }, [])
-
-
 
 
   // ---------------------------------------------------
-  // FIX ALTURA REAL EN MOVIL
-  // 100vh en moviles incluye la barra del navegador
-  // Este efecto calcula el vh real y lo guarda en CSS
+  // Fix altura de movil
+  // Ver en hooks/useVhMovil.js
   // ---------------------------------------------------
 
-  useEffect(() => {
-
-    const actualizarVh = () => {
-      const vh = window.innerHeight * 0.01
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
-    }
-
-    actualizarVh()
-    window.addEventListener('resize', actualizarVh)
-
-    return () => window.removeEventListener('resize', actualizarVh)
-
-  }, [])
-
+  useVhMovil()
 
   // ---------------------------------------------------
   // ABRE EL DRAWER EN VISTA CERCANOS
@@ -211,29 +198,7 @@ function App() {
   // SOLO MOVIL
   // ---------------------------------------------------
 
-  useEffect(() => {
-
-    // Solo abrir drawer automaticamente en movil
-    if (
-      modoCercanos &&
-      window.innerWidth <= 768
-    ) {
-
-      setVistaDrawer("cercanos")
-      setMostrarPanelMovil(true)
-
-    }
-
-  }, [modoCercanos])
-
-  // ---------------------------------------------------
-  // Resetar la lógica de mensaje de duración al cambiar la ruta
-  // ---------------------------------------------------
-
-  useEffect(() => {
-    setDuracionCerrada(false)
-  }, [rutaSeleccionada])
-
+  useAutoAbrirDrawerCercanos({ modoCercanos, setVistaDrawer, setMostrarPanelMovil })
 
 
   // ---------------------------------------------------
@@ -248,362 +213,60 @@ function App() {
       {/* HEADER SUPERIOR */}
       {/* --------------------------------------------------- */}
 
-      <header className="app-header">
-
-        <div className="header-top-row">
-
-          {/* BOTON HAMBURGUESA IZQUIERDA - abre drawer de rutas */}
-          <button
-            className="btn-panel-movil"
-            onClick={() => setMostrarPanelMovil(prev => !prev)}
-            aria-label="Ver rutas y puntos"
-          >
-            &#9776;
-          </button>
-
-          <div className="header-left">
-            <h1 className="titulo-app">Granada Histórica</h1>
-            <span className="subtitulo-app">
-              Rutas historicas por la ciudad de Granada
-            </span>
-          </div>
-
-
-          <div className="header-ugr">
-            <a href="https://www.ugr.es">
-              <img
-                src={logoUGR}
-                alt="Universidad de Granada"
-                className="logo-ugr"
-              />
-            </a>
-          </div>
-
-          {/* CONTROLES - solo visibles en escritorio */}
-          <div className="header-right">
-
-            <button
-              className="btn-admin"
-              onClick={() => navigate('/admin')}
-            >
-              Admin
-            </button>
-
-            <div className="selector-ruta">
-              <div className="toggle-group">
-
-                <button
-                  className={modoRuta === "optima" ? "toggle active" : "toggle"}
-                  onClick={() => setModoRuta("optima")}
-                >
-                  Ruta mas corta
-                </button>
-
-                <button
-                  className={evitarPago ? "toggle pago active" : "toggle danger"}
-                  onClick={() => setEvitarPago(!evitarPago)}
-                >
-                  Sitios gratuitos
-                </button>
-
-                <div className="toggle-group">
-
-                  <button
-                    className={usarFiltroTiempo ? "toggle danger active" : "toggle danger"}
-                    onClick={() => setUsarFiltroTiempo(!usarFiltroTiempo)}
-                  >
-                    Tiempo disponible: {horasDisponibles}h
-                  </button>
-
-                  {usarFiltroTiempo && (
-                    <select
-                      className="toggle"
-                      value={horasDisponibles}
-                      onChange={(e) => setHorasDisponibles(Number(e.target.value))}
-                    >
-                      <option value={1}>1 hora</option>
-                      <option value={2}>2 horas</option>
-                      <option value={3}>3 horas</option>
-                      <option value={4}>4 horas</option>
-                      <option value={5}>5 horas</option>
-                      <option value={6}>6 horas</option>
-                      <option value={7}>7 horas</option>
-                    </select>
-                  )}
-
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
-      </header>
-
+      <Header
+        setMostrarPanelMovil={setMostrarPanelMovil}
+        navigate={navigate}
+        modoRuta={modoRuta}
+        setModoRuta={setModoRuta}
+        evitarPago={evitarPago}
+        setEvitarPago={setEvitarPago}
+        usarFiltroTiempo={usarFiltroTiempo}
+        setUsarFiltroTiempo={setUsarFiltroTiempo}
+        horasDisponibles={horasDisponibles}
+        setHorasDisponibles={setHorasDisponibles}
+      />
 
       {/* --------------------------------------------------- */}
       {/* DRAWER IZQUIERDA - RUTAS, PUNTOS, NAVEGACION, CERCA */}
       {/* --------------------------------------------------- */}
 
-      {mostrarPanelMovil && (
-        <>
-          <div
-            className="menu-movil-overlay"
-            onClick={() => setMostrarPanelMovil(false)}
-          />
-
-          <div className="menu-movil-lateral">
-
-            {/* CABECERA DINAMICA */}
-            <div className="menu-movil-header">
-
-              <span>
-                {vistaDrawer === "rutas"       && "Rutas disponibles"}
-                {vistaDrawer === "puntos"      && (rutaSeleccionada?.nombre || "Puntos")}
-                {vistaDrawer === "bibliografia" && "Bibliografia"}
-                {vistaDrawer === "navegacion"  && "Navegacion"}
-                {vistaDrawer === "cercanos"  && "Puntos cercanos"}
-
-              </span>
-
-              <button
-                className="menu-movil-cerrar"
-                onClick={() => setMostrarPanelMovil(false)}
-              >
-                &#10005;
-              </button>
-
-              {/* BOTON OPCIONES DERECHA - abre drawer de opciones */}
-              <button
-                className="btn-opciones-movil"
-                onClick={() => {
-                  setMostrarOpcionesMovil(prev => !prev);
-                  setMostrarPanelMovil(prev => !prev)}
-                }
-                aria-label="Opciones de ruta"
-              >
-                &#9881;
-              </button>
-
-            </div>
-
-            {/* ---- VISTA RUTAS ---- */}
-            {vistaDrawer === "rutas" && (
-              <DrawerRutas
-                setRutaSeleccionada={(ruta) => {
-                  setRutaSeleccionada(ruta)
-                  setVistaDrawer("puntos")
-                }}
-                setModoCercanos={setModoCercanos}
-              />
-            )}
-
-            {/* ---- VISTA PUNTOS ---- */}
-            {vistaDrawer === "puntos" && rutaSeleccionada && (
-              <div className="menu-movil-seccion">
-
-                {/* Navegacion interna del drawer */}
-                <button
-                  className="menu-movil-btn"
-                  onClick={() => {
-                    setRutaSeleccionada(null)
-                    setModoNavegacion(false)
-                    setModoBibliografia(false)
-                    setModoCercanos(false)
-                    setVistaDrawer("rutas")
-                  }}
-                >
-                  ← Volver a rutas
-                </button>
-
-                <button
-                  className="menu-movil-btn activo"
-                  onClick={() => {
-                    setModoNavegacion(true)
-                    setSegmentoActual(0)
-                    setMostrarPanelMovil(false)
-                  }}
-                >
-                  Comenzar ruta
-                </button>
-                {rutaSeleccionada?.id!=="cercanos" && (
-                  <button
-                    className="menu-movil-btn"
-                    onClick={() => setVistaDrawer("bibliografia")}
-                  >
-                    Ver bibliografia
-                  </button>
-                )}
-
-                <p className="menu-movil-titulo-seccion" style={{ marginTop: 12 }}>
-                  Puntos de la ruta
-                </p>
-
-                <DrawerPuntos
-                  ruta={rutaSeleccionada}
-                  mapRef={mapRef}
-                  evitarPago={evitarPago}
-                  ordenPuntos={ordenPuntos}
-                  puntosRutaVirtual={
-                    rutaSeleccionada?.id === "cercanos" ? ordenPuntos : null
-                  }
-                  onCerrar={() => setMostrarPanelMovil(false)}
-                />
-
-              </div>
-            )}
-
-            {/* ---- VISTA BIBLIOGRAFIA ---- */}
-            {vistaDrawer === "bibliografia" && (
-              <DrawerBibliografia
-                ruta={rutaSeleccionada}
-                onVolver={() => setVistaDrawer("puntos")}
-              />
-            )}
-
-            {/* ---- VISTA CERCANOS ---- */}
-            {vistaDrawer === "cercanos" && (
-              <DrawerCercanos
-                puntosCercanos={puntosCercanos}
-                mapRef={mapRef}
-                setModoCercanos={setModoCercanos}
-                setPuntosCercanos={setPuntosCercanos}
-                onPincharPunto={() => setMostrarPanelMovil(false)}
-                onCerrar={() => {
-
-                    setMostrarPanelMovil(false)
-                    setModoNavegacion(false)
-                    setRutaSeleccionada(null)
-                    setModoCercanos(false)
-                    setVistaDrawer("rutas")
-                  }
-                }
-                onRutaCercanos={() => {
-                    setModoCercanos(false)
-                    setVistaDrawer("puntos")
-                  }
-                }
-                radioMetros={radioMetros}
-              />
-            )}
-
-          </div>
-        </>
-      )}
+      <DrawerLateralIzquierdo
+        mostrarPanelMovil={mostrarPanelMovil}
+        setMostrarPanelMovil={setMostrarPanelMovil}
+        setMostrarOpcionesMovil={setMostrarOpcionesMovil}
+        vistaDrawer={vistaDrawer}
+        setVistaDrawer={setVistaDrawer}
+        rutaSeleccionada={rutaSeleccionada}
+        setRutaSeleccionada={setRutaSeleccionada}
+        setModoNavegacion={setModoNavegacion}
+        setModoBibliografia={setModoBibliografia}
+        setModoCercanos={setModoCercanos}
+        setSegmentoActual={setSegmentoActual}
+        mapRef={mapRef}
+        evitarPago={evitarPago}
+        ordenPuntos={ordenPuntos}
+        puntosCercanos={puntosCercanos}
+        setPuntosCercanos={setPuntosCercanos}
+        radioMetros={radioMetros}
+      />
 
       {/* --------------------------------------------------- */}
       {/* DRAWER DERECHA - OPCIONES                           */}
       {/* --------------------------------------------------- */}
 
-      {mostrarOpcionesMovil && (
-        <>
-          <div
-            className="menu-movil-overlay"
-            onClick={() => setMostrarOpcionesMovil(false)}
-          />
-
-          <div className="menu-movil-lateral menu-movil-lateral--derecha">
-
-            <div className="menu-movil-header">
-              <span>Opciones</span>
-              <button
-                className="menu-movil-cerrar"
-                onClick={() => setMostrarOpcionesMovil(false)}
-              >
-                &#10005;
-              </button>
-            </div>
-
-            <div className="menu-movil-seccion">
-              <p className="menu-movil-titulo-seccion">Tipo de ruta</p>
-
-              <button
-                className={modoRuta === "optima" ? "menu-movil-btn activo" : "menu-movil-btn"}
-                onClick={() => setModoRuta("optima")}
-              >
-                Ruta mas corta
-              </button>
-
-            </div>
-
-            <div className="menu-movil-seccion">
-              <p className="menu-movil-titulo-seccion">Filtros</p>
-
-              <button
-                className={evitarPago ? "menu-movil-btn activo pago" : "menu-movil-btn"}
-                onClick={() => setEvitarPago(!evitarPago)}
-              >
-                {evitarPago ? "Mostrando sitios gratuitos" : "Sitios gratuitos"}
-              </button>
-
-              <button
-                className={usarFiltroTiempo ? "menu-movil-btn activo peligro" : "menu-movil-btn"}
-                onClick={() => setUsarFiltroTiempo(!usarFiltroTiempo)}
-              >
-                {usarFiltroTiempo ? `Tiempo: ${horasDisponibles}h activado` : "Filtrar por tiempo"}
-              </button>
-
-              {usarFiltroTiempo && (
-                <div className="menu-movil-slider-grupo">
-                  <div className="menu-movil-slider-labels">
-                    <span>1h</span>
-                    <span className="menu-movil-slider-valor">{horasDisponibles}h</span>
-                    <span>7h</span>
-                  </div>
-                  <input
-                    type="range"
-                    className="menu-movil-slider"
-                    min={1}
-                    max={7}
-                    step={1}
-                    value={horasDisponibles}
-                    onChange={e => setHorasDisponibles(Number(e.target.value))}
-                  />
-                  <div className="menu-movil-slider-ticks">
-                    {[1,2,3,4,5,6,7].map(h => (
-                      <span
-                        key={h}
-                        className={horasDisponibles === h ? "tick activo" : "tick"}
-                        onClick={() => setHorasDisponibles(h)}
-                      >
-                        {h}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* BOTON RECALCULAR - solo movil */}
-            {/* DESACTIVADO AHORA MISMO POR WATCHPOSITION */}
-            {false &&
-              (
-            <div className="menu-movil-seccion">
-              <p className="menu-movil-titulo-seccion">GPS</p>
-              <button
-                className="menu-movil-btn"
-                onClick={() => mapRef.current?.recalcularPosicion?.()}
-              >
-                Recalcular posición
-              </button>
-            </div>
-            )}
-
-            <div className="menu-movil-seccion-admin">
-              <button
-                className="menu-movil-btn"
-                onClick={() => navigate('/admin')}
-              >
-                Panel de administracion
-              </button>
-            </div>
-
-
-          </div>
-        </>
-      )}
+      <DrawerOpciones
+        mostrarOpcionesMovil={mostrarOpcionesMovil}
+        setMostrarOpcionesMovil={setMostrarOpcionesMovil}
+        navigate={navigate}
+        modoRuta={modoRuta}
+        setModoRuta={setModoRuta}
+        evitarPago={evitarPago}
+        setEvitarPago={setEvitarPago}
+        usarFiltroTiempo={usarFiltroTiempo}
+        setUsarFiltroTiempo={setUsarFiltroTiempo}
+        horasDisponibles={horasDisponibles}
+        setHorasDisponibles={setHorasDisponibles}
+      />
 
       {/* --------------------------------------------------- */}
       {/* CONTENIDO PRINCIPAL */}
@@ -617,57 +280,22 @@ function App() {
 
         <div className="map-container" style={{ width: mostrarPanel ? "calc(100vw - 250px)" : "100vw" }}>
 
+          {/* --------------------------------------------------------- */}
+          {/* AVISOS DE DURACION,DISTANCIA,PUNTOS DE PAGO, GPS DENEGADO */}
+          {/* --------------------------------------------------------- */}
 
-
-          {/* -------------------------------- */}
-          {/* DURACION Y DISTANCIA DE LA RUTA  */}
-          {/* -------------------------------- */}
-
-
-          {!cargandoRuta && duracionRuta && rutaSeleccionada && !duracionCerrada && (
-            <div className="duracion-ruta-box">
-              Duración aproximada: <strong>{duracionRuta}</strong>
-              {distanciaRuta && (
-                <> Distancia: <strong>{distanciaRuta} km</strong></>
-              )}
-              <button
-                className="cerrar-duracion"
-                onClick={() => setDuracionCerrada(true)}
-              >
-                X
-              </button>
-            </div>
-          )}
-
-          {/* -------------------------------- */}
-          {/* AVISO TODOS LOS PUNTOS SON PAGO  */}
-          {/* -------------------------------- */}
-          {mensajeTodosPago && (
-            <div className="todospago-ruta-box">
-              Todos los puntos son de pago, manteniendo ruta original
-              <button
-                className="cerrar-todospago"
-                onClick={() => setMensajeTodosPago(false)}
-              >
-                X
-              </button>
-            </div>
-          )}
-
-          {/* -------------------------------- */}
-          {/* AVISO GPS DENEGADO               */}
-          {/* -------------------------------- */}
-          {gpsDenegado && (
-            <div className="gps-ruta-box aviso-gps">
-              AVISO: No se ha permitido la localización GPS
-              <button
-                className="gps-duracion"
-                onClick={() => setGpsDenegado(false)}
-              >
-                X
-              </button>
-            </div>
-          )}
+          <AvisosRuta
+            cargandoRuta={cargandoRuta}
+            duracionRuta={duracionRuta}
+            distanciaRuta={distanciaRuta}
+            rutaSeleccionada={rutaSeleccionada}
+            duracionCerrada={duracionCerrada}
+            setDuracionCerrada={setDuracionCerrada}
+            mensajeTodosPago={mensajeTodosPago}
+            setMensajeTodosPago={setMensajeTodosPago}
+            gpsDenegado={gpsDenegado}
+            setGpsDenegado={setGpsDenegado}
+          />
 
           {/* -------------------------------- */}
           {/* COMPONENTE MAPA */}
@@ -748,172 +376,26 @@ function App() {
         {/* --------------------------------------------------- */}
 
         {mostrarPanel && (
-
-          <div className="panel-derecha">
-
-            {/* -------------------------------- */}
-            {/* PANEL DE PUNTOS CERCANOS */}
-            {/* -------------------------------- */}
-
-            {modoCercanos && !rutaSeleccionada && (
-
-              <PanelCercanos
-                puntosCercanos={puntosCercanos}
-                mapRef={mapRef}
-                setModoCercanos={setModoCercanos}
-                setPuntosCercanos={setPuntosCercanos}
-                radioMetros={radioMetros}
-              />
-
-            )}
-
-            {/* -------------------------------- */}
-            {/* MENU PRINCIPAL DE RUTAS */}
-            {/* -------------------------------- */}
-
-            {!modoCercanos && !rutaSeleccionada && (
-
-              <MenuRutas
-                rutaSeleccionada={rutaSeleccionada}
-                setRutaSeleccionada={setRutaSeleccionada}
-                setModoCercanos={setModoCercanos}
-              />
-
-            )}
-
-            {/* -------------------------------- */}
-            {/* CONTENIDO CUANDO HAY RUTA */}
-            {/* -------------------------------- */}
-
-            {rutaSeleccionada && (
-
-              <>
-
-            {/* -------------------------------- */}
-            {/* BOTONES PRINCIPALES */}
-            {/* -------------------------------- */}
-
-            <div className="columna-botones">
-
-              {/* BOTON VOLVER */}
-              <button
-                className="btn-volver"
-                onClick={() => {
-
-                  setRutaSeleccionada(null)
-
-                  setModoNavegacion(false)
-
-                  setModoBibliografia(false)
-
-                  setModoCercanos(false)
-
-                }}
-              >
-                ← Volver
-              </button>
-
-              {/* BOTON COMENZAR RUTA */}
-              {!modoNavegacion && !modoBibliografia && (
-
-                <button
-                  className="btn-start"
-                  onClick={() => {
-
-                    setModoNavegacion(true)
-
-                    setSegmentoActual(0)
-
-                  }}
-                >
-                  Comenzar ruta
-                </button>
-
-              )}
-
-              {/* BOTON BIBLIOGRAFIA */}
-              {!modoNavegacion && !modoBibliografia && rutaSeleccionada?.id !== "cercanos" && (
-
-                <button
-                  className="btn-start-bib"
-                  onClick={() => setModoBibliografia(true)}
-                >
-                  Visualizar bibliografia
-                </button>
-
-              )}
-
-              {/* VOLVER DESDE BIBLIOGRAFIA */}
-              {modoBibliografia && (
-
-                <button
-                  className="btn-volver"
-                  onClick={() => {
-                    setModoBibliografia(false)
-                  }}
-                >
-                  ← Volver a ruta
-                </button>
-
-              )}
-
-            </div>
-
-                {/* -------------------------------- */}
-                {/* PANEL BIBLIOGRAFIA */}
-                {/* -------------------------------- */}
-
-                {modoBibliografia && (
-                  <PanelBibliografia ruta={rutaSeleccionada} />
-                )}
-
-
-
-                {/* -------------------------------- */}
-                {/* MENU DE PUNTOS */}
-                {/* -------------------------------- */}
-
-                {!modoNavegacion && !modoBibliografia && (
-
-                  <MenuPuntos
-                    ruta={rutaSeleccionada}
-                    centrarEnPunto={centrarEnPunto}
-                    mapRef={mapRef}
-                    evitarPago={evitarPago}
-                    ordenPuntos={ordenPuntos}
-
-                    puntosRutaVirtual={
-                      rutaSeleccionada?.id === "cercanos"
-                        ? ordenPuntos
-                        : null
-                    }
-                  />
-
-                )}
-
-                {/* -------------------------------- */}
-                {/* PANEL DE NAVEGACION */}
-                {/* -------------------------------- */}
-
-                {modoNavegacion && !modoBibliografia && (
-
-                <PanelRuta
-                  rutasSegmentos={rutasSegmentos}
-
-                  segmentoActual={segmentoActual}
-                  setSegmentoActual={setSegmentoActual}
-
-                  setModoNavegacion={setModoNavegacion}
-                />
-
-                )}
-
-              </>
-
-            )}
-
-          </div>
-
+          <PanelDerecho
+            modoCercanos={modoCercanos}
+            setModoCercanos={setModoCercanos}
+            puntosCercanos={puntosCercanos}
+            setPuntosCercanos={setPuntosCercanos}
+            radioMetros={radioMetros}
+            rutaSeleccionada={rutaSeleccionada}
+            setRutaSeleccionada={setRutaSeleccionada}
+            modoNavegacion={modoNavegacion}
+            setModoNavegacion={setModoNavegacion}
+            modoBibliografia={modoBibliografia}
+            setModoBibliografia={setModoBibliografia}
+            setSegmentoActual={setSegmentoActual}
+            mapRef={mapRef}
+            evitarPago={evitarPago}
+            ordenPuntos={ordenPuntos}
+            centrarEnPunto={centrarEnPunto}
+            rutasSegmentos={rutasSegmentos}
+            segmentoActual={segmentoActual}
+          />
         )}
 
       </div>
