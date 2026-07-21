@@ -36,83 +36,32 @@ import { coloresRuta } from '../utils/coloresRuta.js'
 
 import PopupInformacion from './PopupInformacion.jsx'
 
-import userMarker from '../../assets/userMarker.png'
+import { marcadorUser, crearIconoRuta, crearClusterPorRuta, crearIconoNumero } from '../utils/mapIcons.js'
+
+import { calcularDuracionRuta, calcularDistanciaRuta, filtrarPuntosPorTiempo } from '../utils/rutaCalculos.js'
+
+import { useGeolocation } from '../hooks/useGeolocation.js'
+
+import { usePuntosCercanos } from '../hooks/usePuntosCercanos.js'
+
+import { useUserLocationRuta } from '../hooks/useUserLocationRuta.js'
+
+import { useCargarRuta } from '../hooks/useCargarRuta.js'
+
+import { useMarkersRuta } from '../hooks/useMarkersRuta.js'
+
+import RutaPolylines from './mapa/RutaPolylines.jsx'
+
+import ClustersPorRuta from './mapa/ClustersPorRuta.jsx'
+
+import MarkersCercanos from './mapa/MarkersCercanos.jsx'
+
+import MarkersDeRuta from './mapa/MarkersDeRuta.jsx'
+
+import NumerosOrden from './mapa/NumerosOrden.jsx'
 
 
 
-// ---------------------------------------------------
-// ICONOS DE MARCADORES POR RUTA
-// ---------------------------------------------------
-
-
-const marcadorUser = new L.Icon({
-  iconUrl: userMarker,
-  iconSize: [50, 50],
-  iconAnchor: [17, 35],
-  popupAnchor: [0, -35],
-  className: "user-marker-icon"
-})
-
-
-
-
-
-function crearIconoRuta(color = "#e63946") {
-  return new L.DivIcon({
-    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="32" height="48">
-      <path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 24 12 24S24 21 24 12C24 5.373 18.627 0 12 0z"
-        fill="${color}" stroke="white" stroke-width="1.5"/>
-      <circle cx="12" cy="12" r="5" fill="white" opacity="0.85"/>
-    </svg>`,
-    className: "",
-    iconSize: [32, 48],
-    iconAnchor: [16, 48],
-    popupAnchor: [0, -48],
-  })
-}
-
-  // ---------------------------------------------------
-  // FUNCIONES AUXILIARES
-  // ---------------------------------------------------
-
-
-
-// ---------------------------------------------------
-// CREAR ICONO CLUSTER
-// ---------------------------------------------------
-
-const crearClusterPorRuta = (color) => (cluster) => {
-  const cantidad = cluster.getChildCount()
-
-  return L.divIcon({
-    html: `
-      <div class="cluster-ruta-dinamica" style="--cluster-color: ${color}">
-        ${cantidad}
-      </div>
-    `,
-    className: "",
-    iconSize: L.point(40, 40, true)
-  })
-}
-
-// ---------------------------------------------------
-// CREA EL ICONO NUMERICO DE ORDEN
-// ---------------------------------------------------
-
-function crearIconoNumero(numero) {
-
-  return new L.DivIcon({
-
-    html: `<div class="numero-marker">${numero}</div>`,
-
-    className: "",
-
-    iconSize: [28, 28],
-
-    iconAnchor: [14, 14]
-
-  })
-}
 
 // ---------------------------------------------------
 // GUARDA LA REFERENCIA DEL MAPA
@@ -131,150 +80,6 @@ function MapController({ setMapRef }) {
   return null
 }
 
-
-// ---------------------------------------------------
-// CALCULA EL TEXTO DE DURACION DE RUTA
-// ---------------------------------------------------
-
-  // ---------------------------------
-  // Tiempo aproximado de visita
-  // Se obtiene el tiempo aproximado de cada punto
-  // desde la BD
-  //
-  // Aquellas que no tienen tiempo asignado se dejan en
-  // 15 minutos por punto turistico
-  // ------------------------------
-
-function calcularDuracionRuta(legs, puntosOrdenados) {
-
-  // ---------------------------------
-  // TIEMPO DE DESPLAZAMIENTO (OSRM)
-  // ---------------------------------
-  const segundosRuta = legs.reduce(
-    (acc, leg) => acc + (leg.duration || 0),
-    0
-  )
-
-  // ---------------------------------
-  // TIEMPO DE VISITA REAL POR PUNTO
-  // ---------------------------------
-  const segundosVisita = puntosOrdenados.reduce((acc, punto) => {
-
-    const minutos = punto.tiempo_visita ?? 15
-    return acc + (minutos * 60)
-
-  }, 0)
-
-  // ---------------------------------
-  // TOTAL
-  // ---------------------------------
-  const segundosTotales = segundosRuta + segundosVisita
-
-  const horas = Math.floor(segundosTotales / 3600)
-
-  const minutos = Math.floor((segundosTotales % 3600) / 60)
-
-  if (horas > 0) {
-    return `${horas} h ${minutos} min`
-  }
-
-  return `${minutos} min`
-}
-
-// ---------------------------------------------------
-// CALCULA EL TEXTO DE DISTANCIA DE RUTA
-// ---------------------------------------------------
-
-  // ---------------------------------
-  // Distancia en kilometros de la ruta generada
-  // ------------------------------
-
-
-function calcularDistanciaRuta(legs) {
-  const metros = legs.reduce(
-    (acc, leg) => acc + (leg.distance || 0),
-    0
-  )
-  return (metros / 1000).toFixed(2) // "1.34"
-}
-
-// ---------------------------------------------------
-// CALCULA TIEMPO TOTAL DE RUTA EN SEGUNDOS
-// DEPRECATED
-// ---------------------------------------------------
-
-function calcularTiempoTotalRuta(legs, puntosOrdenados) {
-
-  // --------------------------------
-  // SEGUNDOS DE TRAYECTO (OSRM)
-  // --------------------------------
-
-  const segundosTrayecto = legs.reduce(
-    (acc, leg) => acc + leg.duration,
-    0
-  )
-
-  // --------------------------------
-  // SEGUNDOS DE VISITA (15 MIN POR PUNTO)
-  // --------------------------------
-
-  const segundosVisita =
-    puntosOrdenados.length * 15 * 60
-
-  // --------------------------------
-  // TOTAL
-  // --------------------------------
-
-  return segundosTrayecto + segundosVisita
-}
-
-// ---------------------------------------------------
-// FILTRA PUNTOS SEGUN TIEMPO DISPONIBLE
-// ---------------------------------------------------
-
-function filtrarPuntosPorTiempo(
-  puntosOrdenados,
-  legs,
-  horasDisponibles
-) {
-
-  const maxSegundos = horasDisponibles * 3600
-
-  let acumulado = 0
-  const resultado = []
-
-  for (let i = 0; i < puntosOrdenados.length; i++) {
-
-    const punto = puntosOrdenados[i]
-
-    // --------------------------------
-    // TIEMPO DE VISITA REAL
-    // fallback: 15 min si no existe
-    // --------------------------------
-    const tiempoVisitaSegundos =
-      (punto.tiempo_visita ?? 15) * 60
-
-    acumulado += tiempoVisitaSegundos
-
-    // --------------------------------
-    // TIEMPO DE TRAYECTO (OSRM)
-    // --------------------------------
-    if (legs[i]) {
-      acumulado += legs[i].duration
-    }
-
-    // --------------------------------
-    // SI SE PASA DEL TIEMPO → STOP
-    // --------------------------------
-    if (acumulado > maxSegundos) {
-      break
-    }
-
-    resultado.push(punto)
-  }
-
-  return resultado
-}
 
 // ---------------------------------------------------
 // COMPONENTE PRINCIPAL DEL MAPA
@@ -342,14 +147,11 @@ function Mapa({
   // Todos los puntos cargados desde backend
   const [todosPuntos, setTodosPuntos] = useState([])
 
-  // User location basado en watchposition
-  const [userLocationRuta, setUserLocationRuta] = useState(userLocation)
+  // User location basado en watchposition, ver en hooks/useUserLocationRuta.js
+  const userLocationRuta = useUserLocationRuta(userLocation)
 
   // Segmentos de la ruta mostrados en el mapa
   const [rutasSegmentosLocal, setRutasSegmentosLocal] = useState([])
-
-  // Datos bases para ruta dinamica por puntos cercanos
-  const [rutaCercanosBase, setRutaCercanosBase] = useState(null)
 
   // Mensaje para cuando no hay tiempo para hacer la ruta
   const [mensajeTiempo, setMensajeTiempo] = useState(null)
@@ -362,449 +164,143 @@ function Mapa({
   const [mostrarInfo, setMostrarInfo] = useState(false)
   const [puntoInfo, setPuntoInfo] = useState(null)
 
-  // Indicadores para ver el modo de popup actual
-  // "ruta" | "info"
-  const [modoPopup, setModoPopup] = useState("ruta")
-
-  // GPS activo: true si movil y no denegado por el usuario
-  const [gpsActivo, setGpsActivo] = useState(
-    window.innerWidth <= 768
-  )
-
-  // Referencias a markers para abrir popups
-  const markersRef = useRef({})
+  // Indicador de si estamos usando GPS o no
+  // En caso de que si controla la actualizacion mediante watchposition
+  const { gpsActivo, setGpsActivo } = useGeolocation({ setUserLocation, setGpsDenegado })
 
   // Referencia a userLocation actualizada en todo momento
   const userLocationRef = useRef(userLocation)
 
-  // Umbral para no recalcular ruta si la localizacion gps cambia muy poco
-  const lastRecalcLocationRef = useRef(null)
+  // Relacionado con puntos cercanos, uso en utils/usePuntosCercanos.js
+  const { buscarPuntosCercanos, crearRutaDesdePuntosCercanos } = usePuntosCercanos({
+    todosPuntos,
+    userLocation,
+    userLocationRuta,
+    userLocationRef,
+    radioMetros,
+    evitarPago,
+    usarFiltroTiempo,
+    horasDisponibles,
+    modoCercanos,
+    setModoCercanos,
+    setPuntosCercanos,
+    modoNavegacion,
+    rutaSeleccionada,
+    setRutaSeleccionada,
+    mapRef,
+    cargandoRuta,
+    setCargandoRuta,
+    setOrdenPuntos,
+    setRutasSegmentos,
+    setRutasSegmentosLocal,
+    setDuracionRuta,
+    setDistanciaRuta,
+    setMensajeTiempo,
+    setMensajeTodosPago,
+  })
 
-  // Umbral para actualizar posición visual
-  const UMBRAL_POSICION_METROS = 5
 
-  // Umbral para recalcular rutas
-  const UMBRAL_RUTA_METROS = 15
+  // Relacionado con markers, ver en hooks/useMarkersRuta.js
+  const {
+    markersRef,
+    claveMarker,
+    buscarMarker,
+    iconoPunto,
+    modoPopup,
+    setModoPopup,
+    centrarYAbrir,
+    abrirInformacion,
+    volverARuta,
+  } = useMarkersRuta({ mapRef })
 
-  const lastRouteLocationRef = useRef(null)
+  // Conglomerado de props para marcadores, ver en archivos varios en mapa/
+  const markerProps = {
+    claveMarker,
+    iconoPunto,
+    markersRef,
+    modoPopup,
+    rutaSeleccionada,
+    setRutaSeleccionada,
+    setModoPopup,
+    abrirInformacion,
+    modoHistoriador,
+    setModoHistoriador,
+    volverARuta,
+  }
 
+  // Actualizar user location
   useEffect(() => {
     userLocationRef.current = userLocation
   }, [userLocation])
 
+
+  // Mostrar mensaje de todos los puntos son de pago
   useEffect(() => {
     if(mensajeTodosPago){
       setTodosPuntosPago(true)
     }
   }, [mensajeTodosPago])
 
-  useEffect(() => {
 
-    if (!userLocation) return
+  // ---------------------------------------------------
+  // FILTRA LOS PUNTOS DE LA RUTA ACTUAL
+  // ---------------------------------------------------
 
-    if (!lastRouteLocationRef.current) {
-
-      lastRouteLocationRef.current = userLocation
-      setUserLocationRuta(userLocation)
-
-      return
-    }
-
-    const distancia =
-      calcularDistanciaMetros(
-
-        lastRouteLocationRef.current.lat,
-        lastRouteLocationRef.current.lon,
-
-        userLocation.lat,
-        userLocation.lon
+  const puntos = rutaSeleccionada
+    ? todosPuntos.filter(
+        p => p.rutas.some(r => r.id === rutaSeleccionada.id) && p.activo === true
       )
-
-    if (distancia >= UMBRAL_RUTA_METROS) {
-
-      console.log(`[RUTA] Recálculo de ruta disparado: ${distancia.toFixed(1)}m (umbral ruta: ${UMBRAL_RUTA_METROS}m)`)
-      lastRouteLocationRef.current = userLocation
-
-      setUserLocationRuta(userLocation)
-
-      } else {
-        console.log(`[RUTA] Recálculo omitido: solo ${distancia.toFixed(1)}m (umbral ruta: ${UMBRAL_RUTA_METROS}m)`)
-      }
-
-  }, [userLocation])
-
-
+    : todosPuntos.filter(p => p.activo === true)
 
   // ---------------------------------------------------
-  // FUNCION PARA CENTRAR Y ABRIR POPUP
+  // USA EL ORDEN CALCULADO SI EXISTE
   // ---------------------------------------------------
 
-  const centrarYAbrir = (punto, ruta = null) => {
-    const marker = buscarMarker(punto.id, ruta?.id)
-    if (mapRef.current) {
-      mapRef.current.flyTo([punto.latitud, punto.longitud], 16)
-    }
-    if (marker) marker.openPopup()
-  }
-
-
+  const puntosOrdenados =
+    ordenPuntos.length > 0
+      ? ordenPuntos
+      : puntos
 
   // ---------------------------------------------------
-  // FUNCION PARA ABRIR POPUPS Y VARIAR ENTRE MODOS
+  // FILTRA PUNTOS DE PAGO SI ESTA ACTIVO
   // ---------------------------------------------------
 
-  const abrirInformacion = (punto, ruta = null) => {
-    setModoPopup("info")
-    setTimeout(() => {
-      const marker = buscarMarker(punto.id, ruta?.id)
-      if (marker) { marker.closePopup(); marker.openPopup() }
-    }, 0)
-  }
+  const puntosVisibles = puntosOrdenados.filter((punto) => {
 
-  // ---------------------------------------------------
-  // FUNCION PARA CERRAR POPUPS Y VARIAR ENTRE MODOS
-  // ---------------------------------------------------
-
-
-  const volverARuta = (punto, ruta = null) => {
-    setModoPopup("ruta")
-    setTimeout(() => {
-      const marker = buscarMarker(punto.id, ruta?.id)
-      if (marker) { marker.closePopup(); marker.openPopup() }
-    }, 0)
-  }
-
-  // ---------------------------------------------------
-  // CREA RUTA DINAMICA DESDE PUNTOS CERCANOS
-  // ---------------------------------------------------
-
-  const crearRutaDesdePuntosCercanos = async (puntosSeleccionados) => {
-
-    if(cargandoRuta){
-      return
+    if (todosPuntosPago) {
+      return true
     }
 
-    // Seguridad
-    if (!puntosSeleccionados || puntosSeleccionados.length === 0) return
+    return !evitarPago || !punto.pago
 
-    setCargandoRuta(true)
-
-    // --------------------------------
-    // SOLO RUTA OPTIMA
-    // --------------------------------
-
-    // --------------------------------
-    // AVISO SI TODOS LOS PUNTOS SON DE PAGO
-    // --------------------------------
-    const todossonPago = evitarPago && puntosSeleccionados.every(p => p.pago)
-    if (todossonPago) {
-      setMensajeTodosPago(true)
-    } else {
-      setMensajeTodosPago(false)
-    }
-
-    try{
-
-      let resultado = await obtenerRutaOptima(
-        puntosSeleccionados,
-        userLocationRef.current,
-        evitarPago
-      )
-
-
-      setRutaCercanosBase(puntosSeleccionados)
-
-      // ---------------------------------------------------
-      // APLICAR FILTRO DE TIEMPO (SI ESTA ACTIVO)
-      // ---------------------------------------------------
-
-      let puntosFinales = resultado.puntosOrdenados
-      let legsFinales = resultado.legs
-
-      if (usarFiltroTiempo) {
-
-        let resultadoT
-
-        puntosFinales = filtrarPuntosPorTiempo(
-          resultado.puntosOrdenados,
-          resultado.legs,
-          horasDisponibles
-        )
-
-
-
-        // --------------------------------
-        // NO HAY TIEMPO PARA NINGUN PUNTO
-        // --------------------------------
-
-        if (puntosFinales.length === 0) {
-
-          setMensajeTiempo(
-            "No dispones de tiempo suficiente para realizar esta ruta."
-          )
-
-          setOrdenPuntos([])
-          setRutasSegmentos([])
-          setRutasSegmentosLocal([])
-          setDuracionRuta(null)
-          setDistanciaRuta(null)
-          setMensajeTodosPago(false)
-          return
-        }
-
-        // --------------------------------
-        // LIMPIAR MENSAJE SI TODO OK
-        // --------------------------------
-
-        setMensajeTiempo(null)
-
-
-
-        resultadoT = await obtenerRutaOptima(
-          puntosFinales,
-          userLocationRef.current,
-          evitarPago
-        )
-
-        legsFinales = resultadoT.legs
-
-      }
-
-      // ---------------------------------------------------
-      // GUARDAR RESULTADO FINAL
-      // ---------------------------------------------------
-
-      setOrdenPuntos(puntosFinales)
-      setRutasSegmentos(legsFinales)
-      setRutasSegmentosLocal(legsFinales)
-
-      // --------------------------------
-      // CALCULAR DURACION
-      // --------------------------------
-
-      const tiempoTexto = calcularDuracionRuta(
-        legsFinales,
-        puntosFinales
-      )
-
-      setDuracionRuta(tiempoTexto)
-
-      const distanciaTexto = calcularDistanciaRuta(legsFinales)
-      console.log("la distancia es ")
-      console.log(distanciaTexto)
-      setDistanciaRuta(distanciaTexto)
-
-      // --------------------------------
-      // ACTIVA RUTA VIRTUAL DE CERCANOS
-      // --------------------------------
-
-      setRutaSeleccionada(prev => {
-
-        if (prev?.id === "cercanos") {
-          return prev
-        }
-
-        return {
-          id: "cercanos",
-          nombre: "Ruta personalizada"
-        }
-
-      })
-
-      setModoCercanos(false)
-
-    }
-
-    catch (err) {
-
-      console.error(
-        "Error creando ruta desde puntos cercanos:",
-        err
-      )
-
-    }
-
-    finally {
-
-      setCargandoRuta(false)
-
-    }
-  }
+  })
 
   // ---------------------------------------------------
-  // BUSCA PUNTOS CERCANOS AL USUARIO
-  // APLICANDO FILTROS ACTIVOS
+  // Una vez calculados los puntos cargamos la ruta
+  // Ver mas en useCargarRuta.js
   // ---------------------------------------------------
 
-  const buscarPuntosCercanos = async () => {
-
-    // --------------------------------
-    // RADIO MAXIMO
-    // --------------------------------
-
-    const RADIO_METROS = radioMetros
-
-    // --------------------------------
-    // FILTRAR PUNTOS CERCANOS
-    // + FILTRO EVITAR PAGO
-    // --------------------------------
-
-    const cercanos = todosPuntos.filter(
-
-      (punto) => {
-
-        // -----------------------------
-        // FILTRO PUNTOS DE PAGO
-        // -----------------------------
-
-        if (evitarPago && punto.pago) {
-          return false
-        }
-
-        // -----------------------------
-        // CALCULO DISTANCIA
-        // -----------------------------
-
-        const distancia =
-          calcularDistanciaMetros(
-
-            userLocation.lat,
-            userLocation.lon,
-
-            punto.latitud,
-            punto.longitud
-          )
-
-        return distancia <= RADIO_METROS
-      }
-
-    )
-
-    // --------------------------------
-    // GUARDAR PUNTOS CERCANOS
-    // --------------------------------
-
-    setPuntosCercanos(cercanos)
-
-    // --------------------------------
-    // ACTIVAR PANEL CERCANOS
-    // --------------------------------
-
-    setModoCercanos(true)
-
-    // --------------------------------
-    // CENTRAR MAPA
-    // --------------------------------
-
-    if (mapRef.current) {
-
-      mapRef.current.flyTo(
-        [
-          userLocation.lat,
-          userLocation.lon
-        ],
-        14
-      )
-
-    }
-
-    // --------------------------------
-    // SI NO HAY PUNTOS -> STOP
-    // --------------------------------
-
-    if (cercanos.length === 0) {
-      return
-    }
-
-
-  }
-
-  // ---------------------------------------------------
-  // RECALCULA PUNTOS CERCANOS AL MOVER userLocation
-  // ---------------------------------------------------
-
-
-  useEffect(() => {
-
-    if (!modoCercanos) return
-    if (todosPuntos.length === 0) return
-
-    const RADIO_METROS = radioMetros
-
-    const cercanos = todosPuntos.filter((punto) => {
-
-      // Filtra puntos de pago
-      if (evitarPago && punto.pago) {
-        return false
-      }
-
-      const distancia = calcularDistanciaMetros(
-        userLocation.lat,
-        userLocation.lon,
-        punto.latitud,
-        punto.longitud
-      )
-
-      return distancia <= RADIO_METROS
-    })
-
-    setPuntosCercanos(cercanos)
-
-  }, [userLocationRuta, todosPuntos, modoCercanos, evitarPago])
-
-
-  // ---------------------------------------------------
-  // RECALCULA RUTA DINAMICA DE CERCANOS
-  // CUANDO CAMBIAN LOS FILTROS
-  // ---------------------------------------------------
-
-  useEffect(() => {
-
-
-    // No recalculamos la ruta si estamos en modo navegacion
-
-    if(modoNavegacion){
-      return
-    }
-
-    // --------------------------------
-    // SOLO SI EXISTE RUTA DE CERCANOS
-    // --------------------------------
-
-    if (
-      !rutaSeleccionada ||
-      rutaSeleccionada.id !== "cercanos"
-    ) {
-      return
-    }
-
-    // --------------------------------
-    // SEGURIDAD
-    // --------------------------------
-
-    if (
-      !rutaCercanosBase ||
-      rutaCercanosBase.length === 0
-    ) {
-      return
-    }
-
-    // --------------------------------
-    // RECALCULAR RUTA
-    // --------------------------------
-
-    crearRutaDesdePuntosCercanos(
-      rutaCercanosBase
-    )
-
-  }, [
-
+  useCargarRuta({
+    rutaSeleccionada,
+    todosPuntos,
+    puntos,
+    modoRuta,
+    userLocationRuta,
+    userLocationRef,
     evitarPago,
     usarFiltroTiempo,
     horasDisponibles,
-    userLocationRuta
+    modoNavegacion,
+    setCargandoRuta,
+    setMensajeTodosPago,
+    setMensajeTiempo,
+    setOrdenPuntos,
+    setRutasSegmentos,
+    setRutasSegmentosLocal,
+    setDuracionRuta,
+    setDistanciaRuta,
+  })
 
-  ])
 
   // ---------------------------------------------------
   // LIMPIA MENSAJE DE TIEMPO
@@ -850,137 +346,7 @@ function Mapa({
     return null
   }
 
-  // ---------------------------------------------------
-  // Obtiene la posicion del usuario en funcion del GPS (cada 15 segundos)
-  // DEPRECATED
-  // SE CAMBIA SU USO POR WATCHPOSITION
-  // ---------------------------------------------------
 
-
-/*
-    const obtenerPosicion = () => {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setUserLocation({
-            lat: pos.coords.latitude,
-            lon: pos.coords.longitude,
-          })
-        },
-        (err) => console.error("GPS error:", err),
-        { enableHighAccuracy: true, maximumAge: 0 }
-      )
-    }
-*/
-/*
-    const obtenerPosicion = () => {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const nuevaPos = {
-            lat: pos.coords.latitude,
-            lon: pos.coords.longitude,
-          }
-
-          // Comprobación de umbral
-          if (lastRecalcLocationRef.current) {
-            const distancia = calcularDistanciaMetros(
-              lastRecalcLocationRef.current.lat,
-              lastRecalcLocationRef.current.lon,
-              nuevaPos.lat,
-              nuevaPos.lon
-            )
-            if (distancia < UMBRAL_RECALCULO_METROS) {
-              return  // movimiento insuficiente, ignorar
-            }
-          }
-
-          lastRecalcLocationRef.current = nuevaPos
-          setUserLocation(nuevaPos)
-        },
-        (err) => console.error("GPS error:", err),
-        { enableHighAccuracy: true, maximumAge: 0 }
-      )
-    }
-*/
-
-
-
-  // ---------------------------------------------------
-  // Obtiene y actualiza la posicion del usuario
-  // ---------------------------------------------------
-
-  useEffect(() => {
-
-    if (!navigator.geolocation || !gpsActivo) return
-
-    const watchId = navigator.geolocation.watchPosition(
-
-        (pos) => {
-
-          const nuevaPos = {
-            lat: pos.coords.latitude,
-            lon: pos.coords.longitude,
-          }
-
-          // Evita ruido GPS
-
-          if (lastRecalcLocationRef.current) {
-
-            const distancia =
-              calcularDistanciaMetros(
-
-                lastRecalcLocationRef.current.lat,
-                lastRecalcLocationRef.current.lon,
-
-                nuevaPos.lat,
-                nuevaPos.lon
-              )
-
-            if (distancia < UMBRAL_POSICION_METROS) {
-              return
-            }
-          }
-
-          lastRecalcLocationRef.current = nuevaPos
-
-          setUserLocation(nuevaPos)
-
-        },
-
-      (err) => {
-        console.error("GPS error:", err)
-
-        // --------------------------------
-        // GPS DENEGADO → MODO MANUAL
-        // --------------------------------
-        if (err.code === err.PERMISSION_DENIED) {
-          console.warn("[GPS] Permiso denegado, activando modo manual")
-          setGpsActivo(false)
-          setGpsDenegado(true)
-        }
-      },
-
-      {
-        enableHighAccuracy: true,
-        maximumAge: 0
-      }
-    )
-
-    return () => {
-      navigator.geolocation.clearWatch(watchId)
-    }
-
-  }, [gpsActivo])
-
-/*
-
-  useEffect(() => {
-    if (!navigator.geolocation || !GPS_ACTIVO) return
-
-    obtenerPosicion()
-    const intervalo = setInterval(obtenerPosicion, 15000)
-    return () => clearInterval(intervalo)
-  }, [])
-*/
   // ---------------------------------------------------
   // CARGA TODOS LOS PUNTOS DESDE BACKEND
   // ---------------------------------------------------
@@ -1029,221 +395,6 @@ function Mapa({
 
   }, [rutaSeleccionada])
 
-  // ---------------------------------------------------
-  // FILTRA LOS PUNTOS DE LA RUTA ACTUAL
-  // ---------------------------------------------------
-
-  const puntos = rutaSeleccionada
-    ? todosPuntos.filter(
-        p => p.rutas.some(r => r.id === rutaSeleccionada.id) && p.activo === true
-      )
-    : todosPuntos.filter(p => p.activo === true)
-
-  // ---------------------------------------------------
-  // USA EL ORDEN CALCULADO SI EXISTE
-  // ---------------------------------------------------
-
-  const puntosOrdenados =
-    ordenPuntos.length > 0
-      ? ordenPuntos
-      : puntos
-
-  // ---------------------------------------------------
-  // FILTRA PUNTOS DE PAGO SI ESTA ACTIVO
-  // ---------------------------------------------------
-
-  const puntosVisibles = puntosOrdenados.filter((punto) => {
-
-    if (todosPuntosPago) {
-      return true
-    }
-
-    return !evitarPago || !punto.pago
-
-  })
-
-  // ---------------------------------------------------
-  // CARGA LA RUTA DESDE OSRM
-  // ---------------------------------------------------
-
-  useEffect(() => {
-
-    // No recalculamos la ruta si estamos en modo navegacion
-
-    if(modoNavegacion){
-      return
-    }
-
-    const cargarRuta = async () => {
-
-      // Seguridad
-      if (!rutaSeleccionada || puntos.length === 0) {
-        return
-      }
-
-      setCargandoRuta(true)
-
-      try {
-
-
-        // --------------------------------
-        // AVISO SI TODOS LOS PUNTOS SON DE PAGO
-        // --------------------------------
-        const todossonPago = evitarPago && puntos.every(p => p.pago)
-        if (todossonPago) {
-          setMensajeTodosPago(true)
-        } else {
-          setMensajeTodosPago(false)
-        }
-
-
-        let resultado
-
-        // --------------------------------
-        // DEPRECATED
-        // RUTA HISTORICA
-        // --------------------------------
-
-        if (modoRuta === "historica") {
-
-          resultado = await obtenerRutaHistorica(
-            puntos,
-            userLocationRef.current,
-            evitarPago
-          )
-
-        }
-
-        // --------------------------------
-        // RUTA OPTIMA
-        // --------------------------------
-
-
-        else {
-
-          resultado = await obtenerRutaOptima(
-            puntos,
-            userLocationRef.current,
-            evitarPago
-          )
-
-        }
-
-        // ---------------------------------------------------
-        // APLICAR FILTRO DE TIEMPO (SI ESTA ACTIVO)
-        // ---------------------------------------------------
-
-        let puntosFinales = resultado.puntosOrdenados
-        let legsFinales = resultado.legs
-
-        if (usarFiltroTiempo) {
-
-          puntosFinales = filtrarPuntosPorTiempo(
-            resultado.puntosOrdenados,
-            resultado.legs,
-            horasDisponibles
-          )
-
-          // --------------------------------
-          // NO HAY TIEMPO PARA NINGUN PUNTO
-          // --------------------------------
-
-          if (puntosFinales.length === 0) {
-
-            setMensajeTiempo(
-              "No dispones de tiempo suficiente para realizar esta ruta."
-            )
-
-            setOrdenPuntos([])
-            setRutasSegmentos([])
-            setRutasSegmentosLocal([])
-            setDuracionRuta(null)
-            setDistanciaRuta(null)
-            setMensajeTodosPago(false)
-            return
-          }
-
-          // --------------------------------
-          // LIMPIAR MENSAJE SI TODO OK
-          // --------------------------------
-
-          setMensajeTiempo(null)
-
-          let resultadoT
-
-          if (modoRuta === "historica" ) {
-
-            resultadoT = await obtenerRutaHistorica(
-              puntosFinales,
-              userLocationRef.current,
-              evitarPago
-            )
-
-          }
-          else {
-
-            resultadoT = await obtenerRutaOptima(
-              puntosFinales,
-              userLocationRef.current,
-              evitarPago
-            )
-
-          }
-
-          legsFinales = resultadoT.legs
-
-        }
-
-        // ---------------------------------------------------
-        // GUARDAR RESULTADO FINAL
-        // ---------------------------------------------------
-
-        setOrdenPuntos(puntosFinales)
-        setRutasSegmentos(legsFinales)
-        setRutasSegmentosLocal(legsFinales)
-
-        // --------------------------------
-        // CALCULA DURACION APROXIMADA
-        // --------------------------------
-
-        const tiempoTexto = calcularDuracionRuta(
-          legsFinales,
-          puntosFinales
-        )
-
-        setDuracionRuta(tiempoTexto)
-        const distanciaTexto = calcularDistanciaRuta(legsFinales)
-        setDistanciaRuta(distanciaTexto)
-
-      }
-
-      catch (err) {
-
-        console.error(
-          "Error cargando ruta:",
-          err
-        )
-
-      }
-
-      finally {
-
-        setCargandoRuta(false)
-
-      }
-    }
-
-    cargarRuta()
-
-  }, [
-    rutaSeleccionada,
-    todosPuntos,
-    modoRuta,
-    userLocationRuta,
-    evitarPago,
-    usarFiltroTiempo,
-    horasDisponibles,
-  ])
 
   // ---------------------------------------------------
   // CENTRA EL MAPA EN EL SIGUIENTE PUNTO
@@ -1266,21 +417,15 @@ function Mapa({
     //centrarYAbrir(siguientePunto);
 
     mapRef.current.flyTo(
-
       [
         siguientePunto.latitud,
         siguientePunto.longitud
       ],
-
       17,
-
       {
         duration: 1.2
       }
-
     )
-
-
 
   }, [
 
@@ -1291,74 +436,6 @@ function Mapa({
   ])
 
 
-  // ---------------------------------------------------
-  // HELPERS DE MARKERS: clave compuesta punto+ruta
-  // Permite que el mismo punto tenga varios markers,
-  // uno por cada ruta a la que pertenezca
-  // ---------------------------------------------------
-
-  const claveMarker = (puntoId, rutaId) => `${puntoId}-${rutaId ?? "base"}`
-
-  const buscarMarker = (puntoId, rutaId = null) => {
-    if (rutaId != null) return markersRef.current[claveMarker(puntoId, rutaId)]
-    const clave = Object.keys(markersRef.current).find(k => k.startsWith(`${puntoId}-`))
-    return clave ? markersRef.current[clave] : null
-  }
-
-
-  // ---------------------------------------------------
-  // HELPER: icono para un punto (usa color de su ruta)
-  // ---------------------------------------------------
-
-  const iconoPunto = (ruta) => crearIconoRuta(ruta?.color || "#383838")
-
-
-  // ---------------------------------------------------
-  // HELPER: renderiza Popup de un marker
-  // ---------------------------------------------------
-
-  const esMobil = window.innerWidth < 768
-
-  const renderPopup = (punto, ruta) => (
-    <Popup maxHeight={esMobil ? 500 : 350}>
-      {modoPopup === "ruta" && (
-        <PopupRuta
-          punto={punto}
-          ruta={ruta}
-          rutaSeleccionada={rutaSeleccionada}
-          setRutaSeleccionada={setRutaSeleccionada}
-          setModoPopup={setModoPopup}
-          abrirInformacion={() => abrirInformacion(punto, ruta)}
-        />
-      )}
-      {modoPopup === "info" && (
-        <PopupInformacion
-          punto={punto}
-          ruta={ruta}
-          modoHistoriador={modoHistoriador}
-          setModoHistoriador={setModoHistoriador}
-          setModoPopup={setModoPopup}
-          volverARuta={() => volverARuta(punto, ruta)}
-        />
-      )}
-    </Popup>
-  )
-
-
-  // ---------------------------------------------------
-  // HELPER: renderiza un Marker con ref
-  // ---------------------------------------------------
-
-  const renderMarker = (punto, ruta = null) => (
-    <Marker
-      key={claveMarker(punto.id, ruta?.id)}
-      position={[punto.latitud, punto.longitud]}
-      icon={iconoPunto(ruta)}
-      ref={(el) => { if (el) markersRef.current[claveMarker(punto.id, ruta?.id)] = el }}
-    >
-      {renderPopup(punto, ruta)}
-    </Marker>
-  )
 
   // ---------------------------------------------------
   // RENDER DEL MAPA
@@ -1453,181 +530,66 @@ function Mapa({
       {/* POLYLINES DE LA RUTA */}
       {/* ------------------------------------------------ */}
 
-      {rutasSegmentosLocal
-
-        .filter((_, index) => {
-
-          // --------------------------------
-          // MODO NORMAL
-          // --------------------------------
-
-          if (!modoNavegacion) {
-            return true
-          }
-
-          // --------------------------------
-          // MODO NAVEGACION
-          // SOLO MUESTRA EL TRAMO ACTUAL
-          // --------------------------------
-
-          return index === segmentoActual
-
-        })
-
-        .map((leg, index) => {
-          const coords = leg.steps.flatMap(
-          step => step.geometry.coordinates
-        )
-
-        return (
-
-          <>
-
-            <Polyline
-              key={index}
-              positions={coords.map(([lon, lat]) => [lat, lon])}
-              color={rutaSeleccionada?.color || "#e63946"}
-              weight={6}
-              opacity={0.8}
-            />
-
-
-          </>
-
-        )
-      })}
+        <RutaPolylines
+          rutasSegmentosLocal={rutasSegmentosLocal}
+          modoNavegacion={modoNavegacion}
+          segmentoActual={segmentoActual}
+          color={rutaSeleccionada?.color}
+        />
 
       {/* ------------------------------------------------ */}
       {/* MARKER DE INICIO */}
       {/* ------------------------------------------------ */}
 
-      <Marker
-        position={[
-          userLocation.lat,
-          userLocation.lon
-        ]}
-        icon={marcadorUser}
-      >
+        <Marker position={[userLocation.lat, userLocation.lon]} icon={marcadorUser} />
 
-      </Marker>
 
       {/* ------------------------------------------------ */}
       {/* CLUSTERS AGRUPADOS POR RUTA */}
       {/* ------------------------------------------------ */}
 
-      {!rutaSeleccionada && !modoCercanos &&
-        rutasUnicas.map((rutaId) => {
-
-          const puntosDeRuta = puntosOrdenados.filter(
-            p => p.rutas.some(r => r.id === rutaId) && (!evitarPago || !p.pago)
-          )
-
-          if (puntosDeRuta.length === 0) return null
-
-          const rutaInfo = puntosDeRuta[0].rutas.find(r => r.id === rutaId)
-          const colorRuta = rutaInfo?.color || "#383838"
-
-          return (
-            <MarkerClusterGroup
-              key={rutaId}
-              chunkedLoading
-              maxClusterRadius={75}
-              showCoverageOnHover={false}
-              iconCreateFunction={crearClusterPorRuta(colorRuta)}
-            >
-              {puntosDeRuta.map(punto =>
-                renderMarker(punto, punto.rutas.find(r => r.id === rutaId))
-              )}
-            </MarkerClusterGroup>
-          )
-        })
-      }
-
-      {/* ------------------------------------------------ */}
-      {/* CLUSTER PARA PUNTOS SIN RUTA ASIGNADA (nuevos)  */}
-      {/* ------------------------------------------------ */}
-
-      {!rutaSeleccionada && !modoCercanos && (() => {
-        const puntosNuevos = puntosOrdenados.filter(
-          p => p.rutas.length === 0 && (!evitarPago || !p.pago)
-        )
-        if (puntosNuevos.length === 0) return null
-        return (
-          <MarkerClusterGroup
-            key="nuevos"
-            chunkedLoading
-            maxClusterRadius={75}
-            showCoverageOnHover={false}
-            iconCreateFunction={crearClusterPorRuta("#888888")}
-          >
-            {puntosNuevos.map(punto => renderMarker(punto))}
-          </MarkerClusterGroup>
-        )
-      })()}
+        {!rutaSeleccionada && !modoCercanos && (
+          <ClustersPorRuta
+            puntosOrdenados={puntosOrdenados}
+            rutasUnicas={rutasUnicas}
+            evitarPago={evitarPago}
+            markerProps={markerProps}
+          />
+        )}
 
       {/* ------------------------------------------------ */}
       {/* MARKERS NORMALES EN MODO CERCANOS */}
       {/* ------------------------------------------------ */}
 
-      {!rutaSeleccionada && modoCercanos && (
-        puntosCercanos
-          .filter(
-            punto => !evitarPago || !punto.pago
-          )
-          .map(punto =>
-            renderMarker(punto, punto.rutas?.[0])
-          )
-      )}
+        {!rutaSeleccionada && modoCercanos && (
+          <MarkersCercanos
+            puntosCercanos={puntosCercanos}
+            evitarPago={evitarPago}
+            markerProps={markerProps}
+          />
+        )}
 
       {/* ------------------------------------------------ */}
       {/* MARKERS CUANDO HAY RUTA */}
       {/* ------------------------------------------------ */}
 
-      {rutaSeleccionada && (() => {
-
-        // --------------------------------
-        // HELPER: obtiene la ruta "visual" del punto
-        // - Si estamos en ruta "cercanos" (ruta virtual,
-        //   no existe como tal en punto.rutas), usamos
-        //   la primera ruta asignada al punto para pintarlo
-        //   con su color correspondiente.
-        // - En cualquier otro caso, buscamos la ruta real
-        //   por id como hasta ahora.
-        // --------------------------------
-
-        const rutaDelPunto = (punto) =>
-          rutaSeleccionada.id === "cercanos"
-            ? punto.rutas?.[0]
-            : punto.rutas.find(r => r.id === rutaSeleccionada.id)
-
-        const listaPuntos = todosPuntosPago
-          ? puntosOrdenados
-          : puntosOrdenados.filter(punto => !evitarPago || !punto.pago)
-
-        return listaPuntos.map(punto =>
-          renderMarker(punto, rutaDelPunto(punto))
-        )
-
-      })()}
+        {rutaSeleccionada && (
+          <MarkersDeRuta
+            rutaSeleccionada={rutaSeleccionada}
+            puntosOrdenados={puntosOrdenados}
+            evitarPago={evitarPago}
+            todosPuntosPago={todosPuntosPago}
+            markerProps={markerProps}
+          />
+        )}
 
       {/* ------------------------------------------------ */}
       {/* NUMEROS DE ORDEN */}
       {/* ------------------------------------------------ */}
 
-      {rutaSeleccionada && puntosVisibles.map(
-        (punto, index) => (
-
-          <Marker
-            key={`orden-${punto.id}`}
-            position={[
-              punto.latitud,
-              punto.longitud
-            ]}
-            icon={crearIconoNumero(index + 1)}
-          />
-
-        )
-      )}
+        {rutaSeleccionada && (
+          <NumerosOrden puntosVisibles={puntosVisibles} />
+        )}
 
     </MapContainer>
 
